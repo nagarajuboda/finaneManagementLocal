@@ -44,7 +44,6 @@ export default function AddRevenue() {
     FetchData();
     GetTimeSheet(projectID, selectedDate);
   }, [projectID, selectedDate]);
-  console.log(selectedDate, "========>");
   async function FetchData() {
     var ProjectResponse = await apiurl.get(
       `/Projects/GetProject?id=${projectID}`
@@ -102,7 +101,6 @@ export default function AddRevenue() {
   const backtoProjectList = () => {
     navigate("/dashboard/USFinanceTeamAllProjects");
   };
-  console.log(selectedDate, "selected date");
   const SaveForm = async () => {
     const employeeData = TimeSheetdata.map((employee) => ({
       timesheetId: employee.id,

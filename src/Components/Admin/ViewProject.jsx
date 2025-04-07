@@ -434,11 +434,6 @@ export function ViewProject() {
               Project Name
             </p>
           </div>
-          <div className="col-6">
-            <p style={{ fontSize: "14px", textTransform: "uppercase" }}>
-              Description
-            </p>
-          </div>
         </div>
         <div className="row m-0 pt-3">
           <div
@@ -459,8 +454,19 @@ export function ViewProject() {
           >
             {ProjectValues.projectName}
           </div>
+        </div>
+
+        <div
+          className="row project-view-row m-0 pt-4"
+          style={{ paddingTop: "15px" }}
+        >
+          <p style={{ fontSize: "14px", textTransform: "uppercase" }}>
+            Description
+          </p>
+        </div>
+        <div className="row m-0 ps-3 pe-3">
           <div
-            className="col-6 "
+            className="col-12"
             style={{ fontWeight: "500", fontSize: "14px" }}
           >
             {ProjectValues.description}

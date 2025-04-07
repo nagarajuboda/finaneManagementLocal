@@ -59,7 +59,7 @@ export default function Employees() {
       employee.employeeId.toLowerCase().includes(searchQuery.toLowerCase())
     );
   });
-  console.log(filteredEmployees, "=========");
+
   let activeEmployees = [];
 
   if (isDivVisible === true) {

@@ -224,21 +224,25 @@ export default function Employees() {
       <div className="employeeheader">Employees</div>
       <div className="Employeelist">
         <div
-          className="row"
           style={{
             paddingTop: "20px",
+            paddingLeft: "10px",
+            paddingRight: "10px",
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: "10px",
           }}
         >
           {isDivVisible ? (
             <div
-              className="col-2"
+              className="mt-2"
               style={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                minWidth: "150px",
               }}
             >
               <p className="employeecontent" style={{ fontSize: "14px" }}>
@@ -246,27 +250,27 @@ export default function Employees() {
               </p>
             </div>
           ) : (
-            <div
-              className="col-1"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <p className="employeecontent" style={{ fontSize: "13px" }}>
+            <div className="mt-2">
+              <p className="employeecontent" style={{ fontSize: "14px" }}>
                 Employee list
               </p>
             </div>
           )}
-          {isDivVisible && <div className="col-3"></div>}
+
+          {isDivVisible && (
+            <div style={{ minWidth: "180px" }}>
+              {/* Just a spacer or use for additional content */}
+            </div>
+          )}
 
           <div
-            className="col-3"
             style={{
               position: "relative",
               display: "flex",
-              justifyContent: "end",
+              justifyContent: "flex-end",
+              alignItems: "center",
+              // minWidth: "250px",
+              flexGrow: 1,
             }}
           >
             <input
@@ -299,12 +303,12 @@ export default function Employees() {
           </div>
 
           <div
-            className="col-2"
             style={{
-              cursor: "pointer",
               display: "flex",
-              justifyContent: "center",
               alignItems: "center",
+              justifyContent: "center",
+              gap: "5px",
+              minWidth: "230px",
             }}
           >
             <input
@@ -317,11 +321,15 @@ export default function Employees() {
               <button
                 disabled
                 style={{
-                  fontSize: "13px",
-
+                  fontSize: "14px",
                   color: "black",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minWidth: "200px",
+                  maxWidth: "auto",
                 }}
-                className="Show-Deleted-employee-button ms-1"
+                className="Show-Deleted-employee-button"
               >
                 Show Deleted Employees
               </button>
@@ -329,18 +337,25 @@ export default function Employees() {
               <button
                 disabled={deleteEmployeebuttondisible}
                 style={{
-                  fontSize: "12px",
+                  fontSize: "14px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  // minWidth: "150px",
+                  width: "100%",
+                  maxWidth: "auto",
                 }}
-                className="Show-Deleted-employee-button ms-1"
+                className="Show-Deleted-employee-button"
               >
-                <span className="deleteSelectedd"> Deleted Employees</span>
+                <span className="deleteSelectedd">Deleted Employees</span>
               </button>
             )}
           </div>
+
           {!isDivVisible && (
-            <div className="col-1">
+            <div style={{ minWidth: "100px" }}>
               <button
-                style={{ fontSize: "14px", height: "36px" }}
+                style={{ fontSize: "14px", height: "36px", width: "100%" }}
                 className="btn btn-primary"
                 onClick={() => setIsPopupOpen(true)}
               >
@@ -348,29 +363,25 @@ export default function Employees() {
               </button>
             </div>
           )}
-          <div className="col-1" style={{ padding: "0px" }}>
+
+          <div>
             <Dropdown>
               <Dropdown.Toggle
                 id="dropdown-basic"
                 className="importdropdown btn btn-primary"
-                style={{ fontSize: "14px", height: "36px" }}
+                style={{ fontSize: "14px", height: "36px", width: "100%" }}
               >
                 Export To
               </Dropdown.Toggle>
-
-              <Dropdown.Menu style={{ paddingTop: "10px" }}>
+              <Dropdown.Menu className="responsivedropdownmenu">
                 <Dropdown.Item
+                  style={{ fontSize: "14px" }}
                   onClick={() => DownloadExcel("employees", "excel")}
                 >
-                  <p
-                    className=""
-                    style={{ fontSize: "14px", cursor: "pointer" }}
-                  >
-                    MS Excel
-                  </p>
+                  MS Excel
                 </Dropdown.Item>
                 <Dropdown.Item
-                  style={{ marginTop: "5px" }}
+                  style={{ fontSize: "14px" }}
                   onClick={() => DownloadExcel("employees", "pdf")}
                 >
                   Adobe PDF
@@ -378,17 +389,17 @@ export default function Employees() {
               </Dropdown.Menu>
             </Dropdown>
           </div>
+
           {!isDivVisible && (
-            <div className="col-2 ">
+            <div>
               <button
-                className="btn btn-danger deleteSelected "
+                className="btn btn-danger deleteSelected"
                 disabled={disiblebuttons}
                 onClick={DeleteSelectedRecords}
                 style={{
                   fontSize: "14px",
                   height: "36px",
-                  display: "flex",
-                  justifyContent: "end",
+                  width: "100%",
                   cursor: disiblebuttons ? "not-allowed" : "pointer",
                   opacity: disiblebuttons ? 0.65 : 1,
                   pointerEvents: disiblebuttons ? "auto" : "all",
@@ -398,34 +409,31 @@ export default function Employees() {
               </button>
             </div>
           )}
-          {!isDivVisible && (
-            <div className="col-2">
-              <button
-                style={{
-                  display: "flex",
-                  width: "auto",
 
-                  alignContent: "center",
-                  padding: "5px",
-                  height: "36px",
-                }}
+          {!isDivVisible && (
+            <div className="">
+              <button
                 className="add-new-project-button"
                 onClick={Addemployeefuncton}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  padding: "5px",
+                  height: "36px",
+                  width: "100%",
+                }}
               >
-                <span>
-                  <img
-                    src={images}
-                    alt=""
-                    height="18px"
-                    width="18px"
-                    className="mb-2"
-                  />
-                </span>
+                <img
+                  src={images}
+                  alt=""
+                  height="18px"
+                  width="18px"
+                  style={{ marginBottom: "2px" }}
+                />
                 <span
-                  className=" ms-1"
+                  className="ms-1"
                   style={{
                     fontSize: "14px",
-                    height: "36px",
                     color: "#000000",
                     fontWeight: "bold",
                   }}
@@ -437,14 +445,14 @@ export default function Employees() {
           )}
         </div>
 
-        <div style={{ padding: "10px" }}>
+        <div style={{ padding: "10px", overflowX: "auto" }}>
           <table
             id="example"
             className="employeeTable"
-            style={{ width: "100%" }}
+            style={{ width: "100%", minWidth: "1000px" }}
           >
             <thead>
-              <tr className="tableheader">
+              <tr className="tableheader ">
                 <th>
                   <input
                     type="checkbox"
@@ -476,7 +484,7 @@ export default function Employees() {
                     ? employee.employeeDetails.employeeStatus === 1 && (
                         <tr
                           key={employee.employeeDetails.id}
-                          className="tablebody"
+                          className="tablebody EmployeeListtablelistrow"
                           style={{
                             backgroundColor: "white",
                             cursor: "pointer",

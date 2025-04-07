@@ -13,7 +13,6 @@ const createAxiosInstance = (baseURL) => {
 
       if (userDetails?.token) {
         config.headers["Authorization"] = `Bearer ${userDetails.token}`;
-        //  console.log(" Token Attached:", userDetails.token);
       } else {
         console.warn("⚠️ No token found in sessionData");
       }
