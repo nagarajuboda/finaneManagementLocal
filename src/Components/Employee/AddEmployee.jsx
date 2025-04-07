@@ -800,8 +800,14 @@ export default function AddEmployee() {
             </div>
           </div>
           <div
-            className="row m-0"
-            style={{ paddingTop: "25px ", paddingBottom: "30px" }}
+            className=" m-0"
+            style={{
+              paddingTop: "25px ",
+              paddingBottom: "30px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
           >
             <div className="col-10"></div>
             <div
@@ -819,7 +825,7 @@ export default function AddEmployee() {
                 loading &&
                 loading && (
                   <button
-                    class="addEmployeeSubmitbutton me-2"
+                    class="addEmployeeSubmitbutton1 me-2"
                     type="button"
                     disabled
                     style={{ color: "white" }}

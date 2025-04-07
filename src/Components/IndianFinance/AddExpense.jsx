@@ -11,6 +11,7 @@ import { FaDollarSign } from "react-icons/fa6";
 
 import axios from "axios";
 import { useEffect } from "react";
+import { Flag } from "@mui/icons-material";
 export default function AddExpense() {
   const [error, setError] = useState("");
   const [selectedDate, setSelectedDate] = useState(
@@ -88,6 +89,9 @@ export default function AddExpense() {
     var response = await IndianFinanceService.GetRevenue(getMonthNunber, year);
     if (response.isSuccess) {
       setRevenueData(response.item);
+      if (response.item.length === 0) {
+        SetisSubmittedFlag(true);
+      }
     }
 
     const newHours = {};
@@ -96,7 +100,6 @@ export default function AddExpense() {
     });
     setHours(newHours);
   };
-
   const handleChange = (e) => {
     const amount = Number(e.target.value) || "";
     if (!amount) {
@@ -119,7 +122,7 @@ export default function AddExpense() {
       var getMonthNunber = monthMap[month];
       const employeeData = RevenueData.map((employee) => ({
         employeeId: employee.id,
-        specificApportionment: hours[employee.id] || "",
+        specificApportionment: hours[employee.id] || 0,
         generalApportionment: generalApportionmentEachEmployee,
         month: Number(getMonthNunber),
         year: year,
@@ -505,32 +508,37 @@ export default function AddExpense() {
           <div
             style={{
               display: "flex",
-              justifyContent: "end",
+              justifyContent: "space-between",
               paddingBottom: "15px",
               paddingTop: "15px",
             }}
           >
-            <button
-              type="button"
-              className="AddRevneueSaveButton me-3 ExpensesSaveButton"
-              disabled={isSubmittedFlag}
-              onClick={() => AddExpenses("false")}
-            >
-              <span
-                className="AddRevneueSaveButtonSpan "
-                style={{ fontSize: "14px" }}
-              >
-                Save
-              </span>
-            </button>
-            <button
-              type="button"
-              className="AddRevneueSubmitButton ExpensesSubmitButton"
-              onClick={() => AddExpenses("true")}
-              disabled={isSubmittedFlag}
-            >
-              <span className="AddRevneueSubmitButtonSpan"> Submit</span>
-            </button>
+            <div></div>
+            {RevenueData.length > 0 && (
+              <div>
+                <button
+                  type="button"
+                  className="AddRevneueSaveButton me-3 ExpensesSaveButton"
+                  disabled={isSubmittedFlag}
+                  onClick={() => AddExpenses("false")}
+                >
+                  <span
+                    className="AddRevneueSaveButtonSpan "
+                    style={{ fontSize: "14px" }}
+                  >
+                    Save
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  className="AddRevneueSubmitButton ExpensesSubmitButton"
+                  onClick={() => AddExpenses("true")}
+                  disabled={isSubmittedFlag}
+                >
+                  <span className="AddRevneueSubmitButtonSpan"> Submit</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

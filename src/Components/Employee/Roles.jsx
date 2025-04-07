@@ -28,6 +28,8 @@ const priorityMap = {
   1: "High",
   2: "Medium",
   3: "Low",
+  4: "Low",
+  5: "Low",
 };
 
 export default function Roles() {
@@ -226,7 +228,6 @@ export default function Roles() {
       };
       var response = await RolesService.FcnCreateRole(obj);
       var result = response.data;
-      console.log(result, "=result");
       if (result.isSuccess) {
         setisOpen(false);
         fetchRoles();
@@ -365,10 +366,7 @@ export default function Roles() {
             style={{ width: "100%" }}
           >
             <thead>
-              <tr
-                className="tableheader"
-                style={{ backgroundColor: "red important" }}
-              >
+              <tr className="tableheader">
                 <th style={{ margin: "0", padding: "0px 10px" }}>
                   <input
                     type="checkbox"

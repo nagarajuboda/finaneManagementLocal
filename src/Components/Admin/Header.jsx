@@ -50,15 +50,7 @@ export default function Header({ isOpen }) {
       setIsOpen1(false);
     }
   };
-  useEffect(() => {
-    // console.log(userDetails, "userDetails Token");
-    // const subscription = getSessionData().subscribe((data) => {
-    //   if (data) {
-    //     setToken(data.token);
-    //   }
-    // });
-    // return () => subscription.unsubscribe(); // Cleanup subscription on unmount
-  }, [notifications]);
+  useEffect(() => {}, [notifications]);
   useEffect(() => {
     fetchdata();
     document.addEventListener("mousedown", handleClickOutside);

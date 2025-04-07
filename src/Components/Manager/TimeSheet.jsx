@@ -82,14 +82,11 @@ export default function TimeSheet() {
       label: p.project.projectName,
     }));
     setProjects(options);
-    console.log(selectedProject, "selectedProject");
-    console.log(selectedDate, "formated Date");
-    // debugger;
+
     const Timesheetresponse = await TimeSheetService.GetTimeSheetDeatils(
       formattedDate,
       selectedProject?.value
     );
-    console.log(Timesheetresponse, "getTimesheet Reponse");
     var checkIsSubmitted = await Timesheetresponse.item.map(
       (data) => data.isSubmited
     );

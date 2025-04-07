@@ -442,30 +442,43 @@ export function ViewProject() {
         </div>
         <div className="row m-0 pt-3">
           <div
-            className="col-2 "
+            className="col-2"
             style={{ fontWeight: "500", fontSize: "14px" }}
           >
-            {clientvalues.clientName}
+            {clientvalues?.clientName}
           </div>
           <div
-            className="col-2 "
+            className="col-2"
             style={{ fontWeight: "500", fontSize: "14px" }}
           >
-            {clientvalues.clientEmailId}
+            {clientvalues?.clientEmailId}
           </div>
           <div
-            className="col-2 "
+            className="col-2"
             style={{ fontWeight: "500", fontSize: "14px" }}
           >
-            {ProjectValues.projectName}
+            {ProjectValues?.projectName}
           </div>
+
           <div
-            className="col-6 "
+            className="col-6"
             style={{ fontWeight: "500", fontSize: "14px" }}
           >
-            {ProjectValues.description}
+            {ProjectValues?.description?.substring(0, 200)}
           </div>
         </div>
+
+        {ProjectValues?.description?.length > 200 && (
+          <div className="row m-0">
+            <div
+              className="col-12"
+              style={{ fontWeight: "500", fontSize: "14px" }}
+            >
+              {ProjectValues.description.substring(200)}
+            </div>
+          </div>
+        )}
+
         <div className="row underline-button-row"></div>
         <div className="row m-0" style={{ paddingTop: "15px" }}>
           <div className="col-2">
