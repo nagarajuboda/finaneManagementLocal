@@ -73,5 +73,9 @@ const AdminDashboardServices = {
     const response = await apiurl.get(`/Roles/getRole?id=${roleId} `);
     return response;
   },
+  async FcnActivityLogs() {
+    const response = await apiurl.get("/ActivityLog");
+    return response.data;
+  },
 };
 export default AdminDashboardServices;
