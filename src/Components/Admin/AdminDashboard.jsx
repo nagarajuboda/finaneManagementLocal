@@ -27,6 +27,7 @@ import abcprojectimage from "../../../src/assets/Images/AbcProjectImage.png";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import calenderImage1 from "../../assets/Images/calendar_11919171.png";
+import teamMemberAdded from "../../assets/Images/TeamMemberAdded.png";
 
 ChartJS.register(
   CategoryScale,
@@ -210,8 +211,6 @@ export default function AdminDashboard() {
 
     return "Just now";
   };
-
-  console.log(sortedRecentActivities, "============sortedRecentActivities");
   const data = {
     labels: ["In Progress", "Completed", "Not Started"],
     datasets: [
@@ -696,7 +695,7 @@ export default function AdminDashboard() {
           <div className="col-4">
             <p className="projectOverview_content">Project Overview</p>
 
-            <div className=" Project_progress ps-1 pe-1">
+            <div className=" Project_progress11 ps-1 pe-1">
               <div className="">
                 <div
                   style={{
@@ -747,7 +746,7 @@ export default function AdminDashboard() {
               </div>
               <div
                 style={{
-                  marginTop: "80px",
+                  marginTop: "50px",
                   display: "flex",
                   justifyContent: "space-between",
                   gap: "10px",
@@ -992,19 +991,33 @@ export default function AdminDashboard() {
                       actionText = actionType + " " + "Project";
                       imageSrc = UpdateProjectImahe;
                     } else if (activity.entityName === "Employee") {
-                      title = "Employee Updated";
-                      actionText = actionType + " " + "Employee";
+                      if (actionType === "Added") {
+                        title = "Employee Updated";
+                        actionText = actionType + " " + "new employee";
+                      } else if (actionType === "Updated") {
+                        actionText = actionType + " " + "employee";
+                      } else {
+                        actionText = actionType + " " + "employee";
+                      }
+
                       imageSrc = RecentEmployeeImage;
                     } else if (activity.entityName === "Role") {
                       title = "Role Modified";
-                      actionText = "role changed";
-                      //imageSrc = UpdateRoleImage; // Add your own image
+                      actionText = actionType + " " + "Role";
+                    } else if (activity.entityName === "ProjectEmployee") {
+                      if (actionType == "Added") {
+                        actionText = "Team member added";
+                        imageSrc = teamMemberAdded;
+                      } else {
+                        actionText = "Team member removed";
+                        imageSrc = teamMemberAdded;
+                      }
                     } else {
                       return null;
                     }
 
                     return (
-                      <div className="row m-0 mt-3" key={index}>
+                      <div className="row m-0 mt-4 Activityrow" key={index}>
                         <div className="col-2">
                           {activity.entityName === "Project" ? (
                             <div
@@ -1017,7 +1030,7 @@ export default function AdminDashboard() {
                               }}
                             >
                               <img
-                                src={imageSrc}
+                                src={UpdateProjectImahe}
                                 alt=""
                                 style={{
                                   position: "absolute",
@@ -1026,7 +1039,7 @@ export default function AdminDashboard() {
                                 }}
                               />
                             </div>
-                          ) : (
+                          ) : activity.entityName === "Employee" ? (
                             <div>
                               <img
                                 src={RecentEmployeeImage}
@@ -1034,6 +1047,39 @@ export default function AdminDashboard() {
                                 height="38px"
                                 width="38px"
                               />
+                            </div>
+                          ) : activity.entityName === "ProjectEmployee" ? (
+                            <div>
+                              <div
+                                style={{
+                                  height: "40px",
+                                  width: "40px",
+                                  backgroundColor: "#45C4F4",
+                                  borderRadius: "100px",
+                                  position: "relative",
+                                }}
+                              >
+                                <img
+                                  src={TeamMemberAddedImage}
+                                  alt=""
+                                  style={{
+                                    position: "absolute",
+                                    top: "25%",
+                                    left: "25%",
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          ) : (
+                            <div>
+                              <div>
+                                <img
+                                  src={RecentEmployeeImage}
+                                  alt=""
+                                  height="38px"
+                                  width="38px"
+                                />
+                              </div>
                             </div>
                           )}
                         </div>
@@ -1069,221 +1115,11 @@ export default function AdminDashboard() {
                   })}
                 </div>
               )}
-
-              {/* {sortedRecentActivities.length > 0 && (
-                <div className="latest_updatesImage row mt-3">
-                  {sortedRecentActivities.map(
-                    (recentActivities, index) =>
-                      recentActivities.entityName == "Project" && (
-                        <div className="row m-0" key={index}>
-                          <div className="col-2">
-                            <div
-                              style={{
-                                height: "40px",
-                                width: "40px",
-                                backgroundColor: " #875fc0",
-                                borderRadius: "100px",
-                                position: "relative",
-                              }}
-                            >
-                              <img
-                                src={UpdateProjectImahe}
-                                alt=""
-                                style={{
-                                  position: "absolute",
-                                  top: "25%",
-                                  left: "25%",
-                                }}
-                              />
-                            </div>
-                          </div>
-                          <div className="col-7">
-                            <span className="Project_Updated_Span">
-                              Project Updated
-                            </span>
-                            <div style={{ display: "flex" }}>
-                              <span className="project_updated_name">
-                                Naresh
-                              </span>
-                              <span className="updated_task_content ms-2">
-                                updated a task
-                              </span>
-                            </div>
-                          </div>
-                          <div className="col-3 p-0">
-                            <span
-                              className="updated_time"
-                              style={{ fontSize: "13px" }}
-                            >
-                              {getRelativeTime(recentActivities.timestamp)}
-                            </span>
-                          </div>
-                        </div>
-                      )
-                  )}
-                </div>
-              )} */}
-
-              {/* <div className="latest_updatesImage row mt-4">
-                <div className="row m-0">
-                  <div className="col-2">
-                    <div>
-                      <img
-                        src={RecentEmployeeImage}
-                        alt=""
-                        height="40px"
-                        width="40px"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-7">
-                    <span className="Project_Updated_Span">
-                      Added new Employee
-                    </span>
-                    <div style={{ display: "flex" }}>
-                      <span className="project_updated_name">Nagaraju</span>
-                      <span className="updated_task_content ms-2 ">
-                        updated a task
-                      </span>
-                    </div>
-                  </div>
-                  <div className="col-3 p-0 ">
-                    <span className="updated_time" style={{ fontSize: "13px" }}>
-                      45 minutes ago
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="latest_updatesImage row mt-4">
-                <div className="row m-0">
-                  <div className="col-2">
-                    <div
-                      style={{
-                        height: "40px",
-                        width: "40px",
-                        backgroundColor: "#45C4F4",
-                        borderRadius: "100px",
-                        position: "relative",
-                      }}
-                    >
-                      <img
-                        src={TeamMemberAddedImage}
-                        alt=""
-                        style={{
-                          position: "absolute",
-                          top: "25%",
-                          left: "25%",
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-7">
-                    <span className="Project_Updated_Span">
-                      Team member added
-                    </span>
-                    <div style={{ display: "flex" }}>
-                      <span className="project_updated_name">Mohasina</span>
-                      <span className="updated_task_content  ms-2">
-                        updated a task
-                      </span>
-                    </div>
-                  </div>
-                  <div className="col-3  p-0">
-                    <span className="updated_time" style={{ fontSize: "13px" }}>
-                      45 minutes ago
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="latest_updatesImage row mt-4">
-                <div className="row m-0">
-                  <div className="col-2">
-                    <div
-                      style={{
-                        height: "40px",
-                        width: "40px",
-                        backgroundColor: "#FFB82C",
-                        borderRadius: "100px",
-                        position: "relative",
-                      }}
-                    >
-                      <img
-                        src={rupee}
-                        alt=""
-                        style={{
-                          position: "absolute",
-                          top: "25%",
-                          left: "25%",
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-7">
-                    <span className="Project_Updated_Span">
-                      Payroll rolled out
-                    </span>
-                    <div style={{ display: "flex" }}>
-                      <span className="project_updated_name">Nagaraju</span>
-                      <span className="updated_task_content ms-2 ">
-                        updated a task
-                      </span>
-                    </div>
-                  </div>
-                  <div className="col-3 p-0 ">
-                    <span className="updated_time" style={{ fontSize: "13px" }}>
-                      45 minutes ago
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="latest_updatesImage row mt-4">
-                <div className="row m-0">
-                  <div className="col-2">
-                    <div
-                      style={{
-                        height: "40px",
-                        width: "40px",
-                        backgroundColor: "#46F24B",
-                        borderRadius: "100px",
-                        position: "relative",
-                      }}
-                    >
-                      <img
-                        src={abcprojectimage}
-                        alt=""
-                        style={{
-                          position: "absolute",
-                          top: "25%",
-                          left: "25%",
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-7">
-                    <span className="Project_Updated_Span">
-                      Abc project completed
-                    </span>
-                    <div style={{ display: "flex" }}>
-                      <span className="project_updated_name">Saiomkar</span>
-                      <span className="updated_task_content ms-2">
-                        updated a task
-                      </span>
-                    </div>
-                  </div>
-                  <div className="col-3 p-0">
-                    <span className="updated_time" style={{ fontSize: "13px" }}>
-                      45 minutes ago
-                    </span>
-                  </div>
-                </div>
-              </div>
-               */}
-
               <div
                 style={{
                   border: "1px solid #64646430",
                   width: "100%",
-                  marginTop: "25px",
+                  marginTop: "40px",
                 }}
               ></div>
               <div className="viewAlldiv">
