@@ -1003,7 +1003,7 @@ export default function AdminDashboard() {
                       imageSrc = RecentEmployeeImage;
                     } else if (activity.entityName === "Role") {
                       title = "Role Modified";
-                      actionText = actionType + " " + "Role";
+                      actionText = actionType + " " + "role";
                     } else if (activity.entityName === "ProjectEmployee") {
                       if (actionType == "Added") {
                         actionText = "Team member added";
@@ -1095,10 +1095,10 @@ export default function AdminDashboard() {
                               {performedBy}
                             </span>
                             <span
-                              className="updated_task_content ms-2 "
+                              className="updated_task_content "
                               style={{ fontSize: "13px" }}
                             >
-                              Update a task
+                              Updated a task
                             </span>
                           </div>
                         </div>
