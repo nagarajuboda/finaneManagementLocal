@@ -990,7 +990,7 @@ export default function AddProject() {
 
               {errorss.Description && (
                 <span
-                  className="error ms-1"
+                  className="error "
                   style={{ color: "red", fontSize: "13px" }}
                 >
                   {errorss.Description}

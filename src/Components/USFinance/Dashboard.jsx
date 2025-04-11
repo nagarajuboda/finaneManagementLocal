@@ -357,6 +357,9 @@ export default function UsFinanceTeamDashboard() {
             onChange={handleDateChange1}
             dateFormat="MMMM yyyy"
             showMonthYearPicker
+            maxDate={
+              new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
+            }
             className="timesheet-datepicker"
             customInput={
               <div
@@ -388,202 +391,202 @@ export default function UsFinanceTeamDashboard() {
       <div style={{ marginTop: "15px" }}>
         <span className="project-uodate-content">Project Update</span>
       </div>
-      <div
-        className=" m-0 row"
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          paddingTop: "10px",
-        }}
-      >
-        <div className="Project_progress1 col-4 ">
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <div>
-              <canvas
-                ref={chartref}
-                style={{ width: "100px", height: "50px" }}
-              />
-            </div>
-            <div>
-              <div class="dropdown mt-3 ms-4">
-                <button
-                  class=" dropdown-toggle this_month_content"
-                  type="button"
-                  id="dropdownMenuButton1"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                  style={{ color: "#989898", fontSize: "14px" }}
-                >
-                  This Month
-                </button>
-                <ul
-                  class="dropdown-menu custom-dropdown-widt w-50"
-                  aria-labelledby="dropdownMenuButton1"
-                  style={{ width: "100px" }}
-                >
-                  <li>
-                    <a class="dropdown-item dropdownitems" href="#">
-                      Yearly
-                    </a>
-                  </li>
-                  <li className="mt-1 ">
-                    <a class="dropdown-item dropdownitems" href="#">
-                      Monthly
-                    </a>
-                  </li>
-                  <li className="mt-1">
-                    <a class="dropdown-item dropdownitems" href="#">
-                      Weekly
-                    </a>
-                  </li>
-                </ul>
+      <div className="row row-cols-1 row-cols-md-3 g-3 m-0">
+        <div className="col d-flex justify-content-center">
+          <div className="Project_progress1">
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <div>
+                <canvas
+                  ref={chartref}
+                  style={{ width: "100px", height: "50px" }}
+                />
               </div>
-              <div className="mt-5 me-3">
-                <span className="total_projects_content  ">
-                  <span
-                    style={{ fontSize: "18px", color: "black" }}
-                    className="me-2"
+              <div>
+                <div className="dropdown mt-3 ms-4">
+                  <button
+                    className="dropdown-toggle this_month_content"
+                    type="button"
+                    id="dropdownMenuButton1"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                    style={{ color: "#989898", fontSize: "14px" }}
                   >
-                    12
+                    This Month
+                  </button>
+                  <ul
+                    className="dropdown-menu custom-dropdown-widt w-50"
+                    aria-labelledby="dropdownMenuButton1"
+                    style={{ width: "100px" }}
+                  >
+                    <li>
+                      <a className="dropdown-item dropdownitems" href="#">
+                        Yearly
+                      </a>
+                    </li>
+                    <li className="mt-1">
+                      <a className="dropdown-item dropdownitems" href="#">
+                        Monthly
+                      </a>
+                    </li>
+                    <li className="mt-1">
+                      <a className="dropdown-item dropdownitems" href="#">
+                        Weekly
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <div className="mt-5 me-3">
+                  <span className="total_projects_content">
+                    <span
+                      style={{ fontSize: "18px", color: "black" }}
+                      className="me-2"
+                    >
+                      12
+                    </span>
+                    Total Projects
                   </span>
-                  Total Projects
-                </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div className="Project_progress1 col-4 " style={{ width: "400px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <div>
-              <canvas
-                ref={chartref2}
-                style={{ width: "100px", height: "50px" }}
-              />
-            </div>
-            <div>
-              <div class="dropdown mt-3 ms-4">
-                <button
-                  class=" dropdown-toggle this_month_content"
-                  type="button"
-                  id="dropdownMenuButton1"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                  style={{ color: "#989898", fontSize: "14px" }}
-                >
-                  This Month
-                </button>
-                <ul
-                  class="dropdown-menu custom-dropdown-widt w-50"
-                  aria-labelledby="dropdownMenuButton1"
-                  style={{ width: "100px" }}
-                >
-                  <li>
-                    <a class="dropdown-item dropdownitems" href="#">
-                      Yearly
-                    </a>
-                  </li>
-                  <li className="mt-1 ">
-                    <a class="dropdown-item dropdownitems" href="#">
-                      Monthly
-                    </a>
-                  </li>
-                  <li className="mt-1">
-                    <a class="dropdown-item dropdownitems" href="#">
-                      Weekly
-                    </a>
-                  </li>
-                </ul>
+
+        <div className="col d-flex justify-content-center">
+          <div className="Project_progress1">
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <div>
+                <canvas
+                  ref={chartref2}
+                  style={{ width: "100px", height: "50px" }}
+                />
               </div>
-              <div className="mt-5 me-3">
-                <span className="total_projects_content  ">
-                  <span
-                    style={{ fontSize: "18px", color: "black" }}
-                    className="me-2"
+              <div>
+                <div className="dropdown mt-3 ms-4">
+                  <button
+                    className="dropdown-toggle this_month_content"
+                    type="button"
+                    id="dropdownMenuButton1"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                    style={{ color: "#989898", fontSize: "14px" }}
                   >
-                    08
+                    This Month
+                  </button>
+                  <ul
+                    className="dropdown-menu custom-dropdown-widt w-50"
+                    aria-labelledby="dropdownMenuButton1"
+                    style={{ width: "100px" }}
+                  >
+                    <li>
+                      <a className="dropdown-item dropdownitems" href="#">
+                        Yearly
+                      </a>
+                    </li>
+                    <li className="mt-1">
+                      <a className="dropdown-item dropdownitems" href="#">
+                        Monthly
+                      </a>
+                    </li>
+                    <li className="mt-1">
+                      <a className="dropdown-item dropdownitems" href="#">
+                        Weekly
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <div className="mt-5 me-3">
+                  <span className="total_projects_content">
+                    <span
+                      style={{ fontSize: "18px", color: "black" }}
+                      className="me-2"
+                    >
+                      08
+                    </span>
+                    In Progress
                   </span>
-                  In Progress
-                </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div className="Project_progress1 col-4">
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <div>
-              <div
-                className="circle"
-                style={{
-                  position: "relative",
-                  borderRadius: "50%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginTop: "20px",
-                  marginLeft: "15px",
-                }}
-              >
-                <span
+
+        <div className="col d-flex justify-content-center">
+          <div className="Project_progress1">
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <div>
+                <div
+                  className="circle"
                   style={{
-                    color: "white",
-                    fontWeight: "bold",
-                    fontSize: "20px",
+                    position: "relative",
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginTop: "20px",
+                    marginLeft: "15px",
                   }}
                 >
-                  100
-                </span>
-              </div>
-            </div>
-            <div>
-              <div class="dropdown mt-3 ms-5">
-                <button
-                  class=" dropdown-toggle this_month_content"
-                  type="button"
-                  id="dropdownMenuButton1"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                  style={{ color: "#989898", fontSize: "14px" }}
-                >
-                  This Month
-                </button>
-                <ul
-                  class="dropdown-menu custom-dropdown-widt w-50"
-                  aria-labelledby="dropdownMenuButton1"
-                  style={{ width: "100px" }}
-                >
-                  <li>
-                    <a class="dropdown-item dropdownitems" href="#">
-                      Yearly
-                    </a>
-                  </li>
-                  <li className="mt-1 ">
-                    <a class="dropdown-item dropdownitems" href="#">
-                      Monthly
-                    </a>
-                  </li>
-                  <li className="mt-1">
-                    <a class="dropdown-item dropdownitems" href="#">
-                      Weekly
-                    </a>
-                  </li>
-                </ul>
-              </div>
-              <div className="mt-5 me-3">
-                <span className="total_projects_content  ">
                   <span
-                    style={{ fontSize: "18px", color: "black" }}
-                    className="me-2"
+                    style={{
+                      color: "white",
+                      fontWeight: "bold",
+                      fontSize: "20px",
+                    }}
                   >
-                    01
+                    100
                   </span>
-                  Completed Projects
-                </span>
+                </div>
+              </div>
+              <div>
+                <div className="dropdown mt-3 ms-5">
+                  <button
+                    className="dropdown-toggle this_month_content"
+                    type="button"
+                    id="dropdownMenuButton1"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                    style={{ color: "#989898", fontSize: "14px" }}
+                  >
+                    This Month
+                  </button>
+                  <ul
+                    className="dropdown-menu custom-dropdown-widt w-50"
+                    aria-labelledby="dropdownMenuButton1"
+                    style={{ width: "100px" }}
+                  >
+                    <li>
+                      <a className="dropdown-item dropdownitems" href="#">
+                        Yearly
+                      </a>
+                    </li>
+                    <li className="mt-1">
+                      <a className="dropdown-item dropdownitems" href="#">
+                        Monthly
+                      </a>
+                    </li>
+                    <li className="mt-1">
+                      <a className="dropdown-item dropdownitems" href="#">
+                        Weekly
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <div className="mt-5 me-3">
+                  <span className="total_projects_content">
+                    <span
+                      style={{ fontSize: "18px", color: "black" }}
+                      className="me-2"
+                    >
+                      01
+                    </span>
+                    Completed Projects
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
       <div>
         <div style={{ marginTop: "50px" }}>
           <span className="upcommingtimesheet">upcoming timesheet</span>

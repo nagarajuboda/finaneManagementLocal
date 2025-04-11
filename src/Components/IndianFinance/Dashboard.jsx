@@ -659,7 +659,7 @@ export default function IndainFinanceDashboard() {
               ]}
               {...size}
             >
-              <PieCenterLabel className="">$15,00</PieCenterLabel>
+              <PieCenterLabel className="">$1,500</PieCenterLabel>
               {/* <div className="absolute top-[50px]  total-expenses-pie-chat-center-lable">
                 <PieCenterLabel>Total Expenses</PieCenterLabel>
               </div> */}

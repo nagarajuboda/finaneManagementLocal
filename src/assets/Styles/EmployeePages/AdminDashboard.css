@@ -435,12 +435,22 @@ input[type="txt"] {
   padding-top: 30px;
 }
 .Project_progress {
-  height: 250px;
-
+  max-height: auto;
   background: #ffffff 0% 0% no-repeat padding-box;
   box-shadow: 0px 7px 18px #64646430;
   border-radius: 10px;
   opacity: 1;
+}
+.Project_progress11 {
+  background: #ffffff 0% 0% no-repeat padding-box;
+  box-shadow: 0px 7px 18px #64646430;
+  border-radius: 10px;
+  opacity: 1;
+}
+@media screen and (min-width: 1080px) and (max-width: 1920px) {
+  .Project_progress11 {
+    height: 315px;
+  }
 }
 .Active_project_conetnt {
   text-align: left;
@@ -468,18 +478,86 @@ input[type="txt"] {
   padding-top: 30px;
 }
 .Profit_and_loss_flowchat {
-  height: 484px;
+  min-height: 420px;
+  max-height: auto;
   background: #ffffff 0% 0% no-repeat padding-box;
   box-shadow: 0px 7px 18px #64646430;
   border-radius: 10px;
   opacity: 1;
 }
+
+@media screen and (min-width: 1080px) and (max-width: 1920px) {
+  .Profit_and_loss_flowchat {
+    height: 533px;
+  }
+}
+@media screen and (min-width: 1080px) and (max-width: 1366px) {
+  .Profit_and_loss_flowchat {
+    height: 605px;
+  }
+}
+@media screen and (min-width: 1340px) and (max-width: 1366px) {
+  .Profit_and_loss_flowchat {
+    height: 490px;
+  }
+}
+@media screen and (min-width: 1366px) and (max-width: 1920px) {
+  .Profit_and_loss_flowchat {
+    height: 500px;
+  }
+}
+@media screen and (min-width: 1367px) and (max-width: 1920px) {
+  .Profit_and_loss_flowchat {
+    height: 470px;
+  }
+}
+@media screen and (min-width: 1750px) and (max-width: 1920px) {
+  .Profit_and_loss_flowchat {
+    height: 500px;
+  }
+}
+@media screen and (min-width: 1800px) and (max-width: 1920px) {
+  .Profit_and_loss_flowchat {
+    height: 520px;
+  }
+}
 .recentActivities {
-  height: 484px;
+  min-height: 420px;
+  max-height: auto;
   background: #ffffff 0% 0% no-repeat padding-box;
   box-shadow: 0px 7px 18px #64646430;
   border-radius: 10px;
   opacity: 1;
+}
+@media screen and (min-width: 1114px) and (max-width: 1366px) {
+  .recentActivities {
+    height: 605px;
+  }
+}
+@media screen and (min-width: 1340px) and (max-width: 1366px) {
+  .recentActivities {
+    height: 490px;
+  }
+}
+@media screen and (min-width: 1365px) and (max-width: 1920px) {
+  .recentActivities {
+    height: 500px;
+  }
+}
+@media screen and (min-width: 1367px) and (max-width: 1920px) {
+  .recentActivities {
+    height: 470px;
+  }
+}
+@media screen and (min-width: 1750px) and (max-width: 1920px) {
+  .recentActivities {
+    height: 500px;
+  }
+}
+@media screen and (min-width: 1800px) and (max-width: 1920px) {
+  .recentActivities {
+    height: 520px;
+  }
 }
 .Quick_Actions_div {
   height: 190px;
@@ -499,4 +577,89 @@ input[type="txt"] {
   background: #ffffff 0% 0% no-repeat padding-box;
   border: 1px solid #e0e6ed;
   opacity: 1;
+}
+.quick-actions-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.quick-action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 16px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  max-width: 200px;
+  flex: 1 1 200px;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+.quick-action:hover {
+  background-color: #e6f0ff;
+}
+.quick-action img {
+  height: 52px;
+  width: 52px;
+  margin-bottom: 10px;
+}
+.quick-action span {
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+}
+.Quick_Actions_div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px;
+}
+.timeStamp {
+  font-size: clamp(14px, 2vw, 18px);
+}
+.addEmployee_quick_action {
+  flex: 1 1 200px;
+  max-width: 300px;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 10px;
+  transition: transform 0.2s ease;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.addEmployee_quick_action:hover {
+  background-color: #f5f9ff;
+}
+
+.Add_Employee_content {
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  margin-top: 8px;
+}
+
+@media (max-width: 992px) {
+  .Quick_Actions_div {
+    justify-content: center;
+  }
+
+  .addEmployee_quick_action {
+    flex: 1 1 45%;
+    max-width: 45%;
+  }
+}
+
+@media (max-width: 600px) {
+  .addEmployee_quick_action {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
 }

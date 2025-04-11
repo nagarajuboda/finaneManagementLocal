@@ -3,7 +3,15 @@ import "../../assets/Styles/EmployeePages/AdminDashboard.css";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { Bar } from "react-chartjs-2";
+import { Bar as ChartJSBar } from "react-chartjs-2";
+import {
+  BarChart,
+  XAxis,
+  YAxis,
+  Bar as RechartsBar,
+  CartesianGrid,
+  ResponsiveContainer,
+} from "recharts";
 import { CategoryScale, LinearScale, BarElement, Title } from "chart.js";
 import DatePicker from "react-datepicker";
 import AddEmployeeQuickAction from "../../../src/assets/Images/QuickActions1.png";
@@ -18,6 +26,8 @@ import rupee from "../../../src/assets/Images/Rupee.png";
 import abcprojectimage from "../../../src/assets/Images/AbcProjectImage.png";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
+import calenderImage1 from "../../assets/Images/calendar_11919171.png";
+import teamMemberAdded from "../../assets/Images/TeamMemberAdded.png";
 
 ChartJS.register(
   CategoryScale,
@@ -33,6 +43,8 @@ import "react-circular-progressbar/dist/styles.css";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import EmployeeService from "../../Service/EmployeeService/EmployeeService";
+import USFinanceTeamService from "../../Service/USFinanceTeamService/USFinanceTeamService";
+import AdminDashboardServices from "../../Service/AdminService/AdminDashboardServices";
 export default function AdminDashboard() {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -63,12 +75,87 @@ export default function AdminDashboard() {
   const [InProgress, setInprogress] = useState(0);
   const [NotStatedProgress, SetNotStatedProgress] = useState(0);
   const [completed, setCompleted] = useState(0);
+  const [monthlyRevenueData, setMonthlyRevenueData] = useState([]);
+  const [recentActivities, setRecentActivities] = useState([]);
   const navigate = useNavigate();
+  const [selectedDate1, setSelectedDate1] = useState(
+    new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
+  );
+
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("sessionData"));
     FetchData();
   }, []);
+  const monthMap = {
+    January: "1",
+    February: "2",
+    March: "3",
+    April: "4",
+    May: "5",
+    June: "6",
+    July: "7",
+    August: "8",
+    September: "9",
+    October: "10",
+    November: "11",
+    December: "12",
+  };
+  const data22 = [
+    { name: "GXO", revenue: 1800 },
+    { name: "cianahealth", revenue: 1200 },
+    { name: "EDR", revenue: 2000 },
+    { name: "XPO", revenue: 2800 },
+    { name: "Title", revenue: 900 },
+    { name: "Title", revenue: 1600 },
+    { name: "Title", revenue: 2500 },
+    { name: "Title", revenue: 1400 },
+  ];
+  // const CustomTooltip = ({ active, payload }) => {
+  //   if (active && payload && payload.length) {
+  //     return (
+  //       <div className="bg-gray-800 text-white p-2 rounded shadow text-sm">
+  //         <p className="font-semibold">Project Revenue</p>
+  //         <p>$ {payload[0].value}</p>
+  //       </div>
+  //     );
+  //   }
+
+  //   return null;
+  // };
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div
+          style={{
+            background: "#fff",
+            border: "1px solid #ccc",
+            padding: "8px",
+            borderRadius: "4px",
+            fontSize: "12px",
+          }}
+        >
+          <p>{payload[0].payload.name}</p>
+          <p>
+            <strong>${payload[0].value.toLocaleString()}</strong>
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend
+  );
   const FetchData = async () => {
+    var ActivityLogsResponse = await AdminDashboardServices.FcnActivityLogs();
+
+    setRecentActivities(ActivityLogsResponse);
     var response = await EmployeeService.TotalEmployees();
     var InActiveProjectProgressResponse =
       await EmployeeService.ProjectProgressPercentage();
@@ -85,6 +172,45 @@ export default function AdminDashboard() {
     }
   };
 
+  const sortedRecentActivities = recentActivities
+    .filter((notif) => {
+      const notifDate = new Date(notif.timestamp);
+      const today = new Date();
+
+      return notifDate >= notifDate <= today;
+    })
+    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+  const getRelativeTime = (timestamp) => {
+    const parsedDate = Date.parse(timestamp);
+    if (isNaN(parsedDate)) {
+      return "Invalid date";
+    }
+
+    const date = new Date(parsedDate);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now - date) / 1000);
+    if (diffInSeconds < 60) {
+      return "Just now";
+    }
+    const intervals = {
+      year: 31536000,
+      month: 2592000,
+      week: 604800,
+      day: 86400,
+      hour: 3600,
+      minute: 60,
+    };
+
+    for (const [unit, seconds] of Object.entries(intervals)) {
+      const interval = Math.floor(diffInSeconds / seconds);
+      if (interval >= 1) {
+        return `${interval} ${unit}${interval > 1 ? "s" : ""} ago`;
+      }
+    }
+
+    return "Just now";
+  };
   const data = {
     labels: ["In Progress", "Completed", "Not Started"],
     datasets: [
@@ -262,26 +388,25 @@ export default function AdminDashboard() {
   const NavigateToAddManageRoles = () => {
     navigate("/dashboard/roles");
   };
-  const data11 = {
-    labels: ["Planning", "Designing", "Pre-Construction"],
-    datasets: [
-      {
-        data: [30, 40, 30],
-        backgroundColor: ["#000000", "#7FB3D5", "#E5E5E5"],
-        borderWidth: 0,
-        cutout: "75%",
-      },
-    ],
+
+  const handleDateChange = async (date) => {
+    setSelectedDate1(date);
+    const month = date.toLocaleString("default", { month: "long" });
+    const year = date.getFullYear();
+    const monthNumber = monthMap[month];
+    var response = await USFinanceTeamService.FcnGetRevenueOverView(
+      monthNumber,
+      year
+    );
+    var result = response.data;
+    if (result.isSuccess) {
+      setMonthlyRevenueData(result.item);
+      // Graph(result);
+    } else {
+      //Graph([]);
+    }
   };
-  const options11 = {
-    plugins: {
-      tooltip: {
-        enabled: false,
-      },
-    },
-    rotation: 225,
-    circumference: 270,
-  };
+
   return (
     <div className="DashboardMaindiv">
       <p className="employeeoveriew_content">Employee Overview</p>
@@ -565,275 +690,207 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="Project_OverView">
-        <p className="projectOverview_content">Project Overview</p>
-        <div className="row m-0">
-          <div className="Project_progress col-4" style={{ width: "32%" }}>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <span className="Active_project_conetnt">Active Projects</span>
-              <i
-                className="bi bi-three-dots"
-                style={{
-                  color: "#989898",
-                  fontSize: "28px",
-                  fontWeight: "600",
-                  cursor: "pointer",
-                }}
-              ></i>
-            </div>
+      <div className="Project_OverView ">
+        <div className="row">
+          <div className="col-4">
+            <p className="projectOverview_content">Project Overview</p>
 
-            <div
-              style={{
-                width: "145px",
-                textAlign: "center",
-                margin: "0",
-                position: "relative",
-                marginLeft: "79px",
-                marginTop: "17px",
-                justifyContent: "center",
-              }}
-            >
-              <p
+            <div className=" Project_progress11 ps-1 pe-1">
+              <div className="">
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <span className="Active_project_conetnt">
+                    Active Projects
+                  </span>
+                  <i
+                    className="bi bi-three-dots"
+                    style={{
+                      color: "#989898",
+                      fontSize: "28px",
+                      fontWeight: "600",
+                      cursor: "pointer",
+                    }}
+                  ></i>
+                </div>
+
+                <div
+                  style={{
+                    width: "145px",
+                    display: "flex",
+                    textAlign: "center",
+                    margin: "0",
+                    position: "relative",
+                    marginLeft: "79px",
+                    marginTop: "17px",
+                    justifyContent: "center",
+                  }}
+                >
+                  <p
+                    style={{
+                      position: "absolute",
+                      top: "45%",
+                      fontSize: "12px",
+                      left: "22%",
+                    }}
+                    className="activeEmployees"
+                  >
+                    Active Projects
+                  </p>
+                  <Doughnut data={data} options={options} />
+                </div>
+              </div>
+              <div
                 style={{
-                  position: "absolute",
-                  top: "45%",
-                  fontSize: "12px",
-                  left: "22%",
+                  marginTop: "50px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  gap: "10px",
                 }}
-                className="activeEmployees"
               >
-                Active Projects
-              </p>
-              <Doughnut data={data} options={options} />
-            </div>
-            <div
-              style={{
-                marginTop: "12px",
-                display: "flex",
-                justifyContent: "space-between",
-                gap: "10px",
-              }}
-            >
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "5px" }}
-              >
-                <span
-                  style={{
-                    width: "10px",
-                    height: "10px",
-                    backgroundColor: "#007BFF",
-                    borderRadius: "50%",
-                  }}
-                ></span>
-                <span
-                  style={{ fontSize: "13px" }}
-                  className="ActiveProject_Inprogress_notstated"
+                <div
+                  className="mb-2"
+                  style={{ display: "flex", alignItems: "center", gap: "5px" }}
                 >
-                  In Progress
-                </span>
-              </div>
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "5px" }}
-              >
-                <span
-                  style={{
-                    width: "10px",
-                    height: "10px",
-                    backgroundColor: "#00CFFF",
-                    borderRadius: "50%",
-                  }}
-                ></span>
-                <span
-                  style={{ fontSize: "13px" }}
-                  className="ActiveProject_Inprogress_notstated"
+                  <span
+                    style={{
+                      width: "10px",
+                      height: "10px",
+                      backgroundColor: "#007BFF",
+                      borderRadius: "50%",
+                    }}
+                  ></span>
+                  <span
+                    style={{ fontSize: "13px" }}
+                    className="ActiveProject_Inprogress_notstated"
+                  >
+                    In Progress
+                  </span>
+                </div>
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "5px" }}
                 >
-                  Completed
-                </span>
-              </div>
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "5px" }}
-              >
-                <span
-                  style={{
-                    width: "10px",
-                    height: "10px",
-                    backgroundColor: "#E0E0E0",
-                    borderRadius: "50%",
-                  }}
-                ></span>
-                <span
-                  style={{ fontSize: "13px" }}
-                  className="ActiveProject_Inprogress_notstated"
+                  <span
+                    style={{
+                      width: "10px",
+                      height: "10px",
+                      backgroundColor: "#00CFFF",
+                      borderRadius: "50%",
+                    }}
+                  ></span>
+                  <span
+                    style={{ fontSize: "13px" }}
+                    className="ActiveProject_Inprogress_notstated"
+                  >
+                    Completed
+                  </span>
+                </div>
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "5px" }}
                 >
-                  Not Started
-                </span>
+                  <span
+                    style={{
+                      width: "10px",
+                      height: "10px",
+                      backgroundColor: "#E0E0E0",
+                      borderRadius: "50%",
+                    }}
+                  ></span>
+                  <span
+                    style={{ fontSize: "13px" }}
+                    className="ActiveProject_Inprogress_notstated"
+                  >
+                    Not Started
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-          {/* <div
-            className="Project_progress col-4"
-            style={{ width: "32%", marginLeft: "16px" }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <span className="Active_project_conetnt">Pending Projects</span>
-              <i
-                class="bi bi-three-dots"
+          <div className="col-8">
+            <p className="projectOverview_content">Revenue Overview</p>
+            <div className="Project_progress">
+              <div
+                className="pt-2 pe-3"
                 style={{
-                  color: "#989898",
-                  fontSize: "28px",
-                  fontWeight: "600",
-                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "end",
                 }}
-              ></i>
-            </div>
+              >
+                <DatePicker
+                  selected={selectedDate1}
+                  onChange={handleDateChange}
+                  dateFormat="MMMM yyyy"
+                  showMonthYearPicker
+                  maxDate={
+                    new Date(
+                      new Date().getFullYear(),
+                      new Date().getMonth() - 1,
+                      1
+                    )
+                  }
+                  className="timesheet-datepicker"
+                  customInput={
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        cursor: "pointer",
+                        border: "1px solid #ccc",
+                        padding: "2px 20px",
+                        borderRadius: "4px",
+                        backgroundColor: "#fff",
+                        fontSize: "14px",
+                        height: "28px",
+                        width: "130px",
+                      }}
+                    >
+                      <span style={{ marginRight: "6px" }}>
+                        <img
+                          src={calenderImage1}
+                          alt="calendar"
+                          height="16px"
+                          width="16px"
+                        />
+                      </span>
+                      <span>
+                        {selectedDate1.toLocaleString("default", {
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </span>
+                    </div>
+                  }
+                />
+              </div>
 
-            <div
-              style={{
-                width: "145px",
-                textAlign: "center",
-                margin: "0",
-                position: "relative",
-                marginLeft: "79px",
-                marginTop: "17px",
-                justifyContent: "center",
-              }}
-            >
-              <p
+              <div
                 style={{
-                  position: "absolute",
-                  top: "45%",
-                  fontSize: "12px",
-                  left: "22%",
+                  width: "100%",
+                  height: "280px",
                 }}
-                className="activeEmployees"
               >
-                Active Projects
-              </p>
-              <Doughnut data={data1} options={options1} />
-            </div>
-            <div
-              style={{
-                marginTop: "12px",
-                display: "flex",
-                justifyContent: "space-between",
-                gap: "10px",
-              }}
-            >
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "5px" }}
-              >
-                <span
-                  style={{
-                    width: "10px",
-                    height: "10px",
-                    backgroundColor: "#007BFF",
-                    borderRadius: "50%",
-                  }}
-                ></span>
-                <span
-                  style={{ fontSize: "13px" }}
-                  className="ActiveProject_Inprogress_notstated"
-                >
-                  Planning
-                </span>
-              </div>
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "5px" }}
-              >
-                <span
-                  style={{
-                    width: "10px",
-                    height: "10px",
-                    backgroundColor: "#00CFFF",
-                    borderRadius: "50%",
-                  }}
-                ></span>
-                <span
-                  style={{ fontSize: "13px" }}
-                  className="ActiveProject_Inprogress_notstated"
-                >
-                  Designing
-                </span>
-              </div>
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "5px" }}
-              >
-                <span
-                  style={{
-                    width: "10px",
-                    height: "10px",
-                    backgroundColor: "#E0E0E0",
-                    borderRadius: "50%",
-                  }}
-                ></span>
-                <span
-                  style={{ fontSize: "13px" }}
-                  className="ActiveProject_Inprogress_notstated"
-                >
-                  Pre Construction
-                </span>
+                <ResponsiveContainer width="100%" height={280}>
+                  <BarChart data={data22} barCategoryGap="20%">
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                    <XAxis dataKey="name" />
+                    <YAxis tickFormatter={(value) => `$ ${value}`} />
+                    <Tooltip content={<CustomTooltip />} />
+                    <RechartsBar
+                      dataKey="revenue"
+                      fill="#007bff"
+                      radius={[4, 4, 0, 0]}
+                      activeBar={{ fill: "#0056b3" }}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
               </div>
             </div>
           </div>
-          <div
-            className="Project_progress col-4"
-            style={{ width: "32%", marginLeft: "16px" }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <span className="Active_project_conetnt">Completed Projects</span>
-              <i
-                class="bi bi-three-dots"
-                style={{
-                  color: "#989898",
-                  fontSize: "28px",
-                  fontWeight: "600",
-                  cursor: "pointer",
-                }}
-              ></i>
-            </div>
-            <div
-              style={{
-                width: "145px",
-                textAlign: "center",
-                margin: "0",
-                position: "relative",
-                marginLeft: "79px",
-                marginTop: "17px",
-                justifyContent: "center",
-              }}
-            >
-              <p
-                style={{
-                  position: "absolute",
-                  top: "45%",
-                  fontSize: "12px",
-                  left: "22%",
-                }}
-                className="activeEmployees"
-              >
-                Active Projects
-              </p>
-              <Doughnut data={data} options={options} />
-            </div>
-          </div> */}
         </div>
       </div>
       <div className="Profit_And_Loss_Summary">
@@ -868,11 +925,8 @@ export default function AdminDashboard() {
               <div
                 style={{
                   width: "75%",
-                  // margin: "auto",
                   padding: "20px",
-                  // marginTop: "20px",
                   border: "1px solid",
-                  // paddingTop: "10px",
                   marginLeft: "100px",
                 }}
               >
@@ -895,7 +949,7 @@ export default function AdminDashboard() {
                     />
                   </div>
                 </div>
-                <Bar data={data3} options={options3} />
+                <ChartJSBar data={data3} options={options3} />
               </div>
             </div>
           </div>
@@ -923,209 +977,156 @@ export default function AdminDashboard() {
                   }}
                 ></i>
               </div>
-              <div className="latest_updatesImage row mt-3">
-                <div className="row m-0">
-                  <div className="col-2">
-                    <div
-                      style={{
-                        height: "40px",
-                        width: "40px",
-                        backgroundColor: " #875fc0",
-                        borderRadius: "100px",
-                        position: "relative",
-                      }}
-                    >
-                      <img
-                        src={UpdateProjectImahe}
-                        alt=""
-                        style={{
-                          position: "absolute",
-                          top: "25%",
-                          left: "25%",
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-7">
-                    <span className="Project_Updated_Span">
-                      Project Updated
-                    </span>
-                    <div style={{ display: "flex" }}>
-                      <span className="project_updated_name">Naresh</span>
-                      <span className="updated_task_content  ms-2">
-                        updated a task
-                      </span>
-                    </div>
-                  </div>
-                  <div className="col-3  p-0">
-                    <span className="updated_time" style={{ fontSize: "13px" }}>
-                      45 minutes ago
-                    </span>
-                  </div>
+              {sortedRecentActivities.length > 0 && (
+                <div className="latest_updatesImage row ">
+                  {sortedRecentActivities.slice(0, 5).map((activity, index) => {
+                    let title = "";
+                    let actionText = "";
+                    let imageSrc = "";
+                    let performedBy = activity.performedBy;
+                    const action = activity.action;
+                    const actionType = action.split(":")[0];
+                    if (activity.entityName === "Project") {
+                      title = "Project Updated";
+                      actionText = actionType + " " + "Project";
+                      imageSrc = UpdateProjectImahe;
+                    } else if (activity.entityName === "Employee") {
+                      if (actionType === "Added") {
+                        title = "Employee Updated";
+                        actionText = actionType + " " + "new employee";
+                      } else if (actionType === "Updated") {
+                        actionText = actionType + " " + "employee";
+                      } else {
+                        actionText = actionType + " " + "employee";
+                      }
+
+                      imageSrc = RecentEmployeeImage;
+                    } else if (activity.entityName === "Role") {
+                      title = "Role Modified";
+                      actionText = actionType + " " + "role";
+                    } else if (activity.entityName === "ProjectEmployee") {
+                      if (actionType == "Added") {
+                        actionText = "Team member added";
+                        imageSrc = teamMemberAdded;
+                      } else {
+                        actionText = "Team member removed";
+                        imageSrc = teamMemberAdded;
+                      }
+                    } else {
+                      return null;
+                    }
+
+                    return (
+                      <div className="row m-0 mt-4 Activityrow" key={index}>
+                        <div className="col-2">
+                          {activity.entityName === "Project" ? (
+                            <div
+                              style={{
+                                height: "38px",
+                                width: "38px",
+                                backgroundColor: "#875fc0",
+                                borderRadius: "100px",
+                                position: "relative",
+                              }}
+                            >
+                              <img
+                                src={UpdateProjectImahe}
+                                alt=""
+                                style={{
+                                  position: "absolute",
+                                  top: "25%",
+                                  left: "25%",
+                                }}
+                              />
+                            </div>
+                          ) : activity.entityName === "Employee" ? (
+                            <div>
+                              <img
+                                src={RecentEmployeeImage}
+                                alt=""
+                                height="38px"
+                                width="38px"
+                              />
+                            </div>
+                          ) : activity.entityName === "ProjectEmployee" ? (
+                            <div>
+                              <div
+                                style={{
+                                  height: "40px",
+                                  width: "40px",
+                                  backgroundColor: "#45C4F4",
+                                  borderRadius: "100px",
+                                  position: "relative",
+                                }}
+                              >
+                                <img
+                                  src={TeamMemberAddedImage}
+                                  alt=""
+                                  style={{
+                                    position: "absolute",
+                                    top: "25%",
+                                    left: "25%",
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          ) : (
+                            <div>
+                              <div>
+                                <img
+                                  src={RecentEmployeeImage}
+                                  alt=""
+                                  height="38px"
+                                  width="38px"
+                                />
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                        <div className="col-7">
+                          <span className="Project_Updated_Span">
+                            {actionText}
+                          </span>
+                          <div style={{ display: "flex" }}>
+                            <span
+                              className="project_updated_name"
+                              style={{ fontSize: "13px" }}
+                            >
+                              {performedBy}
+                            </span>
+                            <span
+                              className="updated_task_content "
+                              style={{ fontSize: "13px" }}
+                            >
+                              Updated a task
+                            </span>
+                          </div>
+                        </div>
+                        <div className="col-3 p-0">
+                          <span
+                            className="updated_time timeStamp"
+                            style={{ fontSize: "13px" }}
+                          >
+                            {getRelativeTime(activity.timestamp)}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-              </div>
-              <div className="latest_updatesImage row mt-4">
-                <div className="row m-0">
-                  <div className="col-2">
-                    <div>
-                      <img
-                        src={RecentEmployeeImage}
-                        alt=""
-                        height="40px"
-                        width="40px"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-7">
-                    <span className="Project_Updated_Span">
-                      Added new Employee
-                    </span>
-                    <div style={{ display: "flex" }}>
-                      <span className="project_updated_name">Nagaraju</span>
-                      <span className="updated_task_content ms-2 ">
-                        updated a task
-                      </span>
-                    </div>
-                  </div>
-                  <div className="col-3 p-0 ">
-                    <span className="updated_time" style={{ fontSize: "13px" }}>
-                      45 minutes ago
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="latest_updatesImage row mt-4">
-                <div className="row m-0">
-                  <div className="col-2">
-                    <div
-                      style={{
-                        height: "40px",
-                        width: "40px",
-                        backgroundColor: "#45C4F4",
-                        borderRadius: "100px",
-                        position: "relative",
-                      }}
-                    >
-                      <img
-                        src={TeamMemberAddedImage}
-                        alt=""
-                        style={{
-                          position: "absolute",
-                          top: "25%",
-                          left: "25%",
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-7">
-                    <span className="Project_Updated_Span">
-                      Team member added
-                    </span>
-                    <div style={{ display: "flex" }}>
-                      <span className="project_updated_name">Mohasina</span>
-                      <span className="updated_task_content  ms-2">
-                        updated a task
-                      </span>
-                    </div>
-                  </div>
-                  <div className="col-3  p-0">
-                    <span className="updated_time" style={{ fontSize: "13px" }}>
-                      45 minutes ago
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="latest_updatesImage row mt-4">
-                <div className="row m-0">
-                  <div className="col-2">
-                    <div
-                      style={{
-                        height: "40px",
-                        width: "40px",
-                        backgroundColor: "#FFB82C",
-                        borderRadius: "100px",
-                        position: "relative",
-                      }}
-                    >
-                      <img
-                        src={rupee}
-                        alt=""
-                        style={{
-                          position: "absolute",
-                          top: "25%",
-                          left: "25%",
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-7">
-                    <span className="Project_Updated_Span">
-                      Payroll rolled out
-                    </span>
-                    <div style={{ display: "flex" }}>
-                      <span className="project_updated_name">Nagaraju</span>
-                      <span className="updated_task_content ms-2 ">
-                        updated a task
-                      </span>
-                    </div>
-                  </div>
-                  <div className="col-3 p-0 ">
-                    <span className="updated_time" style={{ fontSize: "13px" }}>
-                      45 minutes ago
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="latest_updatesImage row mt-4">
-                <div className="row m-0">
-                  <div className="col-2">
-                    <div
-                      style={{
-                        height: "40px",
-                        width: "40px",
-                        backgroundColor: "#46F24B",
-                        borderRadius: "100px",
-                        position: "relative",
-                      }}
-                    >
-                      <img
-                        src={abcprojectimage}
-                        alt=""
-                        style={{
-                          position: "absolute",
-                          top: "25%",
-                          left: "25%",
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-7">
-                    <span className="Project_Updated_Span">
-                      Abc project completed
-                    </span>
-                    <div style={{ display: "flex" }}>
-                      <span className="project_updated_name">Saiomkar</span>
-                      <span className="updated_task_content ms-2">
-                        updated a task
-                      </span>
-                    </div>
-                  </div>
-                  <div className="col-3 p-0">
-                    <span className="updated_time" style={{ fontSize: "13px" }}>
-                      45 minutes ago
-                    </span>
-                  </div>
-                </div>
-              </div>
+              )}
               <div
                 style={{
                   border: "1px solid #64646430",
                   width: "100%",
-                  marginTop: "30px",
+                  marginTop: "40px",
                 }}
               ></div>
               <div className="viewAlldiv">
-                <span className="ViewAll" style={{ cursor: "pointer" }}>
+                <span
+                  className="ViewAll"
+                  style={{ cursor: "pointer", fontSize: "14px" }}
+                >
                   View All
                   <i
                     className="bi bi-arrow-right ms-1"

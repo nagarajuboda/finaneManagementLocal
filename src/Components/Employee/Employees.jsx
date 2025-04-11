@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../../assets/Styles/Employee.css";
 import editicon from "../../assets/Images/Editicon.png";
+import "../../assets/Styles/EmployeePages/Roles.css";
 import deleteicon from "../../assets/Images/deleteicon.png";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
