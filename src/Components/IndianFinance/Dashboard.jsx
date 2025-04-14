@@ -10,6 +10,7 @@ import Chart from "chart.js/auto";
 import calenderImage1 from "../../assets/Images/calendar_11919171.png";
 import ReactApexChart from "react-apexcharts";
 import USFinanceTeamService from "../../Service/USFinanceTeamService/USFinanceTeamService";
+import IndianFinanceService from "../../Service/IndianFinance/IndianFinanceService";
 export default function IndainFinanceDashboard() {
   const [selectedDate1, setSelectedDate1] = useState(
     new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
@@ -17,6 +18,11 @@ export default function IndainFinanceDashboard() {
   const barchartref = useRef(null);
   const barchartintance = useRef(null);
   const [monthlyRevenueData, setMonthlyRevenueData] = useState([]);
+  const [MonthlyRevenue, setMonthlyRevenue] = useState(0);
+  const [MonthlyExpenses, setMonthlyExpenses] = useState(0);
+  const [TotalBalance, setTotalbalance] = useState(0);
+  const [EmployeeProfitOrSummaryData, setEmployeeProfitOrSummaryData] =
+    useState([]);
   const today = new Date();
   const formattedDate = new Intl.DateTimeFormat("en-US", {
     weekday: "long",
@@ -53,6 +59,27 @@ export default function IndainFinanceDashboard() {
       monthNumber,
       year
     );
+    var BalanceRevenueExpensesResponse =
+      await IndianFinanceService.fcnGetBalanceRevenueExpenses(
+        monthNumber,
+        year
+      );
+    if (BalanceRevenueExpensesResponse.isSuccess) {
+      setMonthlyRevenue(BalanceRevenueExpensesResponse.item.item1);
+      setMonthlyExpenses(BalanceRevenueExpensesResponse.item.item2);
+      setTotalbalance(BalanceRevenueExpensesResponse.item.item3);
+    }
+    var employeeProfitOrLossSummaryDataResponse =
+      await IndianFinanceService.FcnEmployeeProfitOrLossSummary(
+        monthNumber,
+        year
+      );
+    if (employeeProfitOrLossSummaryDataResponse.isSuccess) {
+      setEmployeeProfitOrSummaryData(
+        employeeProfitOrLossSummaryDataResponse.item
+      );
+    }
+    console.log(EmployeeProfitOrSummaryData, "faya");
     var result = response.data;
     if (result.isSuccess) {
       setMonthlyRevenueData(result.item);
@@ -507,7 +534,7 @@ export default function IndainFinanceDashboard() {
             style={{ display: "flex", justifyContent: "space-between" }}
           >
             <div className="">
-              <span className="Total-balance-amout">$7,855</span>
+              <span className="Total-balance-amout">{`$ ${TotalBalance}`}</span>
             </div>
 
             <div className=" ">
@@ -542,7 +569,7 @@ export default function IndainFinanceDashboard() {
             style={{ display: "flex", justifyContent: "space-between" }}
           >
             <div className=" ">
-              <span className="Total-balance-amout">$7,855</span>
+              <span className="Total-balance-amout">{`$ ${MonthlyRevenue}`}</span>
             </div>
 
             <div className="">
@@ -577,7 +604,7 @@ export default function IndainFinanceDashboard() {
             style={{ display: "flex", justifyContent: "space-between" }}
           >
             <div className="">
-              <span className="Total-balance-amout">$7,855</span>
+              <span className="Total-balance-amout">{`$ ${MonthlyExpenses}`}</span>
             </div>
             <div className="">
               <span className="Total-balance-amout">15.28%</span>
@@ -659,7 +686,7 @@ export default function IndainFinanceDashboard() {
               ]}
               {...size}
             >
-              <PieCenterLabel className="">$1,500</PieCenterLabel>
+              <PieCenterLabel className="">{`$ ${MonthlyExpenses}`}</PieCenterLabel>
               {/* <div className="absolute top-[50px]  total-expenses-pie-chat-center-lable">
                 <PieCenterLabel>Total Expenses</PieCenterLabel>
               </div> */}
@@ -717,31 +744,44 @@ export default function IndainFinanceDashboard() {
                   <th style={{ fontSize: "14px" }}>Generated Revenue</th>
                   <th style={{ fontSize: "14px" }}>Expenses</th>
                   <th style={{ fontSize: "14px" }}>Profit/Loss</th>
-                  {/* <th style={{ fontSize: "14px" }}>Role</th>
-                  <th style={{ fontSize: "14px" }}>Reporting Manager</th> */}
                 </tr>
               </thead>
               <tbody>
-                {employees.map((emp, index) => (
-                  <tr
-                    key={index}
-                    className="tablebody"
-                    style={{ backgroundColor: "white", cursor: "pointer" }}
-                  >
-                    <td style={{ fontSize: "14px" }}>{emp.id}</td>
-                    <td style={{ fontSize: "14px" }}>{emp.name}</td>
-                    <td style={{ fontSize: "14px" }}>{emp.email}</td>
-                    <td style={{ fontSize: "14px" }}>
-                      ${emp.salary.toLocaleString()}
-                    </td>
-                    <td style={{ fontSize: "14px" }}>
-                      ${emp.expense.toLocaleString()}
-                    </td>
-                    <td style={{ fontSize: "14px" }}>
-                      ${emp.profit.toLocaleString()}
+                {EmployeeProfitOrSummaryData.length > 0 ? (
+                  EmployeeProfitOrSummaryData.map((emp, index) => (
+                    <tr
+                      key={index}
+                      className="tablebody"
+                      style={{ backgroundColor: "white", cursor: "pointer" }}
+                    >
+                      <td style={{ fontSize: "14px" }}>
+                        {emp.employee.employeeId}
+                      </td>
+                      <td style={{ fontSize: "14px" }}>
+                        {emp.employee.firstName} {emp.employee.lastName}
+                      </td>
+                      <td style={{ fontSize: "14px" }}>{emp.employee.email}</td>
+                      <td style={{ fontSize: "14px" }}>
+                        ${emp.revenueGenerated.toLocaleString()}
+                      </td>
+                      <td style={{ fontSize: "14px" }}>
+                        ${emp.totalExpenses.toLocaleString()}
+                      </td>
+                      <td style={{ fontSize: "14px" }}>
+                        ${emp.profitOrLoss.toLocaleString()}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan="6"
+                      style={{ textAlign: "center", fontSize: "14px" }}
+                    >
+                      No records found
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
