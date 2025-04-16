@@ -122,6 +122,9 @@ export default function AdminDashboard() {
 
   //   return null;
   // };
+  const ViewAll = () => {
+    navigate("/dashboard/AllRecnetActivities");
+  };
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       return (
@@ -154,7 +157,6 @@ export default function AdminDashboard() {
   );
   const FetchData = async () => {
     var ActivityLogsResponse = await AdminDashboardServices.FcnActivityLogs();
-
     setRecentActivities(ActivityLogsResponse);
     var response = await EmployeeService.TotalEmployees();
     var InActiveProjectProgressResponse =
@@ -1123,17 +1125,19 @@ export default function AdminDashboard() {
                 }}
               ></div>
               <div className="viewAlldiv">
-                <span
-                  className="ViewAll"
-                  style={{ cursor: "pointer", fontSize: "14px" }}
-                >
-                  View All
-                  <i
-                    className="bi bi-arrow-right ms-1"
-                    height="12px"
-                    width="12px"
-                  ></i>
-                </span>
+                <button onClick={ViewAll}>
+                  <span
+                    className="ViewAll"
+                    style={{ cursor: "pointer", fontSize: "14px" }}
+                  >
+                    View All
+                    <i
+                      className="bi bi-arrow-right ms-1"
+                      height="12px"
+                      width="12px"
+                    ></i>
+                  </span>
+                </button>
               </div>
             </div>
           </div>

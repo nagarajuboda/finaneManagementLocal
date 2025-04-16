@@ -1,0 +1,19 @@
+.Profit-or-loss-summary {
+  background: #ffffff 0% 0% no-repeat padding-box;
+  box-shadow: 0px 7px 18px #64646429;
+  border-radius: 10px;
+  opacity: 1;
+}
+.employee-contribution-content {
+  text-align: left;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 24px;
+  font-family: Segoe UI;
+  letter-spacing: 0px;
+  color: #000000;
+  opacity: 1;
+  text-transform: uppercase;
+}

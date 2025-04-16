@@ -1,0 +1,14 @@
+.recent-activities-all {
+  background: #ffffff 0% 0% no-repeat padding-box;
+  box-shadow: 0px 2px 16px #e5e5e5;
+  border-radius: 5px;
+  padding-bottom: 30px;
+}
+.recent-activity-content {
+  text-align: left;
+  font: normal normal bold 14px / 24px Segoe UI;
+  letter-spacing: 0px;
+  color: #000000;
+  text-transform: uppercase;
+  opacity: 1;
+}

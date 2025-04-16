@@ -7,6 +7,7 @@ import { PieChart } from "@mui/x-charts/PieChart";
 import { useDrawingArea } from "@mui/x-charts/hooks";
 import { styled } from "@mui/material/styles";
 import Chart from "chart.js/auto";
+import { useNavigate } from "react-router-dom";
 import calenderImage1 from "../../assets/Images/calendar_11919171.png";
 import ReactApexChart from "react-apexcharts";
 import USFinanceTeamService from "../../Service/USFinanceTeamService/USFinanceTeamService";
@@ -23,6 +24,7 @@ export default function IndainFinanceDashboard() {
   const [TotalBalance, setTotalbalance] = useState(0);
   const [EmployeeProfitOrSummaryData, setEmployeeProfitOrSummaryData] =
     useState([]);
+  const navigate = useNavigate();
   const today = new Date();
   const formattedDate = new Intl.DateTimeFormat("en-US", {
     weekday: "long",
@@ -50,6 +52,7 @@ export default function IndainFinanceDashboard() {
   const handleDateChange1 = async (date) => {
     setSelectedDate(date);
   };
+
   const handleDateChange = async (date) => {
     setSelectedDate1(date);
     const month = date.toLocaleString("default", { month: "long" });
@@ -465,6 +468,13 @@ export default function IndainFinanceDashboard() {
       profit: 28000,
     },
   ];
+  const SeeDetails = () => {
+    const month = selectedDate1.toLocaleString("default", { month: "long" });
+    const year = selectedDate1.getFullYear();
+    const monthNumber = monthMap[month];
+    console.log(monthNumber, year);
+    navigate(`/dashboard/ProfitSummary?month=${monthNumber}&year=${year}`);
+  };
   return (
     <div>
       <div>
@@ -551,10 +561,12 @@ export default function IndainFinanceDashboard() {
             </div>
 
             <div className="">
-              <i
-                class="bi bi-arrow-right"
-                style={{ fontSize: "20px", fontWeight: "bold" }}
-              ></i>
+              <button onClick={SeeDetails}>
+                <i
+                  class="bi bi-arrow-right"
+                  style={{ fontSize: "20px", fontWeight: "bold" }}
+                ></i>
+              </button>
             </div>
           </div>
         </div>
@@ -586,10 +598,12 @@ export default function IndainFinanceDashboard() {
             </div>
 
             <div className="">
-              <i
-                class="bi bi-arrow-right"
-                style={{ fontSize: "20px", fontWeight: "bold" }}
-              ></i>
+              <button onClick={SeeDetails}>
+                <i
+                  class="bi bi-arrow-right"
+                  style={{ fontSize: "20px", fontWeight: "bold" }}
+                ></i>
+              </button>
             </div>
           </div>
         </div>
@@ -620,10 +634,12 @@ export default function IndainFinanceDashboard() {
             </div>
 
             <div className="">
-              <i
-                class="bi bi-arrow-right"
-                style={{ fontSize: "20px", fontWeight: "bold" }}
-              ></i>
+              <button onClick={SeeDetails}>
+                <i
+                  class="bi bi-arrow-right"
+                  style={{ fontSize: "20px", fontWeight: "bold" }}
+                ></i>
+              </button>
             </div>
           </div>
         </div>
@@ -632,7 +648,7 @@ export default function IndainFinanceDashboard() {
         className="d-flex m-0 w-100"
         style={{ paddingTop: "50px", gap: "40px" }}
       >
-        <div className="revenue-summary" style={{ width: "68%" }}>
+        <div className="revenue-summary" style={{ width: "66%" }}>
           <div
             style={{ display: "flex", justifyContent: "space-between" }}
             className="p-3"
@@ -646,7 +662,8 @@ export default function IndainFinanceDashboard() {
           </div>
           <div
             style={{
-              width: "750px",
+              width: "100%",
+              padding: "15px",
             }}
             className=""
           >
