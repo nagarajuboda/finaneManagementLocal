@@ -82,7 +82,6 @@ export default function IndainFinanceDashboard() {
         employeeProfitOrLossSummaryDataResponse.item
       );
     }
-    console.log(EmployeeProfitOrSummaryData, "faya");
     var result = response.data;
     if (result.isSuccess) {
       setMonthlyRevenueData(result.item);
@@ -472,7 +471,6 @@ export default function IndainFinanceDashboard() {
     const month = selectedDate1.toLocaleString("default", { month: "long" });
     const year = selectedDate1.getFullYear();
     const monthNumber = monthMap[month];
-    console.log(monthNumber, year);
     navigate(`/dashboard/ProfitSummary?month=${monthNumber}&year=${year}`);
   };
   return (

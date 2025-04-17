@@ -6,6 +6,8 @@ import USFinanceTeamService from "../../Service/USFinanceTeamService/USFinanceTe
 export default function ProfitLossSummary() {
   const [projectWiseProjectOrLossSummary, setprojectWiseProjectOrLossSummary] =
     useState([]);
+  const [EmployeeProfitOrSummaryData, setEmployeeProfitOrSummaryData] =
+    useState([]);
   const [searchParams] = useSearchParams();
   const month = searchParams.get("month");
   const year = searchParams.get("year");
@@ -18,12 +20,17 @@ export default function ProfitLossSummary() {
       year
     );
     var result = Expensesresponse.data;
-
     if (result.isSuccess) {
       setprojectWiseProjectOrLossSummary(result.item);
     }
+    var employeeProfitOrLossSummaryDataResponse =
+      await IndianFinanceService.FcnEmployeeProfitOrLossSummary(month, year);
+    if (employeeProfitOrLossSummaryDataResponse.isSuccess) {
+      setEmployeeProfitOrSummaryData(
+        employeeProfitOrLossSummaryDataResponse.item
+      );
+    }
   };
-  console.log(projectWiseProjectOrLossSummary, "expenses repsinse");
   return (
     <div>
       <div className="employee-contribution-content ">
@@ -99,7 +106,45 @@ export default function ProfitLossSummary() {
                 <th style={{ fontSize: "14px" }}>Total Cost</th>
               </tr>
             </thead>
-            <tbody></tbody>
+            <tbody>
+              {EmployeeProfitOrSummaryData.length > 0 ? (
+                EmployeeProfitOrSummaryData.map((emp, index) => (
+                  <tr
+                    key={index}
+                    className="tablebody"
+                    style={{ backgroundColor: "white", cursor: "pointer" }}
+                  >
+                    <td style={{ fontSize: "14px" }}>
+                      {emp.employee.firstName} {emp.employee.lastName}
+                    </td>
+                    <td style={{ fontSize: "14px" }}>{emp.role.name}</td>
+                    <td style={{ fontSize: "14px" }}>
+                      {emp.timesheet.hoursWorked}
+                    </td>
+                    <td style={{ fontSize: "14px" }}>
+                      $
+                      {emp.revenue?.hourlyRate
+                        ? emp.revenue.hourlyRate.toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                          })
+                        : "0"}
+                    </td>
+                    <td style={{ fontSize: "14px" }}>
+                      ${emp.revenueGenerated.toLocaleString()}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan="6"
+                    style={{ textAlign: "center", fontSize: "14px" }}
+                  >
+                    No records found
+                  </td>
+                </tr>
+              )}
+            </tbody>
           </table>
         </div>
       </div>
