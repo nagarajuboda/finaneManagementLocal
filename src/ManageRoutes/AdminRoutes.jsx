@@ -23,6 +23,8 @@ import ProjectsList from "../Components/IndianFinance/Projects";
 import AddExpense from "../Components/IndianFinance/AddExpense";
 import NotFound from "../Components/NotFound/NotFound";
 import ProtectedRoute from "./ProtectedRoute";
+import AllRecnetActivities from "../Components/Admin/Pages/AllRecnetActivities";
+import ProfitLossSummary from "../Components/IndianFinance/ProfitLossSummary";
 export default function AdminRoutes() {
   return (
     <ProtectedRoute>
@@ -51,6 +53,7 @@ function RoleBasedRoutes() {
       { path: "/Roles", element: <Roles /> },
       { path: "/EmployeeDetails", element: <EmployeeDetails /> },
       { path: "/EditEmployee", element: <EditEmployeePopup /> },
+      { path: "/AllRecnetActivities", element: <AllRecnetActivities /> },
     ],
     project_manager: [
       { path: "/Employeeslist", element: <Employeess /> },
@@ -76,6 +79,7 @@ function RoleBasedRoutes() {
       { path: "/ViewProject", element: <ViewProject /> },
       { path: "/AddExpense", element: <AddExpense /> },
       { path: "/Notifications", element: <Notifications /> },
+      { path: "/ProfitSummary", element: <ProfitLossSummary /> },
     ],
   };
   const accessibleRoutes = roleBasedRoutes[userRole] || [];

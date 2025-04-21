@@ -583,29 +583,3 @@ button .Show-Deleted-employee-button:disabled {
     margin-top: 10px;
   }
 }
-/* Base size */
-.responsive-dropdown-menu {
-  min-width: 150px;
-  /* padding: 5px; */
-}
-
-/* Medium screen (e.g., 1024px laptops) */
-@media (max-width: 1440px) {
-  .responsivedropdownmenu {
-    min-width: 180px;
-  }
-}
-
-/* Small laptops or tablets */
-@media (max-width: 1024px) {
-  .responsivedropdownmenu {
-    min-width: 200px;
-  }
-}
-
-/* Very small screens */
-@media (max-width: 768px) {
-  .responsivedropdownmenu {
-    width: 100% !important;
-  }
-}
