@@ -31,5 +31,12 @@ const IndianFinanceService = {
     );
     return response.data;
   },
+  async fcnGetRevenueExpenditures(year) {
+    const response = await apiurl.get(
+      `/Expenses/GetRevenuesExpenditures?year=${year}`
+    );
+
+    return response.data;
+  },
 };
 export default IndianFinanceService;
