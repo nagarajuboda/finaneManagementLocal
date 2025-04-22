@@ -297,7 +297,7 @@ export default function IndainFinanceDashboard() {
     const expenditureData = months.map((month) => {
       const entry = monthWiseExpenditures.find((item) => item.month === month);
       return {
-        x: new Date(2024, month - 1, 1).getTime(),
+        x: new Date(year, month - 1, 1).getTime(),
         y: entry ? entry.totalExpenses : 0,
       };
     });
