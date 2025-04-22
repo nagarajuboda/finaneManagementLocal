@@ -22,6 +22,8 @@ export default function IndainFinanceDashboard() {
   const [MonthlyRevenue, setMonthlyRevenue] = useState(0);
   const [MonthlyExpenses, setMonthlyExpenses] = useState(0);
   const [TotalBalance, setTotalbalance] = useState(0);
+  const [MonthWiseRevenues, setMonthWiseRevenue] = useState([]);
+  const [MonthWiseExpenditures, setMonthWiseExpenditures] = useState([]);
   const [EmployeeProfitOrSummaryData, setEmployeeProfitOrSummaryData] =
     useState([]);
   const navigate = useNavigate();
@@ -62,6 +64,7 @@ export default function IndainFinanceDashboard() {
       monthNumber,
       year
     );
+
     var BalanceRevenueExpensesResponse =
       await IndianFinanceService.fcnGetBalanceRevenueExpenses(
         monthNumber,
@@ -88,6 +91,14 @@ export default function IndainFinanceDashboard() {
       Graph(result);
     } else {
       Graph([]);
+    }
+    var RevenuesExpenditureResponse =
+      await IndianFinanceService.fcnGetRevenueExpenditures(year);
+    if (RevenuesExpenditureResponse.isSuccess) {
+      setMonthWiseRevenue(RevenuesExpenditureResponse.item.monthWiseRevenue);
+      setMonthWiseExpenditures(
+        RevenuesExpenditureResponse.item.monthWiseExpenses
+      );
     }
   };
   const Graph = (result) => {
@@ -127,7 +138,6 @@ export default function IndainFinanceDashboard() {
         ],
       },
       options: {
-        //responsive: true,
         maintainAspectRatio: false,
         scales: {
           y: {
@@ -233,8 +243,7 @@ export default function IndainFinanceDashboard() {
               chartArea.top
             );
             ctx.closePath();
-
-            ctx.fill(); // Apply background fill
+            ctx.fill();
             ctx.restore();
           },
         },
@@ -272,45 +281,41 @@ export default function IndainFinanceDashboard() {
       </StyledText>
     );
   }
-  const dates = [
-    { x: new Date("2024-01-01").getTime(), y: 1200000 },
-    { x: new Date("2024-02-02").getTime(), y: 1300000 },
-    { x: new Date("2024-03-03").getTime(), y: 1100000 },
-    { x: new Date("2024-04-04").getTime(), y: 1400000 },
-    { x: new Date("2024-05-01").getTime(), y: 1200000 },
-    { x: new Date("2024-06-02").getTime(), y: 1300000 },
-    { x: new Date("2024-07-03").getTime(), y: 1100000 },
-    { x: new Date("2024-08-04").getTime(), y: 1400000 },
-    { x: new Date("2024-09-01").getTime(), y: 1200000 },
-    { x: new Date("2024-10-02").getTime(), y: 1300000 },
-    { x: new Date("2024-11-03").getTime(), y: 1100000 },
-    { x: new Date("2024-12-04").getTime(), y: 1400000 },
-  ];
-  const date = [
-    { x: new Date("2024-01-01").getTime(), y: 120000 },
-    { x: new Date("2024-02-02").getTime(), y: 130 },
-    { x: new Date("2024-03-03").getTime(), y: 110000 },
-    { x: new Date("2024-04-04").getTime(), y: 140000 },
-    { x: new Date("2024-05-01").getTime(), y: 1200 },
-    { x: new Date("2024-06-02").getTime(), y: 130000 },
-    { x: new Date("2024-07-03").getTime(), y: 11000 },
-    { x: new Date("2024-08-04").getTime(), y: 140000 },
-    { x: new Date("2024-09-01").getTime(), y: 12000 },
-    { x: new Date("2024-10-02").getTime(), y: 130000 },
-    { x: new Date("2024-11-03").getTime(), y: 110000 },
-    { x: new Date("2024-12-04").getTime(), y: 140000 },
-  ];
+
+  const transformData = (monthWiseRevenues, monthWiseExpenditures) => {
+    const months = Array.from({ length: 12 }, (_, index) => index + 1);
+    const month = selectedDate1.toLocaleString("default", { month: "long" });
+    const year = selectedDate1.getFullYear();
+    const revenueData = months.map((month) => {
+      const entry = monthWiseRevenues.find((item) => item.month === month);
+      return {
+        x: new Date(year, month - 1, 1).getTime(),
+        y: entry ? entry.totalRevenue : 0,
+      };
+    });
+
+    const expenditureData = months.map((month) => {
+      const entry = monthWiseExpenditures.find((item) => item.month === month);
+      return {
+        x: new Date(year, month - 1, 1).getTime(),
+        y: entry ? entry.totalExpenses : 0,
+      };
+    });
+
+    return { revenueData, expenditureData };
+  };
+
   const [chartData, setChartData] = useState({
     series: [
       {
-        name: "XYZ MOTORS",
-        data: dates,
-        type: "area", // Area chart
+        name: "Revenues",
+        data: [],
+        type: "area",
       },
       {
-        name: "ABC MOTORS",
-        data: date,
-        type: "line", // Line chart
+        name: "Expenditures",
+        data: [],
+        type: "line",
       },
     ],
     options: {
@@ -329,22 +334,38 @@ export default function IndainFinanceDashboard() {
       },
       dataLabels: {
         enabled: false,
+        enabledOnSeries: [1],
+        formatter: function (val) {
+          return (val / 1000000).toFixed(1);
+        },
+        style: {
+          fontSize: "12px",
+          colors: ["#000"],
+        },
+        background: {
+          enabled: true,
+          foreColor: "#fff",
+          borderRadius: 2,
+          padding: 4,
+          opacity: 0.9,
+        },
+        offsetY: -10,
       },
       stroke: {
         curve: "smooth",
-        width: [2, 3], // Different stroke widths for area and line
+        width: [2, 3],
       },
       markers: {
-        size: [0, 5], // Ensure markers are visible for the line chart
-        colors: ["#FF4560"], // Marker color for the line
+        size: [4, 5],
+        colors: ["#FF4560"],
         strokeColors: "#fff",
         strokeWidth: 2,
         hover: {
-          size: 7, // Make it bigger on hover
+          size: 7,
         },
       },
       title: {
-        text: "Stock Price Movement",
+        text: "Consolidated Overview",
         align: "left",
       },
       fill: {
@@ -377,96 +398,44 @@ export default function IndainFinanceDashboard() {
       },
       tooltip: {
         shared: false,
+        intersect: true,
+        x: {
+          format: "MMM",
+        },
         y: {
-          formatter: function (val) {
-            return (val / 1000000).toFixed(0);
+          formatter: function (val, opts) {
+            if (opts.seriesIndex === 0) {
+              return "$" + " " + val.toLocaleString();
+            } else if (opts.seriesIndex === 1) {
+              return "$" + " " + val.toLocaleString();
+            }
+            return val;
           },
         },
       },
     },
   });
-  const employees = [
-    {
-      id: "EMP001",
-      name: "Kishna Sharma",
-      email: "krishna.sharma@example.com",
-      salary: 50000,
-      expense: 20000,
-      profit: 30000,
-    },
-    {
-      id: "EMP002",
-      name: "Priya Mehta",
-      email: "priya.mehta@example.com",
-      salary: 45000,
-      expense: 15000,
-      profit: 30000,
-    },
-    {
-      id: "EMP003",
-      name: "Rajesh Kumar",
-      email: "rajesh.kumar@example.com",
-      salary: 60000,
-      expense: 25000,
-      profit: 35000,
-    },
-    {
-      id: "EMP004",
-      name: "Simran Kaur",
-      email: "simran.kaur@example.com",
-      salary: 55000,
-      expense: 18000,
-      profit: 37000,
-    },
-    {
-      id: "EMP005",
-      name: "Vikram Singh",
-      email: "vikram.singh@example.com",
-      salary: 70000,
-      expense: 30000,
-      profit: 40000,
-    },
-    {
-      id: "EMP006",
-      name: "Sneha Reddy",
-      email: "sneha.reddy@example.com",
-      salary: 48000,
-      expense: 22000,
-      profit: 26000,
-    },
-    {
-      id: "EMP007",
-      name: "Arjun Nair",
-      email: "arjun.nair@example.com",
-      salary: 52000,
-      expense: 19000,
-      profit: 33000,
-    },
-    {
-      id: "EMP008",
-      name: "Pooja Iyer",
-      email: "pooja.iyer@example.com",
-      salary: 58000,
-      expense: 20000,
-      profit: 38000,
-    },
-    {
-      id: "EMP009",
-      name: "Ravi Verma",
-      email: "ravi.verma@example.com",
-      salary: 65000,
-      expense: 28000,
-      profit: 37000,
-    },
-    {
-      id: "EMP010",
-      name: "Anjali Das",
-      email: "anjali.das@example.com",
-      salary: 40000,
-      expense: 12000,
-      profit: 28000,
-    },
-  ];
+
+  useEffect(() => {
+    const { revenueData, expenditureData } = transformData(
+      MonthWiseRevenues,
+      MonthWiseExpenditures
+    );
+
+    setChartData((prev) => ({
+      ...prev,
+      series: [
+        {
+          ...prev.series[0],
+          data: revenueData,
+        },
+        {
+          ...prev.series[1],
+          data: expenditureData,
+        },
+      ],
+    }));
+  }, [MonthWiseRevenues, MonthWiseExpenditures]);
   const SeeDetails = () => {
     const month = selectedDate1.toLocaleString("default", { month: "long" });
     const year = selectedDate1.getFullYear();
@@ -702,9 +671,6 @@ export default function IndainFinanceDashboard() {
               {...size}
             >
               <PieCenterLabel className="">{`$ ${MonthlyExpenses}`}</PieCenterLabel>
-              {/* <div className="absolute top-[50px]  total-expenses-pie-chat-center-lable">
-                <PieCenterLabel>Total Expenses</PieCenterLabel>
-              </div> */}
             </PieChart>
           </div>
           <div className="row m-0 legend" style={{ paddingTop: "20px" }}>
@@ -725,7 +691,7 @@ export default function IndainFinanceDashboard() {
       </div>
 
       <div className="mt-5">
-        <span className="profit-or-loss-summary-contant ">
+        <span className="profit-or-loss-summary-contant">
           Profit And Loss Summary
         </span>
         <div className="profit-or-loss-summary-linebar mt-3">
