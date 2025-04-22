@@ -284,11 +284,12 @@ export default function IndainFinanceDashboard() {
 
   const transformData = (monthWiseRevenues, monthWiseExpenditures) => {
     const months = Array.from({ length: 12 }, (_, index) => index + 1);
-
+    const month = selectedDate1.toLocaleString("default", { month: "long" });
+    const year = selectedDate1.getFullYear();
     const revenueData = months.map((month) => {
       const entry = monthWiseRevenues.find((item) => item.month === month);
       return {
-        x: new Date(2024, month - 1, 1).getTime(),
+        x: new Date(year, month - 1, 1).getTime(),
         y: entry ? entry.totalRevenue : 0,
       };
     });
