@@ -107,7 +107,7 @@ export default function ProfitLossSummary() {
                 <th style={{ fontSize: "14px" }}>Role</th>
                 <th style={{ fontSize: "14px" }}>Hours Logged</th>
                 <th style={{ fontSize: "14px" }}>Hourly Rate</th>
-                <th style={{ fontSize: "14px" }}>Total Cost</th>
+                <th style={{ fontSize: "14px" }}>Total Revenue</th>
               </tr>
             </thead>
             <tbody>
