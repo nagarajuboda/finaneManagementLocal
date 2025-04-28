@@ -68,13 +68,17 @@ export default function ProfitLossSummary() {
                     >
                       <td>{project.projectName}</td>
                       <td>{`$ ${project.totalRevenue}`}</td>
-                      <td>{`$ ${totalExpenses}`}</td>
-                      <td>{`$ ${project.totalRevenue - totalExpenses}`}</td>
-                      <td>{`${
-                        ((project.totalRevenue - totalExpenses) /
-                          project.totalRevenue) *
-                        100
-                      }%`}</td>
+                      <td>{`$ ${totalExpenses.toFixed(2)}`}</td>
+                      <td>{`$ ${
+                        project.totalRevenue - totalExpenses.toFixed(2)
+                      }`}</td>
+                      <td>
+                        {`${(
+                          ((project.totalRevenue - totalExpenses) /
+                            project.totalRevenue) *
+                          100
+                        ).toFixed(2)}%`}
+                      </td>
                     </tr>
                   );
                 })
@@ -122,15 +126,16 @@ export default function ProfitLossSummary() {
                       {emp.timesheet.hoursWorked}
                     </td>
                     <td style={{ fontSize: "14px" }}>
-                      $
-                      {emp.revenue?.hourlyRate
-                        ? emp.revenue.hourlyRate.toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                          })
-                        : "0"}
+                      {`$ ${
+                        emp.revenue?.hourlyRate
+                          ? emp.revenue.hourlyRate.toLocaleString(undefined, {
+                              minimumFractionDigits: 2,
+                            })
+                          : "0"
+                      }`}
                     </td>
                     <td style={{ fontSize: "14px" }}>
-                      ${emp.revenueGenerated.toLocaleString()}
+                      {`$  ${emp.revenueGenerated.toLocaleString()}`}
                     </td>
                   </tr>
                 ))
