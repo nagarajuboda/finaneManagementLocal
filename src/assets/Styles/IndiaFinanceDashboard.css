@@ -5,6 +5,12 @@
   color: #000000;
   text-transform: uppercase;
 }
+.css-172kpif-MuiResponsiveChart-container {
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: "10px";
+}
+
 .total-balance {
   height: 160px;
   background: #eec0c091 0% 0% no-repeat padding-box;

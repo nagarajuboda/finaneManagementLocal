@@ -2,6 +2,7 @@ import "../../assets/Styles/IndiaFinanceDashboard.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useState, useRef, useEffect } from "react";
+import { LineChart } from "@mui/x-charts/LineChart";
 import { registerGradient } from "devextreme/common/charts";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { useDrawingArea } from "@mui/x-charts/hooks";
@@ -26,6 +27,7 @@ export default function IndainFinanceDashboard() {
   const [MonthWiseOverhead, setMonthWisetOverhead] = useState("");
   const [MonthWiseSpecificApportionment, setMonthWisetgeneralApprotionment] =
     useState("");
+  const [selectedyear, setSelectedYear] = useState("");
   const [MonthWiseExpenditures, setMonthWiseExpenditures] = useState([]);
   const [EmployeeProfitOrSummaryData, setEmployeeProfitOrSummaryData] =
     useState([]);
@@ -52,6 +54,9 @@ export default function IndainFinanceDashboard() {
     December: "12",
   };
   useEffect(() => {
+    const month = selectedDate1.toLocaleString("default", { month: "long" });
+    const year = selectedDate1.getFullYear();
+    setSelectedYear(year);
     handleDateChange(selectedDate1);
     calculateValues(MonthlyRevenue, MonthlyExpenses);
   }, [selectedDate1]);
@@ -109,6 +114,32 @@ export default function IndainFinanceDashboard() {
       );
     }
   };
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const revenueData = new Array(12).fill(0);
+  const expensesData = new Array(12).fill(0);
+  MonthWiseRevenues.forEach((item) => {
+    const index = item.month - 1;
+    revenueData[index] = item.totalRevenue;
+  });
+
+  MonthWiseExpenditures.forEach((item) => {
+    const index = item.month - 1;
+    expensesData[index] = item.totalExpenses;
+  });
+
   const Graph = (result) => {
     if (barchartintance.current) {
       barchartintance.current.destroy();
@@ -152,11 +183,13 @@ export default function IndainFinanceDashboard() {
             beginAtZero: true,
             min: 0,
             max: 700000,
+
             grid: {
               color: (context) =>
                 context.tick.value === 0 ? "transparent" : "#A5AEB4",
               borderDash: [4, 4],
               drawBorder: false,
+              display: false,
               drawTicks: false,
             },
             border: {
@@ -178,7 +211,7 @@ export default function IndainFinanceDashboard() {
             grid: {
               display: false,
               color: "#A5AEB4",
-              borderDash: [5, 5],
+              strokeDasharray: [4, 4],
             },
             border: {
               display: false,
@@ -333,7 +366,6 @@ export default function IndainFinanceDashboard() {
 
     return { revenueData, expenditureData };
   };
-
   const [chartData, setChartData] = useState({
     series: [
       {
@@ -726,13 +758,62 @@ export default function IndainFinanceDashboard() {
         </span>
         <div className="profit-or-loss-summary-linebar mt-3">
           <div id="chart ">
-            <ReactApexChart
-              className=""
-              options={chartData.options}
-              series={chartData.series}
-              type="area"
-              height={450}
-            />
+            <div
+              style={{
+                border: "2px solid rgba(0, 0, 0, 0.1)",
+                borderRadius: "8px",
+                padding: "15px",
+              }}
+            >
+              <LineChart
+                xAxis={[
+                  {
+                    data: months,
+                    scaleType: "point",
+                  },
+                ]}
+                yAxis={[
+                  {
+                    tickMinStep: Infinity,
+                    label: "",
+                    disableLine: true,
+                  },
+                ]}
+                series={[
+                  {
+                    data: revenueData,
+                    label: "Revenues",
+                    color: "rgba(25, 118, 210, 1)",
+                  },
+                  {
+                    data: expensesData,
+                    label: `Expenditures - ${selectedyear}`,
+                    color: "rgba(211, 47, 47, 1)",
+                  },
+                ]}
+                grid={{
+                  horizontal: true,
+                  vertical: false,
+                }}
+                legend={{
+                  position: {
+                    display: "flex",
+                    vertical: "top",
+                    horizontal: "left",
+                  },
+                  itemMarkWidth: 12,
+                  itemGap: 10,
+                }}
+                height={300}
+                sx={{
+                  ".MuiChartsGrid-line": {
+                    stroke: "#ccc",
+                    strokeWidth: 1,
+                    strokeDasharray: "4, 5",
+                  },
+                }}
+              />
+            </div>
           </div>
           <div id="html-dist"></div>
         </div>
