@@ -5,6 +5,12 @@
   color: #000000;
   text-transform: uppercase;
 }
+.css-172kpif-MuiResponsiveChart-container {
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: "10px";
+}
+
 .total-balance {
   height: 160px;
   background: #eec0c091 0% 0% no-repeat padding-box;
@@ -61,6 +67,9 @@
   height: 400px !important;
   width: 800px;
 }
+.css-1evyvmv-MuiChartsSurface-root {
+  margin-left: 70px;
+}
 .chart-container {
   border-radius: 20px;
 }
@@ -91,7 +100,7 @@
   background-color: #03a99f;
 }
 .overhead {
-  background-color: #f96935;
+  background-color: #ffd8d8;
 }
 .general {
   background-color: #3b35da;

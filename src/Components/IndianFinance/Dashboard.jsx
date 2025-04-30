@@ -2,6 +2,7 @@ import "../../assets/Styles/IndiaFinanceDashboard.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useState, useRef, useEffect } from "react";
+import { LineChart } from "@mui/x-charts/LineChart";
 import { registerGradient } from "devextreme/common/charts";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { useDrawingArea } from "@mui/x-charts/hooks";
@@ -23,6 +24,10 @@ export default function IndainFinanceDashboard() {
   const [MonthlyExpenses, setMonthlyExpenses] = useState(0);
   const [TotalBalance, setTotalbalance] = useState(0);
   const [MonthWiseRevenues, setMonthWiseRevenue] = useState([]);
+  const [MonthWiseOverhead, setMonthWisetOverhead] = useState("");
+  const [MonthWiseSpecificApportionment, setMonthWisetgeneralApprotionment] =
+    useState("");
+  const [selectedyear, setSelectedYear] = useState("");
   const [MonthWiseExpenditures, setMonthWiseExpenditures] = useState([]);
   const [EmployeeProfitOrSummaryData, setEmployeeProfitOrSummaryData] =
     useState([]);
@@ -49,7 +54,11 @@ export default function IndainFinanceDashboard() {
     December: "12",
   };
   useEffect(() => {
+    const month = selectedDate1.toLocaleString("default", { month: "long" });
+    const year = selectedDate1.getFullYear();
+    setSelectedYear(year);
     handleDateChange(selectedDate1);
+    calculateValues(MonthlyRevenue, MonthlyExpenses);
   }, [selectedDate1]);
   const handleDateChange1 = async (date) => {
     setSelectedDate(date);
@@ -71,9 +80,13 @@ export default function IndainFinanceDashboard() {
         year
       );
     if (BalanceRevenueExpensesResponse.isSuccess) {
-      setMonthlyRevenue(BalanceRevenueExpensesResponse.item.item1);
-      setMonthlyExpenses(BalanceRevenueExpensesResponse.item.item2);
-      setTotalbalance(BalanceRevenueExpensesResponse.item.item3);
+      setMonthlyRevenue(BalanceRevenueExpensesResponse.item.totalRevenue);
+      setMonthlyExpenses(BalanceRevenueExpensesResponse.item.totalExpenses);
+      setTotalbalance(BalanceRevenueExpensesResponse.item.totalBalance);
+      setMonthWisetOverhead(BalanceRevenueExpensesResponse.item.overhead);
+      setMonthWisetgeneralApprotionment(
+        BalanceRevenueExpensesResponse.item.generalApportionment
+      );
     }
     var employeeProfitOrLossSummaryDataResponse =
       await IndianFinanceService.FcnEmployeeProfitOrLossSummary(
@@ -101,6 +114,32 @@ export default function IndainFinanceDashboard() {
       );
     }
   };
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const revenueData = new Array(12).fill(0);
+  const expensesData = new Array(12).fill(0);
+  MonthWiseRevenues.forEach((item) => {
+    const index = item.month - 1;
+    revenueData[index] = item.totalRevenue;
+  });
+
+  MonthWiseExpenditures.forEach((item) => {
+    const index = item.month - 1;
+    expensesData[index] = item.totalExpenses;
+  });
+
   const Graph = (result) => {
     if (barchartintance.current) {
       barchartintance.current.destroy();
@@ -144,11 +183,13 @@ export default function IndainFinanceDashboard() {
             beginAtZero: true,
             min: 0,
             max: 700000,
+
             grid: {
               color: (context) =>
                 context.tick.value === 0 ? "transparent" : "#A5AEB4",
               borderDash: [4, 4],
               drawBorder: false,
+              display: false,
               drawTicks: false,
             },
             border: {
@@ -170,7 +211,7 @@ export default function IndainFinanceDashboard() {
             grid: {
               display: false,
               color: "#A5AEB4",
-              borderDash: [5, 5],
+              strokeDasharray: [4, 4],
             },
             border: {
               display: false,
@@ -257,11 +298,32 @@ export default function IndainFinanceDashboard() {
     };
   };
   const data = [
-    { value: 5, color: "#855FC0" },
-    { value: 5, color: "#FFD8D8" },
-    { value: 15, color: "#C6FFD2" },
-    { value: 20, color: "#60CDF5" },
+    { value: MonthWiseSpecificApportionment, color: "#855FC0" },
+    { value: MonthWiseOverhead, color: "#FFD8D8" },
   ];
+  const calculateValues = (revenue, expenses) => {
+    if (revenue === 0)
+      return {
+        margin: 0,
+        expensesPercentage: 0,
+        profit: 0,
+        profitPercentage: 0,
+      };
+
+    const profit = revenue - expenses;
+    const margin = (profit / revenue) * 100;
+    const expensesPercentage = (expenses / revenue) * 100;
+    const profitPercentage = (profit / revenue) * 100;
+
+    return {
+      margin: margin.toFixed(2),
+      expensesPercentage: expensesPercentage.toFixed(2),
+      profit: profit.toFixed(2),
+      profitPercentage: profitPercentage.toFixed(2),
+    };
+  };
+  const { margin, expensesPercentage, profit, profitPercentage } =
+    calculateValues(MonthlyRevenue, MonthlyExpenses);
   const size = {
     width: 300,
     height: 350,
@@ -304,7 +366,6 @@ export default function IndainFinanceDashboard() {
 
     return { revenueData, expenditureData };
   };
-
   const [chartData, setChartData] = useState({
     series: [
       {
@@ -511,11 +572,13 @@ export default function IndainFinanceDashboard() {
             style={{ display: "flex", justifyContent: "space-between" }}
           >
             <div className="">
-              <span className="Total-balance-amout">{`$ ${TotalBalance}`}</span>
+              <span className="Total-balance-amout">{`$ ${TotalBalance.toFixed(
+                2
+              )}`}</span>
             </div>
 
             <div className=" ">
-              <span className="Total-balance-amout">15.28%</span>
+              <span className="Total-balance-amout">{`${profitPercentage}%`}</span>
             </div>
           </div>
           <div className="row white-line"></div>
@@ -552,7 +615,7 @@ export default function IndainFinanceDashboard() {
             </div>
 
             <div className="">
-              <span className="Total-balance-amout">15.28%</span>
+              <span className="Total-balance-amout">{`${profitPercentage}%`}</span>
             </div>
           </div>
           <div className="row white-line"></div>
@@ -585,10 +648,12 @@ export default function IndainFinanceDashboard() {
             style={{ display: "flex", justifyContent: "space-between" }}
           >
             <div className="">
-              <span className="Total-balance-amout">{`$ ${MonthlyExpenses}`}</span>
+              <span className="Total-balance-amout">{`$ ${MonthlyExpenses.toFixed(
+                2
+              )}`}</span>
             </div>
             <div className="">
-              <span className="Total-balance-amout">15.28%</span>
+              <span className="Total-balance-amout">{`${expensesPercentage}%`}</span>
             </div>
           </div>
           <div className="row white-line"></div>
@@ -660,7 +725,6 @@ export default function IndainFinanceDashboard() {
               series={[
                 {
                   data,
-
                   innerRadius: 80,
                   paddingAngle: 4,
                   cornerRadius: 5,
@@ -670,19 +734,17 @@ export default function IndainFinanceDashboard() {
               ]}
               {...size}
             >
-              <PieCenterLabel className="">{`$ ${MonthlyExpenses}`}</PieCenterLabel>
+              <PieCenterLabel className="">{`$ ${MonthlyExpenses.toFixed(
+                2
+              )}`}</PieCenterLabel>
             </PieChart>
           </div>
           <div className="row m-0 legend" style={{ paddingTop: "20px" }}>
-            <div className="col-3 legend-item">
-              <div class="color-box direct"></div>
-              <span style={{ fontSize: "12px" }}>Direct</span>
-            </div>
-            <div className="col-3  legend-item">
+            <div className="col-4  legend-item">
               <div class="color-box overhead"></div>
               <span style={{ fontSize: "12px" }}>Overhead</span>
             </div>
-            <div className="col-6  legend-item">
+            <div className="col-8  legend-item">
               <div class="color-box general"></div>
               <span style={{ fontSize: "12px" }}>General Apportionment</span>
             </div>
@@ -695,13 +757,63 @@ export default function IndainFinanceDashboard() {
           Profit And Loss Summary
         </span>
         <div className="profit-or-loss-summary-linebar mt-3">
-          <div id="chart">
-            <ReactApexChart
-              options={chartData.options}
-              series={chartData.series}
-              type="area"
-              height={350}
-            />
+          <div id="chart ">
+            <div
+              style={{
+                border: "2px solid rgba(0, 0, 0, 0.1)",
+                borderRadius: "8px",
+                padding: "15px",
+              }}
+            >
+              <LineChart
+                xAxis={[
+                  {
+                    data: months,
+                    scaleType: "point",
+                  },
+                ]}
+                yAxis={[
+                  {
+                    tickMinStep: Infinity,
+                    label: "",
+                    disableLine: true,
+                  },
+                ]}
+                series={[
+                  {
+                    data: revenueData,
+                    label: "Revenues",
+                    color: "rgba(25, 118, 210, 1)",
+                  },
+                  {
+                    data: expensesData,
+                    label: `Expenditures - ${selectedyear}`,
+                    color: "rgba(211, 47, 47, 1)",
+                  },
+                ]}
+                grid={{
+                  horizontal: true,
+                  vertical: false,
+                }}
+                legend={{
+                  position: {
+                    display: "flex",
+                    vertical: "top",
+                    horizontal: "left",
+                  },
+                  itemMarkWidth: 12,
+                  itemGap: 10,
+                }}
+                height={300}
+                sx={{
+                  ".MuiChartsGrid-line": {
+                    stroke: "#ccc",
+                    strokeWidth: 1,
+                    strokeDasharray: "4, 5",
+                  },
+                }}
+              />
+            </div>
           </div>
           <div id="html-dist"></div>
         </div>
@@ -746,10 +858,10 @@ export default function IndainFinanceDashboard() {
                         ${emp.revenueGenerated.toLocaleString()}
                       </td>
                       <td style={{ fontSize: "14px" }}>
-                        ${emp.totalExpenses.toLocaleString()}
+                        ${emp.totalExpenses.toFixed(2)}
                       </td>
                       <td style={{ fontSize: "14px" }}>
-                        ${emp.profitOrLoss.toLocaleString()}
+                        ${emp.profitOrLoss.toFixed(2)}
                       </td>
                     </tr>
                   ))
