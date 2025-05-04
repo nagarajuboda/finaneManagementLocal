@@ -4,6 +4,8 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Bar as ChartJSBar } from "react-chartjs-2";
+import { useRef } from "react";
+import Chart from "chart.js/auto";
 import {
   BarChart,
   XAxis,
@@ -59,7 +61,7 @@ export default function AdminDashboard() {
   const billable = BillaBleEmployees;
   const nonBillable = TotalbenchEmployees;
   const total = billable + nonBillable;
-
+  const barchartintance = useRef(null);
   const billablePercentage = (billable / totalEmployees) * 100;
   const nonBillablePercentage = (nonBillable / totalEmployees) * 100;
   const totalBench = TotalbenchEmployees;
@@ -77,6 +79,7 @@ export default function AdminDashboard() {
   const [completed, setCompleted] = useState(0);
   const [monthlyRevenueData, setMonthlyRevenueData] = useState([]);
   const [recentActivities, setRecentActivities] = useState([]);
+  const barchartref = useRef(null);
   const navigate = useNavigate();
   const [selectedDate1, setSelectedDate1] = useState(
     new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
@@ -100,16 +103,163 @@ export default function AdminDashboard() {
     November: "11",
     December: "12",
   };
-  const data22 = [
-    { name: "GXO", revenue: 1800 },
-    { name: "cianahealth", revenue: 1200 },
-    { name: "EDR", revenue: 2000 },
-    { name: "XPO", revenue: 2800 },
-    { name: "Title", revenue: 900 },
-    { name: "Title", revenue: 1600 },
-    { name: "Title", revenue: 2500 },
-    { name: "Title", revenue: 1400 },
-  ];
+  const Graph = (result) => {
+    if (barchartintance.current) {
+      barchartintance.current.destroy();
+    }
+    const myChartRef = barchartref.current.getContext("2d");
+    let Projects;
+    let revenueValues;
+    let dataValues;
+    let highestValue;
+    let barcolors;
+    if (result.isSuccess) {
+      Projects = result.item.map((data) => data.projectName);
+      revenueValues = result.item.map((data) => data.totalRevenue);
+      dataValues = revenueValues;
+      highestValue = Math.max(...dataValues);
+      barcolors = dataValues.map((value) => {
+        return value === highestValue ? "#335CFF" : "#DCE6EF";
+      });
+    }
+    barchartintance.current = new Chart(myChartRef, {
+      type: "bar",
+
+      data: {
+        labels: Projects,
+        datasets: [
+          {
+            data: revenueValues,
+            backgroundColor: barcolors,
+            barThickness: 60,
+            maxBarThickness: 40,
+            categoryPercentage: 10,
+            barPercentage: 20,
+            borderRadius: 5,
+          },
+        ],
+      },
+      options: {
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            min: 0,
+            max: 700000,
+
+            grid: {
+              color: (context) =>
+                context.tick.value === 0 ? "transparent" : "#A5AEB4",
+              borderDash: [4, 4],
+              drawBorder: false,
+              display: false,
+              drawTicks: false,
+            },
+            border: {
+              display: false,
+            },
+
+            ticks: {
+              font: {
+                size: 14,
+                weight: "bold",
+              },
+              color: "#A5AEB4",
+              callback: function (value) {
+                return `$ ${value.toLocaleString()}`;
+              },
+            },
+          },
+          x: {
+            grid: {
+              display: false,
+              color: "#A5AEB4",
+              strokeDasharray: [4, 4],
+            },
+            border: {
+              display: false,
+            },
+            ticks: {
+              font: {
+                size: 14,
+                weight: "bold",
+              },
+              color: "#A5AEB4",
+            },
+          },
+        },
+        plugins: {
+          chartArea: {
+            backgroundColor: "red",
+          },
+          legend: {
+            display: false,
+          },
+          tooltip: {
+            callbacks: {
+              label: function (tooltipItem) {
+                return `$${tooltipItem.raw.toLocaleString()}`;
+              },
+            },
+          },
+        },
+      },
+
+      plugins: [
+        {
+          id: "customBackgroundColor",
+          beforeDraw: (chart) => {
+            const { ctx, chartArea } = chart;
+            ctx.save();
+            ctx.fillStyle = "#F5F5F5";
+
+            ctx.clearRect(0, 0, chart.width, chart.height);
+
+            const radius = 30;
+            ctx.beginPath();
+            ctx.moveTo(chartArea.left + radius, chartArea.top);
+            ctx.lineTo(chartArea.right - radius, chartArea.top);
+            ctx.quadraticCurveTo(
+              chartArea.right,
+              chartArea.top,
+              chartArea.right,
+              chartArea.top + radius
+            );
+            ctx.lineTo(chartArea.right, chartArea.bottom - radius);
+            ctx.quadraticCurveTo(
+              chartArea.right,
+              chartArea.bottom,
+              chartArea.right - radius,
+              chartArea.bottom
+            );
+            ctx.lineTo(chartArea.left + radius, chartArea.bottom);
+            ctx.quadraticCurveTo(
+              chartArea.left,
+              chartArea.bottom,
+              chartArea.left,
+              chartArea.bottom - radius
+            );
+            ctx.lineTo(chartArea.left, chartArea.top + radius);
+            ctx.quadraticCurveTo(
+              chartArea.left,
+              chartArea.top,
+              chartArea.left + radius,
+              chartArea.top
+            );
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+          },
+        },
+      ],
+    });
+
+    return () => {
+      if (barchartintance.current) {
+        barchartintance.current.destroy();
+      }
+    };
+  };
   // const CustomTooltip = ({ active, payload }) => {
   //   if (active && payload && payload.length) {
   //     return (
@@ -157,6 +307,7 @@ export default function AdminDashboard() {
   );
   const FetchData = async () => {
     var ActivityLogsResponse = await AdminDashboardServices.FcnActivityLogs();
+
     setRecentActivities(ActivityLogsResponse);
     var response = await EmployeeService.TotalEmployees();
     var InActiveProjectProgressResponse =
@@ -390,6 +541,7 @@ export default function AdminDashboard() {
   const NavigateToAddManageRoles = () => {
     navigate("/dashboard/roles");
   };
+  console.log(selectedDate1);
 
   const handleDateChange = async (date) => {
     setSelectedDate1(date);
@@ -403,11 +555,26 @@ export default function AdminDashboard() {
     var result = response.data;
     if (result.isSuccess) {
       setMonthlyRevenueData(result.item);
-      // Graph(result);
+      Graph(result);
     } else {
-      //Graph([]);
+      Graph([]);
     }
   };
+  // const data22 = [
+  //   { name: "GXO", revenue: 1800 },
+  //   { name: "cianahealth", revenue: 1200 },
+  //   { name: "EDR", revenue: 2000 },
+  //   { name: "XPO", revenue: 2800 },
+  //   { name: "Title", revenue: 900 },
+  //   { name: "Title", revenue: 1600 },
+  //   { name: "Title", revenue: 2500 },
+  //   { name: "Title", revenue: 1400 },
+  // ];
+  console.log(monthlyRevenueData, "===========>");
+  const data22 = monthlyRevenueData.map((project) => ({
+    name: project.projectName,
+    revenue: project.totalRevenue,
+  }));
 
   return (
     <div className="DashboardMaindiv">
@@ -709,26 +876,18 @@ export default function AdminDashboard() {
                   <span className="Active_project_conetnt">
                     Active Projects
                   </span>
-                  <i
-                    className="bi bi-three-dots"
-                    style={{
-                      color: "#989898",
-                      fontSize: "28px",
-                      fontWeight: "600",
-                      cursor: "pointer",
-                    }}
-                  ></i>
                 </div>
 
                 <div
                   style={{
-                    width: "145px",
+                    width: "250px",
+                    height: "250px",
                     display: "flex",
                     textAlign: "center",
                     margin: "0",
                     position: "relative",
-                    marginLeft: "79px",
-                    marginTop: "17px",
+                    marginLeft: "50px",
+                    marginTop: "25px",
                     justifyContent: "center",
                   }}
                 >
@@ -736,8 +895,8 @@ export default function AdminDashboard() {
                     style={{
                       position: "absolute",
                       top: "45%",
-                      fontSize: "12px",
-                      left: "22%",
+                      fontSize: "14px",
+                      left: "30%",
                     }}
                     className="activeEmployees"
                   >
@@ -748,7 +907,7 @@ export default function AdminDashboard() {
               </div>
               <div
                 style={{
-                  marginTop: "50px",
+                  marginTop: "90px",
                   display: "flex",
                   justifyContent: "space-between",
                   gap: "10px",
@@ -816,7 +975,7 @@ export default function AdminDashboard() {
             <p className="projectOverview_content">Revenue Overview</p>
             <div className="Project_progress">
               <div
-                className="pt-2 pe-3"
+                className="pt-2 pe-4"
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -873,23 +1032,12 @@ export default function AdminDashboard() {
               <div
                 style={{
                   width: "100%",
-                  height: "280px",
                 }}
               >
-                <ResponsiveContainer width="100%" height={280}>
-                  <BarChart data={data22} barCategoryGap="20%">
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="name" />
-                    <YAxis tickFormatter={(value) => `$ ${value}`} />
-                    <Tooltip content={<CustomTooltip />} />
-                    <RechartsBar
-                      dataKey="revenue"
-                      fill="#007bff"
-                      radius={[4, 4, 0, 0]}
-                      activeBar={{ fill: "#0056b3" }}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
+                <canvas
+                  ref={barchartref}
+                  className="indian-finance-revneue-overview ms-2"
+                />
               </div>
             </div>
           </div>
@@ -908,21 +1056,12 @@ export default function AdminDashboard() {
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  padding: "0px 20px",
+                  padding: "10px 20px",
                 }}
               >
                 <span className="adminName" style={{ fontSize: "14px" }}>
                   loreum lpsum
                 </span>
-                <i
-                  className="bi bi-three-dots"
-                  style={{
-                    color: "#989898",
-                    fontSize: "28px",
-                    fontWeight: "600",
-                    cursor: "pointer",
-                  }}
-                ></i>
               </div>
               <div
                 style={{
@@ -963,21 +1102,12 @@ export default function AdminDashboard() {
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  padding: "0px 20px",
+                  padding: "10px 20px",
                 }}
               >
                 <span className="adminName" style={{ fontSize: "14px" }}>
                   Latest update
                 </span>
-                <i
-                  className="bi bi-three-dots"
-                  style={{
-                    color: "#989898",
-                    fontSize: "28px",
-                    fontWeight: "600",
-                    cursor: "pointer",
-                  }}
-                ></i>
               </div>
               {sortedRecentActivities.length > 0 && (
                 <div className="latest_updatesImage row ">
@@ -1121,7 +1251,7 @@ export default function AdminDashboard() {
                 style={{
                   border: "1px solid #64646430",
                   width: "100%",
-                  marginTop: "40px",
+                  marginTop: "60px",
                 }}
               ></div>
               <div className="viewAlldiv">

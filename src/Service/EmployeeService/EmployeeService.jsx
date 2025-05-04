@@ -72,6 +72,12 @@ const EmployeeService = {
     const response = await apiurl.put("/Employees/UpdateEmployee", obj);
     return response.data;
   },
+  async UpdateEmployeeStatus(id, status) {
+    const response = await apiurl.put(
+      `/Employees/UpdateEmployeeStatus?id=${id}&status=${status}`
+    );
+    return response.data;
+  },
   async GetMangerByEmployees(id) {
     const response = await apiurl.get(
       ` /Employees/GetEmployeesByManager?id=${id}`
