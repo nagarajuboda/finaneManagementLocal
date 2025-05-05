@@ -38,5 +38,12 @@ const IndianFinanceService = {
 
     return response.data;
   },
+  async fcnGetProfitOrLossSummanry(year) {
+    const response = await apiurl.get(
+      `/Expenses/ProfitOrLossSummary?year=${year}`
+    );
+
+    return response.data;
+  },
 };
 export default IndianFinanceService;

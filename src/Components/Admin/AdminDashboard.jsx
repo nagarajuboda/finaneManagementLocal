@@ -47,6 +47,7 @@ import { useNavigate } from "react-router-dom";
 import EmployeeService from "../../Service/EmployeeService/EmployeeService";
 import USFinanceTeamService from "../../Service/USFinanceTeamService/USFinanceTeamService";
 import AdminDashboardServices from "../../Service/AdminService/AdminDashboardServices";
+import IndianFinanceService from "../../Service/IndianFinance/IndianFinanceService";
 export default function AdminDashboard() {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -67,8 +68,6 @@ export default function AdminDashboard() {
   const totalBench = TotalbenchEmployees;
   const internal = 0;
   const noProjects = TotalProject;
-  // const internalPercentage = (internal / totalBench) * 100;
-  // const noProjectsPercentage = (noProjects / totalBench) * 100;
   const internalPercentage = totalBench ? (internal / totalBench) * 100 : 0;
   const noProjectsPercentage = totalBench ? (noProjects / totalBench) * 100 : 0;
   const [startDate, setStartDate] = useState(new Date());
@@ -80,6 +79,7 @@ export default function AdminDashboard() {
   const [monthlyRevenueData, setMonthlyRevenueData] = useState([]);
   const [recentActivities, setRecentActivities] = useState([]);
   const barchartref = useRef(null);
+  const [ProfitOrLossSummary, setProfitOrLossSummary] = useState([]);
   const navigate = useNavigate();
   const [selectedDate1, setSelectedDate1] = useState(
     new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
@@ -88,7 +88,8 @@ export default function AdminDashboard() {
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("sessionData"));
     FetchData();
-  }, []);
+    ProfitOrLossSummaryOnchange(selectedDate);
+  }, [selectedDate]);
   const monthMap = {
     January: "1",
     February: "2",
@@ -124,7 +125,6 @@ export default function AdminDashboard() {
     }
     barchartintance.current = new Chart(myChartRef, {
       type: "bar",
-
       data: {
         labels: Projects,
         datasets: [
@@ -140,25 +140,21 @@ export default function AdminDashboard() {
         ],
       },
       options: {
-        maintainAspectRatio: false,
         scales: {
           y: {
             beginAtZero: true,
             min: 0,
             max: 700000,
-
             grid: {
-              color: (context) =>
-                context.tick.value === 0 ? "transparent" : "#A5AEB4",
+              display: true,
+              drawBorder: true,
+              color: "#A5AEB4",
               borderDash: [4, 4],
-              drawBorder: false,
-              display: false,
-              drawTicks: false,
+              drawTicks: true,
             },
             border: {
-              display: false,
+              display: true,
             },
-
             ticks: {
               font: {
                 size: 14,
@@ -172,12 +168,14 @@ export default function AdminDashboard() {
           },
           x: {
             grid: {
-              display: false,
+              display: true,
+              drawBorder: true,
               color: "#A5AEB4",
-              strokeDasharray: [4, 4],
+              borderDash: [4, 4],
+              drawTicks: true,
             },
             border: {
-              display: false,
+              display: true,
             },
             ticks: {
               font: {
@@ -185,21 +183,6 @@ export default function AdminDashboard() {
                 weight: "bold",
               },
               color: "#A5AEB4",
-            },
-          },
-        },
-        plugins: {
-          chartArea: {
-            backgroundColor: "red",
-          },
-          legend: {
-            display: false,
-          },
-          tooltip: {
-            callbacks: {
-              label: function (tooltipItem) {
-                return `$${tooltipItem.raw.toLocaleString()}`;
-              },
             },
           },
         },
@@ -212,9 +195,7 @@ export default function AdminDashboard() {
             const { ctx, chartArea } = chart;
             ctx.save();
             ctx.fillStyle = "#F5F5F5";
-
             ctx.clearRect(0, 0, chart.width, chart.height);
-
             const radius = 30;
             ctx.beginPath();
             ctx.moveTo(chartArea.left + radius, chartArea.top);
@@ -260,41 +241,9 @@ export default function AdminDashboard() {
       }
     };
   };
-  // const CustomTooltip = ({ active, payload }) => {
-  //   if (active && payload && payload.length) {
-  //     return (
-  //       <div className="bg-gray-800 text-white p-2 rounded shadow text-sm">
-  //         <p className="font-semibold">Project Revenue</p>
-  //         <p>$ {payload[0].value}</p>
-  //       </div>
-  //     );
-  //   }
 
-  //   return null;
-  // };
   const ViewAll = () => {
     navigate("/dashboard/AllRecnetActivities");
-  };
-  const CustomTooltip = ({ active, payload }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div
-          style={{
-            background: "#fff",
-            border: "1px solid #ccc",
-            padding: "8px",
-            borderRadius: "4px",
-            fontSize: "12px",
-          }}
-        >
-          <p>{payload[0].payload.name}</p>
-          <p>
-            <strong>${payload[0].value.toLocaleString()}</strong>
-          </p>
-        </div>
-      );
-    }
-    return null;
   };
 
   ChartJS.register(
@@ -307,7 +256,6 @@ export default function AdminDashboard() {
   );
   const FetchData = async () => {
     var ActivityLogsResponse = await AdminDashboardServices.FcnActivityLogs();
-
     setRecentActivities(ActivityLogsResponse);
     var response = await EmployeeService.TotalEmployees();
     var InActiveProjectProgressResponse =
@@ -385,81 +333,27 @@ export default function AdminDashboard() {
     },
   };
 
-  const data1 = {
-    labels: ["Planning", "Designing", "Pre Construction"],
-    datasets: [
-      {
-        data: [20, 30, 40, 30],
-        backgroundColor: ["red", "#007BFF", "#8AB4F8", "#E0E0E0"],
-        hoverBackgroundColor: ["red", "#0056b3", "#6a9ee0", "#c6c6c6"],
-        borderWidth: 0,
-      },
-    ],
+  const ProfitOrLossSummaryOnchange = async (date) => {
+    setSelectedDate(date);
+    const month = selectedDate.toLocaleString("default", { month: "long" });
+    const year = selectedDate.getFullYear();
+    var Response = await IndianFinanceService.fcnGetProfitOrLossSummanry(year);
+    if (Response.isSuccess) {
+      setProfitOrLossSummary(Response.item);
+    }
   };
+  const fillMonthData = (ProfitOrLossSummary) => {
+    const profitOrLossArray = new Array(12).fill(0);
+    ProfitOrLossSummary.forEach((item) => {
+      const monthIndex = item.month - 1;
+      if (monthIndex >= 0 && monthIndex < 12) {
+        profitOrLossArray[monthIndex] = item.profitOrLoss;
+      }
+    });
 
-  const options1 = {
-    cutout: "70%",
-    plugins: {
-      legend: {
-        display: false,
-      },
-    },
+    return profitOrLossArray;
   };
-
-  const data2 = {
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
-    datasets: [
-      {
-        label: "Profit And Loss",
-        backgroundColor: "#f87979",
-        data: [40, 20, 12, 39, 10, 40, 39],
-      },
-    ],
-  };
-
-  const options2 = {
-    plugins: {
-      legend: {
-        labels: {
-          color:
-            getComputedStyle(document.body).getPropertyValue(
-              "--cui-body-color"
-            ) || "#000",
-        },
-      },
-    },
-    scales: {
-      x: {
-        grid: {
-          color:
-            getComputedStyle(document.body).getPropertyValue(
-              "--cui-border-color-translucent"
-            ) || "#ddd",
-        },
-        ticks: {
-          color:
-            getComputedStyle(document.body).getPropertyValue(
-              "--cui-body-color"
-            ) || "#000",
-        },
-      },
-      y: {
-        grid: {
-          color:
-            getComputedStyle(document.body).getPropertyValue(
-              "--cui-border-color-translucent"
-            ) || "#ddd",
-        },
-        ticks: {
-          color:
-            getComputedStyle(document.body).getPropertyValue(
-              "--cui-body-color"
-            ) || "#000",
-        },
-      },
-    },
-  };
-
+  const profitOrLossValues = fillMonthData(ProfitOrLossSummary);
   const data3 = {
     labels: [
       "Jan",
@@ -477,7 +371,7 @@ export default function AdminDashboard() {
     ],
     datasets: [
       {
-        data: [5, 10, 15, 10, 20, 25, 8, 20, 15, 10, 5, 2],
+        data: profitOrLossValues,
         backgroundColor: [
           "rgba(75, 192, 192, 0.2)",
           "rgba(54, 162, 235, 0.2)",
@@ -541,7 +435,6 @@ export default function AdminDashboard() {
   const NavigateToAddManageRoles = () => {
     navigate("/dashboard/roles");
   };
-  console.log(selectedDate1);
 
   const handleDateChange = async (date) => {
     setSelectedDate1(date);
@@ -560,21 +453,10 @@ export default function AdminDashboard() {
       Graph([]);
     }
   };
-  // const data22 = [
-  //   { name: "GXO", revenue: 1800 },
-  //   { name: "cianahealth", revenue: 1200 },
-  //   { name: "EDR", revenue: 2000 },
-  //   { name: "XPO", revenue: 2800 },
-  //   { name: "Title", revenue: 900 },
-  //   { name: "Title", revenue: 1600 },
-  //   { name: "Title", revenue: 2500 },
-  //   { name: "Title", revenue: 1400 },
-  // ];
-  console.log(monthlyRevenueData, "===========>");
-  const data22 = monthlyRevenueData.map((project) => ({
-    name: project.projectName,
-    revenue: project.totalRevenue,
-  }));
+  // const data22 = monthlyRevenueData.map((project) => ({
+  //   name: project.projectName,
+  //   revenue: project.totalRevenue,
+  // }));
 
   return (
     <div className="DashboardMaindiv">
@@ -1081,12 +963,20 @@ export default function AdminDashboard() {
                       backgroundColor: "#f9f9f9",
                     }}
                   >
-                    <DatePicker
+                    {/* <DatePicker
                       selected={selectedDate}
-                      onChange={(date) => setSelectedDate(date)}
-                      dateFormat="MMM dd"
+                      onChange={(date) => ProfitOrLossSummaryOnchange(date)}
+                      dateFormat=" YYYY"
                       placeholderText="Select a date"
                       style={{ border: "none!impartant" }}
+                    /> */}
+                    <DatePicker
+                      selected={selectedDate}
+                      onChange={(date) => ProfitOrLossSummaryOnchange(date)}
+                      showYearPicker
+                      dateFormat="yyyy"
+                      placeholderText="Select a year"
+                      className="form-control"
                     />
                   </div>
                 </div>
