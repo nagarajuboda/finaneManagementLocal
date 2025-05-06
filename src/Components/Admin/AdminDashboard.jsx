@@ -84,8 +84,11 @@ export default function AdminDashboard() {
   const [selectedDate1, setSelectedDate1] = useState(
     new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
   );
-
+  const [Selectedyear, setSelectedYear] = useState("");
   useEffect(() => {
+    const month = selectedDate.toLocaleString("default", { month: "long" });
+    const year = selectedDate.getFullYear();
+    setSelectedYear(year);
     const userDetails = JSON.parse(localStorage.getItem("sessionData"));
     FetchData();
     ProfitOrLossSummaryOnchange(selectedDate);
@@ -135,11 +138,11 @@ export default function AdminDashboard() {
             maxBarThickness: 40,
             categoryPercentage: 10,
             barPercentage: 20,
-            borderRadius: 5,
           },
         ],
       },
       options: {
+        maintainAspectRatio: false,
         scales: {
           y: {
             beginAtZero: true,
@@ -186,8 +189,22 @@ export default function AdminDashboard() {
             },
           },
         },
+        plugins: {
+          chartArea: {
+            backgroundColor: "red",
+          },
+          legend: {
+            display: false,
+          },
+          tooltip: {
+            callbacks: {
+              label: function (tooltipItem) {
+                return `$${tooltipItem.raw.toLocaleString()}`;
+              },
+            },
+          },
+        },
       },
-
       plugins: [
         {
           id: "customBackgroundColor",
@@ -196,39 +213,14 @@ export default function AdminDashboard() {
             ctx.save();
             ctx.fillStyle = "#F5F5F5";
             ctx.clearRect(0, 0, chart.width, chart.height);
-            const radius = 30;
-            ctx.beginPath();
-            ctx.moveTo(chartArea.left + radius, chartArea.top);
-            ctx.lineTo(chartArea.right - radius, chartArea.top);
-            ctx.quadraticCurveTo(
-              chartArea.right,
-              chartArea.top,
-              chartArea.right,
-              chartArea.top + radius
-            );
-            ctx.lineTo(chartArea.right, chartArea.bottom - radius);
-            ctx.quadraticCurveTo(
-              chartArea.right,
-              chartArea.bottom,
-              chartArea.right - radius,
-              chartArea.bottom
-            );
-            ctx.lineTo(chartArea.left + radius, chartArea.bottom);
-            ctx.quadraticCurveTo(
-              chartArea.left,
-              chartArea.bottom,
-              chartArea.left,
-              chartArea.bottom - radius
-            );
-            ctx.lineTo(chartArea.left, chartArea.top + radius);
-            ctx.quadraticCurveTo(
+
+            ctx.fillRect(
               chartArea.left,
               chartArea.top,
-              chartArea.left + radius,
-              chartArea.top
+              chartArea.right - chartArea.left,
+              chartArea.bottom - chartArea.top
             );
-            ctx.closePath();
-            ctx.fill();
+
             ctx.restore();
           },
         },
@@ -356,18 +348,18 @@ export default function AdminDashboard() {
   const profitOrLossValues = fillMonthData(ProfitOrLossSummary);
   const data3 = {
     labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
+      `Jan ${Selectedyear}`,
+      `Feb ${Selectedyear}`,
+      `Mar ${Selectedyear}`,
+      `Apr ${Selectedyear}`,
+      `May ${Selectedyear}`,
+      `Jun ${Selectedyear}`,
+      `Jul ${Selectedyear}`,
+      `Aug ${Selectedyear}`,
+      `Sep ${Selectedyear}`,
+      `Oct ${Selectedyear}`,
+      `Nov ${Selectedyear}`,
+      `Dec ${Selectedyear}`,
     ],
     datasets: [
       {
@@ -413,7 +405,7 @@ export default function AdminDashboard() {
       },
       tooltip: {
         callbacks: {
-          label: (context) => `${context.raw}%`,
+          label: (context) => `$ ${context.raw}`,
         },
       },
     },
@@ -421,7 +413,7 @@ export default function AdminDashboard() {
       y: {
         beginAtZero: true,
         ticks: {
-          callback: (value) => `${value}%`,
+          callback: (value) => `$ ${value}`,
         },
       },
     },
@@ -453,10 +445,6 @@ export default function AdminDashboard() {
       Graph([]);
     }
   };
-  // const data22 = monthlyRevenueData.map((project) => ({
-  //   name: project.projectName,
-  //   revenue: project.totalRevenue,
-  // }));
 
   return (
     <div className="DashboardMaindiv">
@@ -942,34 +930,20 @@ export default function AdminDashboard() {
                 }}
               >
                 <span className="adminName" style={{ fontSize: "14px" }}>
-                  loreum lpsum
+                  Profit And loss Summary-{Selectedyear}
                 </span>
               </div>
               <div
+                className="mt-4"
                 style={{
-                  width: "75%",
-                  padding: "20px",
+                  width: "80%",
+                  padding: "10px",
                   border: "1px solid",
                   marginLeft: "100px",
                 }}
               >
                 <div>
-                  <div
-                    style={{
-                      display: "inline-block",
-                      border: "1px solid #eaeaea",
-                      padding: "5px 10px",
-                      borderRadius: "5px",
-                      backgroundColor: "#f9f9f9",
-                    }}
-                  >
-                    {/* <DatePicker
-                      selected={selectedDate}
-                      onChange={(date) => ProfitOrLossSummaryOnchange(date)}
-                      dateFormat=" YYYY"
-                      placeholderText="Select a date"
-                      style={{ border: "none!impartant" }}
-                    /> */}
+                  <div>
                     <DatePicker
                       selected={selectedDate}
                       onChange={(date) => ProfitOrLossSummaryOnchange(date)}
@@ -980,7 +954,7 @@ export default function AdminDashboard() {
                     />
                   </div>
                 </div>
-                <ChartJSBar data={data3} options={options3} />
+                <ChartJSBar data={data3} options={options3} className="mt-2" />
               </div>
             </div>
           </div>
