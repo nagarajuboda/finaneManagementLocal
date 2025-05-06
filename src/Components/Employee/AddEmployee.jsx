@@ -109,7 +109,8 @@ export default function AddEmployee() {
     var response = await AdminDashboardServices.fcngetEmployees();
     const Rolesresponse = await RolesService.FcnGetRoles();
     var rolesResult = Rolesresponse.data;
-    setRoles(rolesResult);
+    const activeRoles = rolesResult.filter((role) => role.status === "Active");
+    setRoles(activeRoles);
     if (response.isSuccess) {
       setEmployees(response.item);
     }

@@ -4,6 +4,8 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Bar as ChartJSBar } from "react-chartjs-2";
+import { useRef } from "react";
+import Chart from "chart.js/auto";
 import {
   BarChart,
   XAxis,
@@ -45,6 +47,7 @@ import { useNavigate } from "react-router-dom";
 import EmployeeService from "../../Service/EmployeeService/EmployeeService";
 import USFinanceTeamService from "../../Service/USFinanceTeamService/USFinanceTeamService";
 import AdminDashboardServices from "../../Service/AdminService/AdminDashboardServices";
+import IndianFinanceService from "../../Service/IndianFinance/IndianFinanceService";
 export default function AdminDashboard() {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -59,14 +62,12 @@ export default function AdminDashboard() {
   const billable = BillaBleEmployees;
   const nonBillable = TotalbenchEmployees;
   const total = billable + nonBillable;
-
+  const barchartintance = useRef(null);
   const billablePercentage = (billable / totalEmployees) * 100;
   const nonBillablePercentage = (nonBillable / totalEmployees) * 100;
   const totalBench = TotalbenchEmployees;
   const internal = 0;
   const noProjects = TotalProject;
-  // const internalPercentage = (internal / totalBench) * 100;
-  // const noProjectsPercentage = (noProjects / totalBench) * 100;
   const internalPercentage = totalBench ? (internal / totalBench) * 100 : 0;
   const noProjectsPercentage = totalBench ? (noProjects / totalBench) * 100 : 0;
   const [startDate, setStartDate] = useState(new Date());
@@ -77,15 +78,21 @@ export default function AdminDashboard() {
   const [completed, setCompleted] = useState(0);
   const [monthlyRevenueData, setMonthlyRevenueData] = useState([]);
   const [recentActivities, setRecentActivities] = useState([]);
+  const barchartref = useRef(null);
+  const [ProfitOrLossSummary, setProfitOrLossSummary] = useState([]);
   const navigate = useNavigate();
   const [selectedDate1, setSelectedDate1] = useState(
     new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
   );
-
+  const [Selectedyear, setSelectedYear] = useState("");
   useEffect(() => {
+    const month = selectedDate.toLocaleString("default", { month: "long" });
+    const year = selectedDate.getFullYear();
+    setSelectedYear(year);
     const userDetails = JSON.parse(localStorage.getItem("sessionData"));
     FetchData();
-  }, []);
+    ProfitOrLossSummaryOnchange(selectedDate);
+  }, [selectedDate]);
   const monthMap = {
     January: "1",
     February: "2",
@@ -100,51 +107,135 @@ export default function AdminDashboard() {
     November: "11",
     December: "12",
   };
-  const data22 = [
-    { name: "GXO", revenue: 1800 },
-    { name: "cianahealth", revenue: 1200 },
-    { name: "EDR", revenue: 2000 },
-    { name: "XPO", revenue: 2800 },
-    { name: "Title", revenue: 900 },
-    { name: "Title", revenue: 1600 },
-    { name: "Title", revenue: 2500 },
-    { name: "Title", revenue: 1400 },
-  ];
-  // const CustomTooltip = ({ active, payload }) => {
-  //   if (active && payload && payload.length) {
-  //     return (
-  //       <div className="bg-gray-800 text-white p-2 rounded shadow text-sm">
-  //         <p className="font-semibold">Project Revenue</p>
-  //         <p>$ {payload[0].value}</p>
-  //       </div>
-  //     );
-  //   }
+  const Graph = (result) => {
+    if (barchartintance.current) {
+      barchartintance.current.destroy();
+    }
+    const myChartRef = barchartref.current.getContext("2d");
+    let Projects;
+    let revenueValues;
+    let dataValues;
+    let highestValue;
+    let barcolors;
+    if (result.isSuccess) {
+      Projects = result.item.map((data) => data.projectName);
+      revenueValues = result.item.map((data) => data.totalRevenue);
+      dataValues = revenueValues;
+      highestValue = Math.max(...dataValues);
+      barcolors = dataValues.map((value) => {
+        return value === highestValue ? "#335CFF" : "#DCE6EF";
+      });
+    }
+    barchartintance.current = new Chart(myChartRef, {
+      type: "bar",
+      data: {
+        labels: Projects,
+        datasets: [
+          {
+            data: revenueValues,
+            backgroundColor: barcolors,
+            barThickness: 60,
+            maxBarThickness: 40,
+            categoryPercentage: 10,
+            barPercentage: 20,
+          },
+        ],
+      },
+      options: {
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            min: 0,
+            max: 700000,
+            grid: {
+              display: true,
+              drawBorder: true,
+              color: "#A5AEB4",
+              borderDash: [4, 4],
+              drawTicks: true,
+            },
+            border: {
+              display: true,
+            },
+            ticks: {
+              font: {
+                size: 14,
+                weight: "bold",
+              },
+              color: "#A5AEB4",
+              callback: function (value) {
+                return `$ ${value.toLocaleString()}`;
+              },
+            },
+          },
+          x: {
+            grid: {
+              display: true,
+              drawBorder: true,
+              color: "#A5AEB4",
+              borderDash: [4, 4],
+              drawTicks: true,
+            },
+            border: {
+              display: true,
+            },
+            ticks: {
+              font: {
+                size: 14,
+                weight: "bold",
+              },
+              color: "#A5AEB4",
+            },
+          },
+        },
+        plugins: {
+          chartArea: {
+            backgroundColor: "red",
+          },
+          legend: {
+            display: false,
+          },
+          tooltip: {
+            callbacks: {
+              label: function (tooltipItem) {
+                return `$${tooltipItem.raw.toLocaleString()}`;
+              },
+            },
+          },
+        },
+      },
+      plugins: [
+        {
+          id: "customBackgroundColor",
+          beforeDraw: (chart) => {
+            const { ctx, chartArea } = chart;
+            ctx.save();
+            ctx.fillStyle = "#F5F5F5";
+            ctx.clearRect(0, 0, chart.width, chart.height);
 
-  //   return null;
-  // };
+            ctx.fillRect(
+              chartArea.left,
+              chartArea.top,
+              chartArea.right - chartArea.left,
+              chartArea.bottom - chartArea.top
+            );
+
+            ctx.restore();
+          },
+        },
+      ],
+    });
+
+    return () => {
+      if (barchartintance.current) {
+        barchartintance.current.destroy();
+      }
+    };
+  };
+
   const ViewAll = () => {
     navigate("/dashboard/AllRecnetActivities");
-  };
-  const CustomTooltip = ({ active, payload }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div
-          style={{
-            background: "#fff",
-            border: "1px solid #ccc",
-            padding: "8px",
-            borderRadius: "4px",
-            fontSize: "12px",
-          }}
-        >
-          <p>{payload[0].payload.name}</p>
-          <p>
-            <strong>${payload[0].value.toLocaleString()}</strong>
-          </p>
-        </div>
-      );
-    }
-    return null;
   };
 
   ChartJS.register(
@@ -234,99 +325,45 @@ export default function AdminDashboard() {
     },
   };
 
-  const data1 = {
-    labels: ["Planning", "Designing", "Pre Construction"],
-    datasets: [
-      {
-        data: [20, 30, 40, 30],
-        backgroundColor: ["red", "#007BFF", "#8AB4F8", "#E0E0E0"],
-        hoverBackgroundColor: ["red", "#0056b3", "#6a9ee0", "#c6c6c6"],
-        borderWidth: 0,
-      },
-    ],
+  const ProfitOrLossSummaryOnchange = async (date) => {
+    setSelectedDate(date);
+    const month = selectedDate.toLocaleString("default", { month: "long" });
+    const year = selectedDate.getFullYear();
+    var Response = await IndianFinanceService.fcnGetProfitOrLossSummanry(year);
+    if (Response.isSuccess) {
+      setProfitOrLossSummary(Response.item);
+    }
   };
+  const fillMonthData = (ProfitOrLossSummary) => {
+    const profitOrLossArray = new Array(12).fill(0);
+    ProfitOrLossSummary.forEach((item) => {
+      const monthIndex = item.month - 1;
+      if (monthIndex >= 0 && monthIndex < 12) {
+        profitOrLossArray[monthIndex] = item.profitOrLoss;
+      }
+    });
 
-  const options1 = {
-    cutout: "70%",
-    plugins: {
-      legend: {
-        display: false,
-      },
-    },
+    return profitOrLossArray;
   };
-
-  const data2 = {
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
-    datasets: [
-      {
-        label: "Profit And Loss",
-        backgroundColor: "#f87979",
-        data: [40, 20, 12, 39, 10, 40, 39],
-      },
-    ],
-  };
-
-  const options2 = {
-    plugins: {
-      legend: {
-        labels: {
-          color:
-            getComputedStyle(document.body).getPropertyValue(
-              "--cui-body-color"
-            ) || "#000",
-        },
-      },
-    },
-    scales: {
-      x: {
-        grid: {
-          color:
-            getComputedStyle(document.body).getPropertyValue(
-              "--cui-border-color-translucent"
-            ) || "#ddd",
-        },
-        ticks: {
-          color:
-            getComputedStyle(document.body).getPropertyValue(
-              "--cui-body-color"
-            ) || "#000",
-        },
-      },
-      y: {
-        grid: {
-          color:
-            getComputedStyle(document.body).getPropertyValue(
-              "--cui-border-color-translucent"
-            ) || "#ddd",
-        },
-        ticks: {
-          color:
-            getComputedStyle(document.body).getPropertyValue(
-              "--cui-body-color"
-            ) || "#000",
-        },
-      },
-    },
-  };
-
+  const profitOrLossValues = fillMonthData(ProfitOrLossSummary);
   const data3 = {
     labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
+      `Jan ${Selectedyear}`,
+      `Feb ${Selectedyear}`,
+      `Mar ${Selectedyear}`,
+      `Apr ${Selectedyear}`,
+      `May ${Selectedyear}`,
+      `Jun ${Selectedyear}`,
+      `Jul ${Selectedyear}`,
+      `Aug ${Selectedyear}`,
+      `Sep ${Selectedyear}`,
+      `Oct ${Selectedyear}`,
+      `Nov ${Selectedyear}`,
+      `Dec ${Selectedyear}`,
     ],
     datasets: [
       {
-        data: [5, 10, 15, 10, 20, 25, 8, 20, 15, 10, 5, 2],
+        data: profitOrLossValues,
         backgroundColor: [
           "rgba(75, 192, 192, 0.2)",
           "rgba(54, 162, 235, 0.2)",
@@ -368,7 +405,7 @@ export default function AdminDashboard() {
       },
       tooltip: {
         callbacks: {
-          label: (context) => `${context.raw}%`,
+          label: (context) => `$ ${context.raw}`,
         },
       },
     },
@@ -376,7 +413,7 @@ export default function AdminDashboard() {
       y: {
         beginAtZero: true,
         ticks: {
-          callback: (value) => `${value}%`,
+          callback: (value) => `$ ${value}`,
         },
       },
     },
@@ -403,9 +440,9 @@ export default function AdminDashboard() {
     var result = response.data;
     if (result.isSuccess) {
       setMonthlyRevenueData(result.item);
-      // Graph(result);
+      Graph(result);
     } else {
-      //Graph([]);
+      Graph([]);
     }
   };
 
@@ -709,26 +746,18 @@ export default function AdminDashboard() {
                   <span className="Active_project_conetnt">
                     Active Projects
                   </span>
-                  <i
-                    className="bi bi-three-dots"
-                    style={{
-                      color: "#989898",
-                      fontSize: "28px",
-                      fontWeight: "600",
-                      cursor: "pointer",
-                    }}
-                  ></i>
                 </div>
 
                 <div
                   style={{
-                    width: "145px",
+                    width: "250px",
+                    height: "250px",
                     display: "flex",
                     textAlign: "center",
                     margin: "0",
                     position: "relative",
-                    marginLeft: "79px",
-                    marginTop: "17px",
+                    marginLeft: "50px",
+                    marginTop: "25px",
                     justifyContent: "center",
                   }}
                 >
@@ -736,8 +765,8 @@ export default function AdminDashboard() {
                     style={{
                       position: "absolute",
                       top: "45%",
-                      fontSize: "12px",
-                      left: "22%",
+                      fontSize: "14px",
+                      left: "30%",
                     }}
                     className="activeEmployees"
                   >
@@ -748,7 +777,7 @@ export default function AdminDashboard() {
               </div>
               <div
                 style={{
-                  marginTop: "50px",
+                  marginTop: "90px",
                   display: "flex",
                   justifyContent: "space-between",
                   gap: "10px",
@@ -816,7 +845,7 @@ export default function AdminDashboard() {
             <p className="projectOverview_content">Revenue Overview</p>
             <div className="Project_progress">
               <div
-                className="pt-2 pe-3"
+                className="pt-2 pe-4"
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -873,23 +902,12 @@ export default function AdminDashboard() {
               <div
                 style={{
                   width: "100%",
-                  height: "280px",
                 }}
               >
-                <ResponsiveContainer width="100%" height={280}>
-                  <BarChart data={data22} barCategoryGap="20%">
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="name" />
-                    <YAxis tickFormatter={(value) => `$ ${value}`} />
-                    <Tooltip content={<CustomTooltip />} />
-                    <RechartsBar
-                      dataKey="revenue"
-                      fill="#007bff"
-                      radius={[4, 4, 0, 0]}
-                      activeBar={{ fill: "#0056b3" }}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
+                <canvas
+                  ref={barchartref}
+                  className="indian-finance-revneue-overview ms-2"
+                />
               </div>
             </div>
           </div>
@@ -908,50 +926,35 @@ export default function AdminDashboard() {
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  padding: "0px 20px",
+                  padding: "10px 20px",
                 }}
               >
                 <span className="adminName" style={{ fontSize: "14px" }}>
-                  loreum lpsum
+                  Profit And loss Summary-{Selectedyear}
                 </span>
-                <i
-                  className="bi bi-three-dots"
-                  style={{
-                    color: "#989898",
-                    fontSize: "28px",
-                    fontWeight: "600",
-                    cursor: "pointer",
-                  }}
-                ></i>
               </div>
               <div
+                className="mt-4"
                 style={{
-                  width: "75%",
-                  padding: "20px",
+                  width: "80%",
+                  padding: "10px",
                   border: "1px solid",
                   marginLeft: "100px",
                 }}
               >
                 <div>
-                  <div
-                    style={{
-                      display: "inline-block",
-                      border: "1px solid #eaeaea",
-                      padding: "5px 10px",
-                      borderRadius: "5px",
-                      backgroundColor: "#f9f9f9",
-                    }}
-                  >
+                  <div>
                     <DatePicker
                       selected={selectedDate}
-                      onChange={(date) => setSelectedDate(date)}
-                      dateFormat="MMM dd"
-                      placeholderText="Select a date"
-                      style={{ border: "none!impartant" }}
+                      onChange={(date) => ProfitOrLossSummaryOnchange(date)}
+                      showYearPicker
+                      dateFormat="yyyy"
+                      placeholderText="Select a year"
+                      className="form-control"
                     />
                   </div>
                 </div>
-                <ChartJSBar data={data3} options={options3} />
+                <ChartJSBar data={data3} options={options3} className="mt-2" />
               </div>
             </div>
           </div>
@@ -963,21 +966,12 @@ export default function AdminDashboard() {
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  padding: "0px 20px",
+                  padding: "10px 20px",
                 }}
               >
                 <span className="adminName" style={{ fontSize: "14px" }}>
                   Latest update
                 </span>
-                <i
-                  className="bi bi-three-dots"
-                  style={{
-                    color: "#989898",
-                    fontSize: "28px",
-                    fontWeight: "600",
-                    cursor: "pointer",
-                  }}
-                ></i>
               </div>
               {sortedRecentActivities.length > 0 && (
                 <div className="latest_updatesImage row ">
@@ -1121,7 +1115,7 @@ export default function AdminDashboard() {
                 style={{
                   border: "1px solid #64646430",
                   width: "100%",
-                  marginTop: "40px",
+                  marginTop: "60px",
                 }}
               ></div>
               <div className="viewAlldiv">

@@ -77,11 +77,8 @@ const EditEmployeePopup = () => {
     const Rolesresponse = await RolesService.FcnGetRoles();
 
     var rolesResult = Rolesresponse.data;
-    setRoleList(rolesResult);
-
-    // if (response.isSuccess) {
-    //   setEmployees(response.item);
-    // }
+    const activeRoles = rolesResult.filter((role) => role.status === "Active");
+    setRoleList(activeRoles);
     setEmployeelist(response.item);
     var getEmployeeResponse =
       await AdminDashboardServices.fcngetEmployeeDetails(employeeID);

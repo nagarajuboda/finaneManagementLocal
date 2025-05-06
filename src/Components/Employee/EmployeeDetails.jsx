@@ -2,8 +2,11 @@ import "../../assets/Styles/EmployeePages/EmployeeDetails.css";
 import userProfile from "../../assets/Images/adminprofile.png";
 import { useEffect, useState, React } from "react";
 import axios from "axios";
+import ellips from "../../assets/Images/Ellipse.png";
+import checkimage from "../../assets/Images/check.png";
 import EmployeeService from "../../Service/EmployeeService/EmployeeService";
 import { apiurl } from "../../Service/createAxiosInstance";
+import { SixtyFps } from "@mui/icons-material";
 export default function EmployeeDetails() {
   const employeeID = sessionStorage.getItem("id");
 
@@ -15,6 +18,8 @@ export default function EmployeeDetails() {
   const [isVisible, setisVisible] = useState(false);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isTooltipVisible, setTooltipVisible] = useState(false);
+  const [empStatus, setEmpStatus] = useState("");
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -53,6 +58,25 @@ export default function EmployeeDetails() {
       document.removeEventListener("click", closeDropdown);
     };
   }, []);
+  const handleStatusChange = async (status) => {
+    setEmployee({ ...employee, employeeStatus: status });
+    var response = await EmployeeService.UpdateEmployeeStatus(
+      employeeID,
+      status
+    );
+    var result = response;
+    if (result.isSuccess) {
+      if (status === 1) {
+        setEmpStatus("activated");
+      } else {
+        setEmpStatus("deactivated");
+      }
+      setOpen(true);
+    }
+  };
+  const closeDeletePopup = () => {
+    setOpen(false);
+  };
   return (
     <div className="">
       <div className="Employee-details-content">employee details</div>
@@ -74,9 +98,9 @@ export default function EmployeeDetails() {
                 {`${employee.firstName} ${employee.lastName}`}
               </p>
               <p className="employee-id">{employee.employeeId}</p>
-              <div class="dropdown activeorDeactiveDropdownlist">
+              <div className="dropdown activeorDeactiveDropdownlist">
                 <button
-                  class=" dropdown-toggle dropdowninside "
+                  className="dropdown-toggle dropdowninside"
                   type="button"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
@@ -85,9 +109,28 @@ export default function EmployeeDetails() {
                     color: "white",
                   }}
                 >
-                  <span class="dot"></span>
+                  <span className="dot"></span>
                   {employee.employeeStatus ? "Active" : "Inactive"}
                 </button>
+
+                <ul className="dropdown-menu">
+                  <li>
+                    <button
+                      className="dropdown-item"
+                      onClick={() => handleStatusChange(1)}
+                    >
+                      Active
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className="dropdown-item"
+                      onClick={() => handleStatusChange(0)}
+                    >
+                      Inactive
+                    </button>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
@@ -385,6 +428,38 @@ export default function EmployeeDetails() {
           </div>
         </div>
       </div>
+      {open && (
+        <div className="unique-popup-overlay">
+          <div className="unique-popup-container">
+            <div className="unique-popup-icon">
+              <div className="ellipse-container">
+                <img
+                  src={checkimage}
+                  alt="Check"
+                  className="check-image"
+                  height="40px"
+                  width="40px"
+                />
+                <img
+                  src={ellips}
+                  alt="Ellipse"
+                  className="ellipse-image"
+                  height="65px"
+                  width="65px"
+                />
+              </div>
+            </div>
+            <h2 className="unique-popup-title">
+              {" "}
+              Employee has been {empStatus} successfully.
+            </h2>
+            <p className="unique-popup-message">Click OK to see the results</p>
+            <button className="unique-popup-button" onClick={closeDeletePopup}>
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
