@@ -328,7 +328,7 @@ export default function AddProject() {
       <div className="carddiv">
         <form onSubmit={formSubmit}>
           <div className="row m-0" style={{ paddingTop: "30px" }}>
-            <div className="col-3">
+            <div className="col-3 col-12 col-md-12 col-lg-3 mb-3">
               <TextField
                 label="Project ID"
                 placeholder="12"
@@ -384,7 +384,7 @@ export default function AddProject() {
                 </span>
               )}
             </div>
-            <div className="col-3">
+            <div className="col-3 col-12 col-md-12 col-lg-3 mb-3">
               <TextField
                 label="Project Name"
                 placeholder="loreum ipsum"
@@ -440,7 +440,7 @@ export default function AddProject() {
                 </span>
               )}
             </div>
-            <div className="col-3">
+            <div className="col-3 col-12 col-md-12 col-lg-3 mb-3">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   label="Project Start date & Time"
@@ -503,7 +503,7 @@ export default function AddProject() {
                 </span>
               )}
             </div>
-            <div className="col-3">
+            <div className="col-3 col-12 col-md-12 col-lg-3 mb-3">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   label="Project End date & Time"
@@ -568,7 +568,7 @@ export default function AddProject() {
           </div>
           <div className="row m-0" style={{ paddingTop: "33px" }}>
             <div
-              className="col-2 row m-0"
+              className="row m-0 col-2 col-10 col-md-12 col-lg-2 mb-3"
               style={{ display: "flex", justifyContent: "space-between" }}
             >
               <TextField
@@ -645,10 +645,10 @@ export default function AddProject() {
                 </span>
               )}
             </div>
-            <div className=" col-1">
+            <div className="col-1 ">
               <img
                 src={image}
-                className="ms-5"
+                className=""
                 alt=""
                 width="40px"
                 height="40px"
@@ -656,7 +656,7 @@ export default function AddProject() {
                 onClick={ClientPopup}
               />
             </div>
-            <div className="col-3">
+            <div className="col-3  col-10 col-md-12 col-lg-3 mb-3">
               <TextField
                 label="Project Manager"
                 variant="outlined"
@@ -727,7 +727,7 @@ export default function AddProject() {
                 </span>
               )}
             </div>
-            <div className="col-3">
+            <div className="col-3 col-3 col-10 col-md-12 col-lg-3 mb-3">
               <TextField
                 label="Department"
                 placeholder="Enter your Role"
@@ -796,7 +796,7 @@ export default function AddProject() {
                 </span>
               )}
             </div>
-            <div className="col-3">
+            <div className="col-3  col-10 col-md-12 col-lg-3 mb-3">
               <TextField
                 label="Team"
                 placeholder="Enter your Role"
@@ -867,7 +867,7 @@ export default function AddProject() {
             </div>
           </div>
           <div className="row m-0" style={{ paddingTop: "33px" }}>
-            <div className="col-3">
+            <div className="col-3  col-10 col-md-12 col-lg-3 mb-3">
               <TextField
                 label="Currency"
                 variant="outlined"
@@ -1007,7 +1007,7 @@ export default function AddProject() {
           >
             <div className="col-10"></div>
             <div
-              className="col-2"
+              className="col-2  col-10 col-md-6 col-lg-3 mb-3"
               style={{
                 display: "flex",
                 justifyContent: "space-between",

@@ -92,6 +92,7 @@ export default function AdminDashboard() {
     const userDetails = JSON.parse(localStorage.getItem("sessionData"));
     FetchData();
     ProfitOrLossSummaryOnchange(selectedDate);
+    Graph(monthlyRevenueData);
   }, [selectedDate]);
   const monthMap = {
     January: "1",
@@ -107,25 +108,64 @@ export default function AdminDashboard() {
     November: "11",
     December: "12",
   };
+  console.log(monthlyRevenueData, "revenue values");
   const Graph = (result) => {
     if (barchartintance.current) {
       barchartintance.current.destroy();
     }
-    const myChartRef = barchartref.current.getContext("2d");
-    let Projects;
-    let revenueValues;
-    let dataValues;
-    let highestValue;
-    let barcolors;
-    if (result.isSuccess) {
+
+    const myChartRef = barchartref.current?.getContext("2d");
+    if (!myChartRef) return;
+
+    let Projects = [];
+    let revenueValues = [];
+    let dataValues = [];
+    let highestValue = 0;
+    let barcolors = [];
+
+    if (result.isSuccess && result.item.length > 0) {
       Projects = result.item.map((data) => data.projectName);
       revenueValues = result.item.map((data) => data.totalRevenue);
+
+      const hasData = revenueValues.some((val) => val > 0);
+
+      if (!hasData) {
+        // Display message instead of chart
+        const canvas = barchartref.current;
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "#666";
+        ctx.textAlign = "center";
+        ctx.fillText(
+          "No revenue data available for this period.",
+          canvas.width / 2,
+          canvas.height / 2
+        );
+        return;
+      }
+
       dataValues = revenueValues;
       highestValue = Math.max(...dataValues);
-      barcolors = dataValues.map((value) => {
-        return value === highestValue ? "#335CFF" : "#DCE6EF";
-      });
+      barcolors = dataValues.map((value) =>
+        value === highestValue ? "#335CFF" : "#DCE6EF"
+      );
+    } else {
+      // Display message if no result or empty item list
+      const canvas = barchartref.current;
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.font = "16px Arial";
+      ctx.fillStyle = "#666";
+      ctx.textAlign = "center";
+      ctx.fillText(
+        "No revenue data available for this period.",
+        canvas.width / 2,
+        canvas.height / 2
+      );
+      return;
     }
+
     barchartintance.current = new Chart(myChartRef, {
       type: "bar",
       data: {
@@ -213,14 +253,12 @@ export default function AdminDashboard() {
             ctx.save();
             ctx.fillStyle = "#F5F5F5";
             ctx.clearRect(0, 0, chart.width, chart.height);
-
             ctx.fillRect(
               chartArea.left,
               chartArea.top,
               chartArea.right - chartArea.left,
               chartArea.bottom - chartArea.top
             );
-
             ctx.restore();
           },
         },
@@ -233,6 +271,133 @@ export default function AdminDashboard() {
       }
     };
   };
+
+  // const Graph = (result) => {
+  //   if (barchartintance.current) {
+  //     barchartintance.current.destroy();
+  //   }
+  //   const myChartRef = barchartref.current.getContext("2d");
+  //   let Projects;
+  //   let revenueValues;
+  //   let dataValues;
+  //   let highestValue;
+  //   let barcolors;
+  //   if (result.isSuccess) {
+  //     Projects = result.item.map((data) => data.projectName);
+  //     revenueValues = result.item.map((data) => data.totalRevenue);
+  //     dataValues = revenueValues;
+  //     highestValue = Math.max(...dataValues);
+  //     barcolors = dataValues.map((value) => {
+  //       return value === highestValue ? "#335CFF" : "#DCE6EF";
+  //     });
+  //   }
+  //   barchartintance.current = new Chart(myChartRef, {
+  //     type: "bar",
+  //     data: {
+  //       labels: Projects,
+  //       datasets: [
+  //         {
+  //           data: revenueValues,
+  //           backgroundColor: barcolors,
+  //           barThickness: 60,
+  //           maxBarThickness: 40,
+  //           categoryPercentage: 10,
+  //           barPercentage: 20,
+  //         },
+  //       ],
+  //     },
+  //     options: {
+  //       maintainAspectRatio: false,
+  //       scales: {
+  //         y: {
+  //           beginAtZero: true,
+  //           min: 0,
+  //           max: 700000,
+  //           grid: {
+  //             display: true,
+  //             drawBorder: true,
+  //             color: "#A5AEB4",
+  //             borderDash: [4, 4],
+  //             drawTicks: true,
+  //           },
+  //           border: {
+  //             display: true,
+  //           },
+  //           ticks: {
+  //             font: {
+  //               size: 14,
+  //               weight: "bold",
+  //             },
+  //             color: "#A5AEB4",
+  //             callback: function (value) {
+  //               return `$ ${value.toLocaleString()}`;
+  //             },
+  //           },
+  //         },
+  //         x: {
+  //           grid: {
+  //             display: true,
+  //             drawBorder: true,
+  //             color: "#A5AEB4",
+  //             borderDash: [4, 4],
+  //             drawTicks: true,
+  //           },
+  //           border: {
+  //             display: true,
+  //           },
+  //           ticks: {
+  //             font: {
+  //               size: 14,
+  //               weight: "bold",
+  //             },
+  //             color: "#A5AEB4",
+  //           },
+  //         },
+  //       },
+  //       plugins: {
+  //         chartArea: {
+  //           backgroundColor: "red",
+  //         },
+  //         legend: {
+  //           display: false,
+  //         },
+  //         tooltip: {
+  //           callbacks: {
+  //             label: function (tooltipItem) {
+  //               return `$${tooltipItem.raw.toLocaleString()}`;
+  //             },
+  //           },
+  //         },
+  //       },
+  //     },
+  //     plugins: [
+  //       {
+  //         id: "customBackgroundColor",
+  //         beforeDraw: (chart) => {
+  //           const { ctx, chartArea } = chart;
+  //           ctx.save();
+  //           ctx.fillStyle = "#F5F5F5";
+  //           ctx.clearRect(0, 0, chart.width, chart.height);
+
+  //           ctx.fillRect(
+  //             chartArea.left,
+  //             chartArea.top,
+  //             chartArea.right - chartArea.left,
+  //             chartArea.bottom - chartArea.top
+  //           );
+
+  //           ctx.restore();
+  //         },
+  //       },
+  //     ],
+  //   });
+
+  //   return () => {
+  //     if (barchartintance.current) {
+  //       barchartintance.current.destroy();
+  //     }
+  //   };
+  // };
 
   const ViewAll = () => {
     navigate("/dashboard/AllRecnetActivities");

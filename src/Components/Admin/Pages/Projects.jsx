@@ -138,7 +138,7 @@ export default function Projectss() {
         Projects
       </p>
       <div className="AllProject-maindiv">
-        <div
+        {/* <div
           className="row"
           style={{
             paddingTop: "20px",
@@ -256,6 +256,80 @@ export default function Projectss() {
                 >
                   Add New Project
                 </span>
+              </button>
+            </div>
+          </div>
+        </div> */}
+        <div className="container-fluid pt-3">
+          <div className="row g-2 row-cols-1 row-cols-md-auto align-items-center justify-content-md-between">
+            <div className="col">
+              <p
+                className="Project-list-content mb-0"
+                style={{ fontSize: "14px" }}
+              >
+                Project list
+              </p>
+            </div>
+
+            <div className="col position-relative">
+              <input
+                type="text"
+                onChange={handleSearchChange}
+                value={searchQuery}
+                className="form-control"
+                placeholder="Search Projects"
+                style={{ fontSize: "14px", paddingRight: "30px" }}
+              />
+              <i
+                className="bi bi-search position-absolute top-50 end-0 translate-middle-y me-2"
+                style={{
+                  fontSize: "18px",
+                  color: "#888",
+                  pointerEvents: "none",
+                }}
+              ></i>
+            </div>
+
+            <div className="col">
+              <select
+                className="form-select"
+                onChange={handleItemsPerPageChange}
+                value={itemsPerPage}
+                style={{ fontSize: "14px", height: "36px" }}
+              >
+                <option value="10">Show 10 Entities</option>
+                <option value="25">Show 25 Entities</option>
+                <option value="50">Show 50 Entities</option>
+                <option value="-1">Show All</option>
+              </select>
+            </div>
+
+            <div className="col d-flex justify-content-md-end">
+              <button
+                className="btn btn-danger w-100 w-md-auto"
+                disabled={disiblebuttons}
+                onClick={DeleteSelectedRecords}
+                style={{ fontSize: "14px", height: "36px" }}
+              >
+                Delete Selected
+              </button>
+            </div>
+
+            {/* Add new project button */}
+            <div className="col d-flex justify-content-md-start">
+              <button
+                className="btn btn-light border d-flex align-items-center w-100 w-md-auto"
+                onClick={AddNewProject}
+                style={{ height: "36px", fontSize: "14px" }}
+              >
+                <img
+                  src={userimage}
+                  alt="Add"
+                  height="18px"
+                  width="18px"
+                  className="me-2"
+                />
+                <strong>Add New Project</strong>
               </button>
             </div>
           </div>
