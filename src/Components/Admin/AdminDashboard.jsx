@@ -80,6 +80,7 @@ export default function AdminDashboard() {
   const [recentActivities, setRecentActivities] = useState([]);
   const barchartref = useRef(null);
   const [ProfitOrLossSummary, setProfitOrLossSummary] = useState([]);
+  const [projectProgress, setProjectProgress] = useState({});
   const navigate = useNavigate();
   const [selectedDate1, setSelectedDate1] = useState(
     new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
@@ -130,13 +131,14 @@ export default function AdminDashboard() {
       const hasData = revenueValues.some((val) => val > 0);
 
       if (!hasData) {
-        // Display message instead of chart
         const canvas = barchartref.current;
         const ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.font = "16px Arial";
+        ctx.font = "2px Arial";
         ctx.fillStyle = "#666";
         ctx.textAlign = "center";
+        ctx.textBaseline = "middle"; // vertically center the text
+
         ctx.fillText(
           "No revenue data available for this period.",
           canvas.width / 2,
@@ -155,8 +157,8 @@ export default function AdminDashboard() {
       const canvas = barchartref.current;
       const ctx = canvas.getContext("2d");
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.font = "16px Arial";
-      ctx.fillStyle = "#666";
+      ctx.font = "12px Arial";
+      ctx.fillStyle = "#000000";
       ctx.textAlign = "center";
       ctx.fillText(
         "No revenue data available for this period.",
@@ -412,6 +414,9 @@ export default function AdminDashboard() {
     Legend
   );
   const FetchData = async () => {
+    var projectProgressResponse =
+      await AdminDashboardServices.getProjectProgressStatus();
+    setProjectProgress(projectProgressResponse);
     var ActivityLogsResponse = await AdminDashboardServices.FcnActivityLogs();
     setRecentActivities(ActivityLogsResponse);
     var response = await EmployeeService.TotalEmployees();
@@ -429,7 +434,7 @@ export default function AdminDashboard() {
       setTotalProjects(response.item.item4);
     }
   };
-
+  console.log(projectProgress, "==========>");
   const sortedRecentActivities = recentActivities
     .filter((notif) => {
       const notifDate = new Date(notif.timestamp);
@@ -473,7 +478,11 @@ export default function AdminDashboard() {
     labels: ["In Progress", "Completed", "Not Started"],
     datasets: [
       {
-        data: [InProgress, completed, NotStatedProgress],
+        data: [
+          projectProgress.inProgress,
+          projectProgress.completed,
+          projectProgress.notStarted,
+        ],
         backgroundColor: ["#007BFF", "#00CFFF", "#E0E0E0"],
         hoverBackgroundColor: ["#0056b3", "#0099cc", "#c6c6c6"],
         borderWidth: 0,

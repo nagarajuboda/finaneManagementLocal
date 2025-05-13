@@ -492,7 +492,7 @@ export function ViewProject() {
           </div>
         </div>
         <div className="row underline-button-row"></div>
-        {/* <div className="row m-0" style={{ paddingTop: "15px" }}>
+        <div className="row m-0" style={{ paddingTop: "15px" }}>
           <div className="col-2">
             <p className="projectPrpgress"> Project Team Members</p>
           </div>
@@ -631,17 +631,14 @@ export function ViewProject() {
               </button>
             </div>
           )}
-        </div> */}
-        <div
+        </div>
+        {/* <div
           className="row m-0 gy-2 align-items-center"
           style={{ paddingTop: "15px" }}
         >
-          {/* Label */}
           <div className="col-12 col-md-3 col-lg-2">
             <p className="projectPrpgress">Project Team Members</p>
           </div>
-
-          {/* Search Box */}
           <div className="col-12 col-md-5 col-lg-3">
             <div
               style={{
@@ -675,7 +672,6 @@ export function ViewProject() {
             </div>
           </div>
 
-          {/* Spacing or Empty Columns */}
           {userDetails.employee.role.name === "Admin" ||
           userDetails.employee.role.name === "Project Manager" ? (
             <div className="d-none d-lg-block col-lg-3"></div>
@@ -683,7 +679,6 @@ export function ViewProject() {
             <div className="d-none d-lg-block col-lg-5 ms-lg-5"></div>
           )}
 
-          {/* Import Button (only for Admin / PM) */}
           {(userDetails.employee.role.name === "Admin" ||
             userDetails.employee.role.name === "Project Manager") && (
             <div className="col-6 col-md-3 col-lg-1 d-flex justify-content-end">
@@ -756,7 +751,7 @@ export function ViewProject() {
               </button>
             </div>
           )}
-        </div>
+        </div> */}
 
         <div style={{ padding: "10px", paddingBottom: "35px" }}>
           <table

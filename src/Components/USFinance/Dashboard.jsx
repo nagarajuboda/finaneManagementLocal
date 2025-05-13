@@ -34,6 +34,10 @@ export default function UsFinanceTeamDashboard() {
   const [monthlyRevenueData, setMonthlyRevenueData] = useState([]);
   const [RevenueValues, setRevneuValues] = useState();
   const [ProjectNames, setProjectNames] = useState([]);
+  const [
+    BillbleNonBillableEmployeePercentage,
+    setBillbleNonBillableEmployeePercentage,
+  ] = useState({});
   const formattedDate = new Intl.DateTimeFormat("en-US", {
     weekday: "long",
     year: "numeric",
@@ -54,10 +58,19 @@ export default function UsFinanceTeamDashboard() {
     November: "11",
     December: "12",
   };
-
+  useEffect(() => {
+    FetchData();
+  }, []);
   const handleDateChange1 = async (date) => {
     setSelectedDate(date);
   };
+  const FetchData = async () => {
+    var response =
+      await USFinanceTeamService.GetbillableAndNonbillablePercentage();
+
+    setBillbleNonBillableEmployeePercentage(response);
+  };
+
   const [activeIndex, setActiveIndex] = useState(-1);
   const onPieEnter = (_, index) => {
     setActiveIndex(index);
@@ -90,10 +103,39 @@ export default function UsFinanceTeamDashboard() {
     { name: "Submitted Timesheet", value: 70, color: "#1E73DC" },
     { name: "Timesheet Not Submitted", value: 30, color: "#F67D3B" },
   ];
+
   const data11 = [
-    { name: "Billable Employees", value: 70, color: "#F5F5F5" },
-    { name: "Non Billable Employees", value: 30, color: "#1E73DC" },
+    {
+      name: "Billable Employees",
+      value: Number(
+        BillbleNonBillableEmployeePercentage?.item?.billablePercentage?.toFixed(
+          2
+        )
+      ),
+      color: "#F5F5F5",
+    },
+    {
+      name: "Non Billable Employees",
+      value: Number(
+        BillbleNonBillableEmployeePercentage?.item?.nonBillablePercentage?.toFixed(
+          2
+        )
+      ),
+      color: "#1E73DC",
+    },
   ];
+  // const data11 = [
+  //   {
+  //     name: "Billable Employees",
+  //     value: BillbleNonBillableEmployeePercentage.item.billablePercentage,
+  //     color: "#F5F5F5",
+  //   },
+  //   {
+  //     name: "Non Billable Employees",
+  //     value: BillbleNonBillableEmployeePercentage.item.nonBillablePercentage,
+  //     color: "#1E73DC",
+  //   },
+  // ];
   const COLORS = ["#FDCB58", "#D3D3D3"];
   const seriesColor = {
     base: "#f5564a",
@@ -845,7 +887,11 @@ export default function UsFinanceTeamDashboard() {
                           fontSize: "18px",
                         }}
                       >
-                        70%
+                        {Number(
+                          BillbleNonBillableEmployeePercentage?.item?.billablePercentage?.toFixed(
+                            2
+                          )
+                        )}
                       </span>
                       Billable Employees
                     </div>
@@ -864,7 +910,11 @@ export default function UsFinanceTeamDashboard() {
                           fontSize: "18px",
                         }}
                       >
-                        30%
+                        {Number(
+                          BillbleNonBillableEmployeePercentage?.item?.nonBillablePercentage?.toFixed(
+                            2
+                          )
+                        )}
                       </span>{" "}
                       Non Billable Employees
                     </div>

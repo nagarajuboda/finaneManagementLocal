@@ -415,23 +415,23 @@ label {
   font-size: 18px;
   color: #555;
 }
-@media (max-width: 1024px) {
+/* @media (max-width: 1024px) {
   .row {
     flex-direction: column;
     height: auto;
   }
 
   .imagediv {
-    display: none; /* Hide image section on smaller screens */
+    display: none;
   }
 
   .formdiv {
     width: 100%;
     padding: 40px;
   }
-}
+} */
 
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .formdiv1 {
     max-width: 300px;
   }
@@ -453,4 +453,4 @@ label {
   .logincontent {
     font-size: 20px;
   }
-}
+} */

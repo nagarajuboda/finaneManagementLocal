@@ -11,6 +11,12 @@ const USFinanceTeamService = {
     );
     return response.data;
   },
+  async GetbillableAndNonbillablePercentage() {
+    const response = await apiurl.get(
+      "/Revenue/GetBillableEmployeesPercentage"
+    );
+    return response.data;
+  },
   async AddRevenue(obj, isSubmitted) {
     const response = await apiurl.post(
       `/Revenue/AddRevenue?isSubmitted=${isSubmitted}`,

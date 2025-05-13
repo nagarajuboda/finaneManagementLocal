@@ -69,6 +69,12 @@ const AdminDashboardServices = {
     const response = await apiurl.get(`/Projects/GetProjectManagers`);
     return response.data;
   },
+  async getProjectProgressStatus() {
+    const response = await apiurl.get(
+      "/Projects/projects-progress-status-percentage"
+    );
+    return response.data;
+  },
   async FcnGetRole(roleId) {
     const response = await apiurl.get(`/Roles/getRole?id=${roleId} `);
     return response;
