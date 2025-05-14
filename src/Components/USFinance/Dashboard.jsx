@@ -600,7 +600,7 @@ export default function UsFinanceTeamDashboard() {
                       <div
                         style={{
                           position: "absolute",
-                          right: "200px",
+                          right: "120px",
                           top: "65%",
                           fontSize: "14px",
                         }}

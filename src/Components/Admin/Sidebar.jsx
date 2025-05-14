@@ -88,7 +88,6 @@ const Sidebar = ({ children }) => {
       path: "/user/Login",
       action: () => {
         localStorage.removeItem("sessionData");
-        // You can add other cleanup actions here
       },
     },
   ];
