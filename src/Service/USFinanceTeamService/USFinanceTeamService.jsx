@@ -11,6 +11,12 @@ const USFinanceTeamService = {
     );
     return response.data;
   },
+  async GetbillableAndNonbillablePercentage() {
+    const response = await apiurl.get(
+      "/Revenue/GetBillableEmployeesPercentage"
+    );
+    return response.data;
+  },
   async AddRevenue(obj, isSubmitted) {
     const response = await apiurl.post(
       `/Revenue/AddRevenue?isSubmitted=${isSubmitted}`,
@@ -23,6 +29,12 @@ const USFinanceTeamService = {
       `/Revenue/GetRevenueOverview?month=${month}&year=${year}`
     );
     return response;
+  },
+  async SubmittedNotSubmittedTimesheet(month, year) {
+    const response = await apiurl.get(
+      `/Projects/timesheet-submission-percentage?month=${month}&year=${year}`
+    );
+    return response.data;
   },
   async FcnGetTimeSheetDetails(projectID, monthNumber, year) {
     const response = await apiurl.get(

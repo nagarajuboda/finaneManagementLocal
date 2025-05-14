@@ -13,9 +13,10 @@ import { useEffect, useRef, useState } from "react";
 import React from "react";
 import { Doughnut } from "react-chartjs-2";
 import axios from "axios";
-import { addMonths } from "date-fns";
+import { addMonths, sub } from "date-fns";
 import { apiurl } from "../../Service/createAxiosInstance";
 import USFinanceTeamService from "../../Service/USFinanceTeamService/USFinanceTeamService";
+import AdminDashboardServices from "../../Service/AdminService/AdminDashboardServices";
 export default function UsFinanceTeamDashboard() {
   const chartref = useRef(null);
   const barchartref = useRef(null);
@@ -26,14 +27,18 @@ export default function UsFinanceTeamDashboard() {
   const barchartintance = useRef(null);
   const today = new Date();
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [submitedTimesheet, setsubmitedTimesheet] = useState("70%");
-  const [NotsubmitedTimesheet, setNotsubmitedTimesheet] = useState("30%");
   const [selectedDate1, setSelectedDate1] = useState(
     new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
   );
   const [monthlyRevenueData, setMonthlyRevenueData] = useState([]);
   const [RevenueValues, setRevneuValues] = useState();
   const [ProjectNames, setProjectNames] = useState([]);
+  const [projectCounts, setProjectcounts] = useState({});
+  const [
+    BillbleNonBillableEmployeePercentage,
+    setBillbleNonBillableEmployeePercentage,
+  ] = useState({});
+  const [SubmittedOrNotSubmitted, setSubmittedOrNotSubmitted] = useState({});
   const formattedDate = new Intl.DateTimeFormat("en-US", {
     weekday: "long",
     year: "numeric",
@@ -54,161 +59,68 @@ export default function UsFinanceTeamDashboard() {
     November: "11",
     December: "12",
   };
+  useEffect(() => {
+    FetchData();
+  }, []);
+  const FetchData = async () => {
+    var response =
+      await USFinanceTeamService.GetbillableAndNonbillablePercentage();
+    setBillbleNonBillableEmployeePercentage(response);
 
-  const handleDateChange1 = async (date) => {
-    setSelectedDate(date);
+    var getProjectProgressStatus =
+      await AdminDashboardServices.getProjectProgressStatus();
+    setProjectcounts(getProjectProgressStatus);
   };
+
   const [activeIndex, setActiveIndex] = useState(-1);
   const onPieEnter = (_, index) => {
     setActiveIndex(index);
   };
-  const data1 = {
-    labels: ["Submitted Timesheet", "Timesheet Not Submitted"],
-    datasets: [
-      {
-        data: [70, 30],
-        backgroundColor: ["#2d9cdb", "#f2994a"],
-        hoverBackgroundColor: ["#1d7cb3", "#e0873e"],
-        borderWidth: 0,
-      },
-    ],
-  };
-
-  const options1 = {
-    cutout: "70%",
-    plugins: {
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        enabled: true,
-      },
-    },
-  };
-
   const data = [
-    { name: "Submitted Timesheet", value: 70, color: "#1E73DC" },
-    { name: "Timesheet Not Submitted", value: 30, color: "#F67D3B" },
+    {
+      name: "Submitted Timesheet",
+      value: SubmittedOrNotSubmitted.submitted,
+      color: "#1E73DC",
+    },
+    {
+      name: "Timesheet Not Submitted",
+      value: SubmittedOrNotSubmitted.notSubmitted,
+      color: "#F67D3B",
+    },
   ];
+
   const data11 = [
-    { name: "Billable Employees", value: 70, color: "#F5F5F5" },
-    { name: "Non Billable Employees", value: 30, color: "#1E73DC" },
+    {
+      name: "Billable Employees",
+      value: Number(
+        BillbleNonBillableEmployeePercentage?.item?.billablePercentage?.toFixed(
+          2
+        )
+      ),
+      color: "#F5F5F5",
+    },
+    {
+      name: "Non Billable Employees",
+      value: Number(
+        BillbleNonBillableEmployeePercentage?.item?.nonBillablePercentage?.toFixed(
+          2
+        )
+      ),
+      color: "#1E73DC",
+    },
   ];
-  const COLORS = ["#FDCB58", "#D3D3D3"];
-  const seriesColor = {
-    base: "#f5564a",
-    fillId: registerGradient("linear", {
-      colors: [
-        {
-          offset: "20%",
-          color: "#97c95c",
-        },
-        {
-          offset: "90%",
-          color: "#eb3573",
-        },
-      ],
-    }),
-  };
-  const barChartOptions = {
-    data: [
-      { category: "GXO", revenue: 1500 },
-      { category: "cianahealth", revenue: 1000 },
-      { category: "EDR", revenue: 2000 },
-      { category: "XPO", revenue: 2800 },
-      { category: "Title", revenue: 500 },
-      { category: "Title", revenue: 1800 },
-      { category: "Title", revenue: 1300 },
-    ],
-    series: [
-      {
-        type: "bar",
-        xKey: "category",
-        yKey: "revenue",
-        fill: ({ datum }) => (datum.revenue === 2800 ? "#0066FF" : "#CBD5E1"),
-        tooltip: {
-          renderer: ({ datum }) => ({
-            title: "Project Revenue",
-            content: `$${datum.revenue}`,
-          }),
-        },
-      },
-    ],
-    legend: { enabled: false },
-    axes: [
-      { type: "category", position: "bottom", title: { text: "" } },
-      { type: "number", position: "left", title: { text: "$ Revenue" } },
-    ],
-  };
 
-  const pieChartOptions = {
-    data: [
-      { category: "Completed", value: 70 },
-      { category: "Pending", value: 30 },
-    ],
-    series: [
-      {
-        type: "pie",
-        angleKey: "value",
-        labelKey: "category",
-        fills: ["#FACC15", "#CBD5E1"],
-        innerRadius: 0,
-      },
-    ],
-    legend: { enabled: true },
-  };
-  useEffect(() => {
-    if (chartintance.current) {
-      chartintance.current.destroy();
-    }
-    const myChartRef = chartref.current.getContext("2d");
-    chartintance.current = new Chart(myChartRef, {
-      type: "pie",
-      data: {
-        datasets: [
-          {
-            data: [300, 50],
-            backgroundColor: ["rgb(217, 217, 212)", "rgb(221, 232, 70)"],
-            hoverOffset: 4,
-          },
-        ],
-      },
-    });
-    return () => {
-      if (chartintance.current) {
-        chartintance.current.destroy();
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (chartintance2.current) {
-      chartintance2.current.destroy();
-    }
-    const myChartRef = chartref2.current.getContext("2d");
-    chartintance2.current = new Chart(myChartRef, {
-      type: "pie",
-      data: {
-        datasets: [
-          {
-            data: [300, 50],
-            backgroundColor: ["rgb(54, 162, 235)", "rgb(244, 85, 85)"],
-            hoverOffset: 4,
-          },
-        ],
-      },
-    });
-    return () => {
-      if (chartintance2.current) {
-        chartintance2.current.destroy();
-      }
-    };
-  }, []);
   const handleDateChange = async (date) => {
     setSelectedDate1(date);
     const month = date.toLocaleString("default", { month: "long" });
     const year = date.getFullYear();
     const monthNumber = monthMap[month];
+    var SubmittedTimesheetresponse =
+      await USFinanceTeamService.SubmittedNotSubmittedTimesheet(
+        monthNumber,
+        year
+      );
+    setSubmittedOrNotSubmitted(SubmittedTimesheetresponse);
     var response = await USFinanceTeamService.FcnGetRevenueOverView(
       monthNumber,
       year
@@ -225,21 +137,59 @@ export default function UsFinanceTeamDashboard() {
     if (barchartintance.current) {
       barchartintance.current.destroy();
     }
-    const myChartRef = barchartref.current.getContext("2d");
-    let Projects;
-    let revenueValues;
-    let dataValues;
-    let highestValue;
-    let barcolors;
-    if (result.isSuccess) {
+
+    const myChartRef = barchartref.current?.getContext("2d");
+    if (!myChartRef) return;
+
+    let Projects = [];
+    let revenueValues = [];
+    let dataValues = [];
+    let highestValue = 0;
+    let barcolors = [];
+
+    if (result.isSuccess && result.item.length > 0) {
       Projects = result.item.map((data) => data.projectName);
       revenueValues = result.item.map((data) => data.totalRevenue);
+
+      const hasData = revenueValues.some((val) => val > 0);
+
+      if (!hasData) {
+        const canvas = barchartref.current;
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.font = "2px Arial";
+        ctx.fillStyle = "#666";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        ctx.fillText(
+          "No revenue data available for this period.",
+          canvas.width / 2,
+          canvas.height / 2
+        );
+        return;
+      }
+
       dataValues = revenueValues;
       highestValue = Math.max(...dataValues);
-      barcolors = dataValues.map((value) => {
-        return value === highestValue ? "#335CFF" : "#DCE6EF";
-      });
+      barcolors = dataValues.map((value) =>
+        value === highestValue ? "#335CFF" : "#DCE6EF"
+      );
+    } else {
+      const canvas = barchartref.current;
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.font = "12px Arial";
+      ctx.fillStyle = "#000000";
+      ctx.textAlign = "center";
+      ctx.fillText(
+        "No revenue data available for this period.",
+        canvas.width / 2,
+        canvas.height / 2
+      );
+      return;
     }
+
     barchartintance.current = new Chart(myChartRef, {
       type: "bar",
       data: {
@@ -249,14 +199,13 @@ export default function UsFinanceTeamDashboard() {
             data: revenueValues,
             backgroundColor: barcolors,
             barThickness: 60,
-            maxBarThickness: 50,
+            maxBarThickness: 40,
             categoryPercentage: 10,
             barPercentage: 20,
           },
         ],
       },
       options: {
-        responsive: true,
         maintainAspectRatio: false,
         scales: {
           y: {
@@ -264,12 +213,18 @@ export default function UsFinanceTeamDashboard() {
             min: 0,
             max: 700000,
             grid: {
-              color: "#E0E0E0",
+              display: true,
               drawBorder: true,
+              color: "#A5AEB4",
+              borderDash: [4, 4],
+              drawTicks: true,
+            },
+            border: {
+              display: true,
             },
             ticks: {
               font: {
-                size: 16,
+                size: 14,
                 weight: "bold",
               },
               color: "#A5AEB4",
@@ -280,13 +235,18 @@ export default function UsFinanceTeamDashboard() {
           },
           x: {
             grid: {
-              display: false,
+              display: true,
+              drawBorder: true,
               color: "#A5AEB4",
-              borderDash: [5, 5],
+              borderDash: [4, 4],
+              drawTicks: true,
+            },
+            border: {
+              display: true,
             },
             ticks: {
               font: {
-                size: 16,
+                size: 14,
                 weight: "bold",
               },
               color: "#A5AEB4",
@@ -316,6 +276,7 @@ export default function UsFinanceTeamDashboard() {
             const { ctx, chartArea } = chart;
             ctx.save();
             ctx.fillStyle = "#F5F5F5";
+            ctx.clearRect(0, 0, chart.width, chart.height);
             ctx.fillRect(
               chartArea.left,
               chartArea.top,
@@ -334,6 +295,7 @@ export default function UsFinanceTeamDashboard() {
       }
     };
   };
+
   useEffect(() => {
     handleDateChange(selectedDate1);
   }, [selectedDate1]);
@@ -352,40 +314,47 @@ export default function UsFinanceTeamDashboard() {
           className="col-3 "
           style={{ display: "flex", justifyContent: "end" }}
         >
-          <DatePicker
-            selected={selectedDate1}
-            onChange={handleDateChange1}
-            dateFormat="MMMM yyyy"
-            showMonthYearPicker
-            maxDate={
-              new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
-            }
-            className="timesheet-datepicker"
-            customInput={
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  cursor: "pointer",
-                  border: "1px solid #ccc",
-                  padding: "5px 10px",
-                  borderRadius: "5px",
-                  backgroundColor: "#fff",
-                }}
-              >
-                <span style={{ marginRight: "10px" }}>
-                  <img src={calenderImage1} alt="" height="20px" width="20px" />
-                </span>
-
-                <span>
-                  {selectedDate1.toLocaleString("default", {
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </span>
-              </div>
-            }
-          />
+          <div>
+            <DatePicker
+              selected={selectedDate1}
+              onChange={handleDateChange}
+              dateFormat="MMMM yyyy"
+              showMonthYearPicker
+              maxDate={
+                new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
+              }
+              className="timesheet-datepicker"
+              customInput={
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    cursor: "pointer",
+                    border: "1px solid #ccc",
+                    padding: "5px 10px",
+                    borderRadius: "5px",
+                    backgroundColor: "#fff",
+                    fontSize: "14px",
+                  }}
+                >
+                  <span style={{ marginRight: "10px" }}>
+                    <img
+                      src={calenderImage1}
+                      alt=""
+                      height="20px"
+                      width="20px"
+                    />
+                  </span>
+                  <span>
+                    {selectedDate1.toLocaleString("default", {
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </span>
+                </div>
+              }
+            />
+          </div>
         </div>
       </div>
       <div style={{ marginTop: "15px" }}>
@@ -394,58 +363,20 @@ export default function UsFinanceTeamDashboard() {
       <div className="row row-cols-1 row-cols-md-3 g-3 m-0">
         <div className="col d-flex justify-content-center">
           <div className="Project_progress1">
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <div>
-                <canvas
-                  ref={chartref}
-                  style={{ width: "100px", height: "50px" }}
-                />
-              </div>
-              <div>
-                <div className="dropdown mt-3 ms-4">
-                  <button
-                    className="dropdown-toggle this_month_content"
-                    type="button"
-                    id="dropdownMenuButton1"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                    style={{ color: "#989898", fontSize: "14px" }}
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <div className="mt-5 me-3">
+                <span
+                  className="total_projects_content"
+                  style={{ fontSize: "20px" }}
+                >
+                  <span
+                    style={{ fontSize: "20px", color: "black" }}
+                    className="me-2"
                   >
-                    This Month
-                  </button>
-                  <ul
-                    className="dropdown-menu custom-dropdown-widt w-50"
-                    aria-labelledby="dropdownMenuButton1"
-                    style={{ width: "100px" }}
-                  >
-                    <li>
-                      <a className="dropdown-item dropdownitems" href="#">
-                        Yearly
-                      </a>
-                    </li>
-                    <li className="mt-1">
-                      <a className="dropdown-item dropdownitems" href="#">
-                        Monthly
-                      </a>
-                    </li>
-                    <li className="mt-1">
-                      <a className="dropdown-item dropdownitems" href="#">
-                        Weekly
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="mt-5 me-3">
-                  <span className="total_projects_content">
-                    <span
-                      style={{ fontSize: "18px", color: "black" }}
-                      className="me-2"
-                    >
-                      12
-                    </span>
-                    Total Projects
+                    {projectCounts.totalProjects}
                   </span>
-                </div>
+                  Total Projects
+                </span>
               </div>
             </div>
           </div>
@@ -453,54 +384,18 @@ export default function UsFinanceTeamDashboard() {
 
         <div className="col d-flex justify-content-center">
           <div className="Project_progress1">
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", justifyContent: "center" }}>
               <div>
-                <canvas
-                  ref={chartref2}
-                  style={{ width: "100px", height: "50px" }}
-                />
-              </div>
-              <div>
-                <div className="dropdown mt-3 ms-4">
-                  <button
-                    className="dropdown-toggle this_month_content"
-                    type="button"
-                    id="dropdownMenuButton1"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                    style={{ color: "#989898", fontSize: "14px" }}
-                  >
-                    This Month
-                  </button>
-                  <ul
-                    className="dropdown-menu custom-dropdown-widt w-50"
-                    aria-labelledby="dropdownMenuButton1"
-                    style={{ width: "100px" }}
-                  >
-                    <li>
-                      <a className="dropdown-item dropdownitems" href="#">
-                        Yearly
-                      </a>
-                    </li>
-                    <li className="mt-1">
-                      <a className="dropdown-item dropdownitems" href="#">
-                        Monthly
-                      </a>
-                    </li>
-                    <li className="mt-1">
-                      <a className="dropdown-item dropdownitems" href="#">
-                        Weekly
-                      </a>
-                    </li>
-                  </ul>
-                </div>
                 <div className="mt-5 me-3">
-                  <span className="total_projects_content">
+                  <span
+                    className="total_projects_content"
+                    style={{ fontSize: "20px" }}
+                  >
                     <span
-                      style={{ fontSize: "18px", color: "black" }}
+                      style={{ fontSize: "20px", color: "black" }}
                       className="me-2"
                     >
-                      08
+                      {projectCounts.inProgressCount}
                     </span>
                     In Progress
                   </span>
@@ -533,51 +428,21 @@ export default function UsFinanceTeamDashboard() {
                       fontSize: "20px",
                     }}
                   >
-                    100
+                    {`${projectCounts.completed}%`}
                   </span>
                 </div>
               </div>
               <div>
-                <div className="dropdown mt-3 ms-5">
-                  <button
-                    className="dropdown-toggle this_month_content"
-                    type="button"
-                    id="dropdownMenuButton1"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                    style={{ color: "#989898", fontSize: "14px" }}
-                  >
-                    This Month
-                  </button>
-                  <ul
-                    className="dropdown-menu custom-dropdown-widt w-50"
-                    aria-labelledby="dropdownMenuButton1"
-                    style={{ width: "100px" }}
-                  >
-                    <li>
-                      <a className="dropdown-item dropdownitems" href="#">
-                        Yearly
-                      </a>
-                    </li>
-                    <li className="mt-1">
-                      <a className="dropdown-item dropdownitems" href="#">
-                        Monthly
-                      </a>
-                    </li>
-                    <li className="mt-1">
-                      <a className="dropdown-item dropdownitems" href="#">
-                        Weekly
-                      </a>
-                    </li>
-                  </ul>
-                </div>
                 <div className="mt-5 me-3">
-                  <span className="total_projects_content">
+                  <span
+                    className="total_projects_content"
+                    style={{ fontSize: "20px" }}
+                  >
                     <span
-                      style={{ fontSize: "18px", color: "black" }}
+                      style={{ fontSize: "20px", color: "black" }}
                       className="me-2"
                     >
-                      01
+                      {projectCounts.completedCount}
                     </span>
                     Completed Projects
                   </span>
@@ -658,24 +523,29 @@ export default function UsFinanceTeamDashboard() {
                       >
                         WEEKLY
                       </text>
-                      <line
-                        x1="332"
-                        y1="271"
-                        x2="500"
-                        y2="401"
-                        stroke="#514C4C"
-                        strokeWidth="4"
-                        fill="#596365"
-                      />
-                      <line
-                        x1="369"
-                        y1="300"
-                        x2="502"
-                        y2="280"
-                        stroke="#514C4C"
-                        strokeWidth="4"
-                        fill="#596365"
-                      />
+                      {SubmittedOrNotSubmitted.notSubmitted !== 0 && (
+                        <>
+                          <line
+                            x1="332"
+                            y1="271"
+                            x2="500"
+                            y2="401"
+                            stroke="#514C4C"
+                            strokeWidth="4"
+                            fill="#596365"
+                          />
+                          <line
+                            x1="369"
+                            y1="300"
+                            x2="502"
+                            y2="280"
+                            stroke="#514C4C"
+                            strokeWidth="4"
+                            fill="#596365"
+                          />
+                        </>
+                      )}
+
                       <text
                         x="62%"
                         y="65%"
@@ -688,47 +558,56 @@ export default function UsFinanceTeamDashboard() {
                       >
                         TIMESHEET
                       </text>
-                      <line
-                        x1="205"
-                        y1="20"
-                        x2="150"
-                        y2="20"
-                        stroke="#514C4C"
-                        strokeWidth="4"
-                        fill="block"
-                      />
-                      <line
-                        x1="203"
-                        y1="19  "
-                        x2="260"
-                        y2="70"
-                        stroke="#514C4C"
-                        strokeWidth="4"
-                        fill="block"
-                      />
+                      {SubmittedOrNotSubmitted.submitted !== 0 && (
+                        <>
+                          <line
+                            x1="205"
+                            y1="20"
+                            x2="150"
+                            y2="20"
+                            stroke="#514C4C"
+                            strokeWidth="4"
+                            fill="black"
+                          />
+                          <line
+                            x1="203"
+                            y1="19"
+                            x2="260"
+                            y2="70"
+                            stroke="#514C4C"
+                            strokeWidth="4"
+                            fill="black"
+                          />
+                        </>
+                      )}
                     </svg>
                   </PieChart>
                   <div className="absolute text-sm">
-                    <div
-                      style={{
-                        position: "absolute",
-                        left: "60px",
-                        top: "14%",
-                        fontSize: "14px",
-                      }}
-                    >
-                      Submitted Timesheet
-                    </div>
-                    <div
-                      style={{
-                        position: "absolute",
-                        right: "200px",
-                        top: "65%",
-                        fontSize: "14px",
-                      }}
-                    >
-                      Timesheet Not Submitted
-                    </div>
+                    {SubmittedOrNotSubmitted.submitted !== 0 && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          left: "60px",
+                          top: "14%",
+                          fontSize: "14px",
+                        }}
+                      >
+                        Submitted Timesheet
+                      </div>
+                    )}
+
+                    {SubmittedOrNotSubmitted.notSubmitted !== 0 && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          right: "120px",
+                          top: "65%",
+                          fontSize: "14px",
+                        }}
+                      >
+                        Timesheet Not Submitted
+                      </div>
+                    )}
                   </div>
                   <div className="absolute text-sm">
                     <div
@@ -741,7 +620,7 @@ export default function UsFinanceTeamDashboard() {
                         fontWeight: "bold",
                       }}
                     >
-                      70%
+                      {`${SubmittedOrNotSubmitted.notSubmitted}%`}
                     </div>
                     <div
                       style={{
@@ -753,7 +632,7 @@ export default function UsFinanceTeamDashboard() {
                         fontWeight: "bold",
                       }}
                     >
-                      30%
+                      {SubmittedOrNotSubmitted.submitted}
                     </div>
                   </div>
                 </div>
@@ -845,7 +724,11 @@ export default function UsFinanceTeamDashboard() {
                           fontSize: "18px",
                         }}
                       >
-                        70%
+                        {Number(
+                          BillbleNonBillableEmployeePercentage?.item?.billablePercentage?.toFixed(
+                            2
+                          )
+                        )}
                       </span>
                       Billable Employees
                     </div>
@@ -864,7 +747,11 @@ export default function UsFinanceTeamDashboard() {
                           fontSize: "18px",
                         }}
                       >
-                        30%
+                        {Number(
+                          BillbleNonBillableEmployeePercentage?.item?.nonBillablePercentage?.toFixed(
+                            2
+                          )
+                        )}
                       </span>{" "}
                       Non Billable Employees
                     </div>
@@ -884,52 +771,6 @@ export default function UsFinanceTeamDashboard() {
               className="p-3"
             >
               <span className="Monthly-overview-content">Revenue Overview</span>
-
-              <div>
-                <DatePicker
-                  selected={selectedDate1}
-                  onChange={handleDateChange}
-                  dateFormat="MMMM yyyy"
-                  showMonthYearPicker
-                  maxDate={
-                    new Date(
-                      new Date().getFullYear(),
-                      new Date().getMonth() - 1,
-                      1
-                    )
-                  }
-                  className="timesheet-datepicker"
-                  customInput={
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        cursor: "pointer",
-                        border: "1px solid #ccc",
-                        padding: "5px 10px",
-                        borderRadius: "5px",
-                        backgroundColor: "#fff",
-                        fontSize: "14px",
-                      }}
-                    >
-                      <span style={{ marginRight: "10px" }}>
-                        <img
-                          src={calenderImage1}
-                          alt=""
-                          height="20px"
-                          width="20px"
-                        />
-                      </span>
-                      <span>
-                        {selectedDate1.toLocaleString("default", {
-                          month: "long",
-                          year: "numeric",
-                        })}
-                      </span>
-                    </div>
-                  }
-                />
-              </div>
             </div>
             <div
               style={{

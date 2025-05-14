@@ -18,7 +18,6 @@
 }
 .addnewProject-span {
   height: 14px;
-
   text-align: left;
   font-style: normal;
   font-variant: normal;
@@ -47,9 +46,8 @@
   opacity: 1;
 }
 .project-list-content {
-  width: 46px;
+  /* width: 46px; */
   height: 19px;
-
   text-align: left;
   font-style: normal;
   font-variant: normal;

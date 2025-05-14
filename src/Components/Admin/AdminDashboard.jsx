@@ -80,6 +80,7 @@ export default function AdminDashboard() {
   const [recentActivities, setRecentActivities] = useState([]);
   const barchartref = useRef(null);
   const [ProfitOrLossSummary, setProfitOrLossSummary] = useState([]);
+  const [projectProgress, setProjectProgress] = useState({});
   const navigate = useNavigate();
   const [selectedDate1, setSelectedDate1] = useState(
     new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
@@ -92,6 +93,7 @@ export default function AdminDashboard() {
     const userDetails = JSON.parse(localStorage.getItem("sessionData"));
     FetchData();
     ProfitOrLossSummaryOnchange(selectedDate);
+    Graph(monthlyRevenueData);
   }, [selectedDate]);
   const monthMap = {
     January: "1",
@@ -107,25 +109,65 @@ export default function AdminDashboard() {
     November: "11",
     December: "12",
   };
+
   const Graph = (result) => {
     if (barchartintance.current) {
       barchartintance.current.destroy();
     }
-    const myChartRef = barchartref.current.getContext("2d");
-    let Projects;
-    let revenueValues;
-    let dataValues;
-    let highestValue;
-    let barcolors;
-    if (result.isSuccess) {
+
+    const myChartRef = barchartref.current?.getContext("2d");
+    if (!myChartRef) return;
+
+    let Projects = [];
+    let revenueValues = [];
+    let dataValues = [];
+    let highestValue = 0;
+    let barcolors = [];
+
+    if (result.isSuccess && result.item.length > 0) {
       Projects = result.item.map((data) => data.projectName);
       revenueValues = result.item.map((data) => data.totalRevenue);
+
+      const hasData = revenueValues.some((val) => val > 0);
+
+      if (!hasData) {
+        const canvas = barchartref.current;
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.font = "2px Arial";
+        ctx.fillStyle = "#666";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        ctx.fillText(
+          "No revenue data available for this period.",
+          canvas.width / 2,
+          canvas.height / 2
+        );
+        return;
+      }
+
       dataValues = revenueValues;
       highestValue = Math.max(...dataValues);
-      barcolors = dataValues.map((value) => {
-        return value === highestValue ? "#335CFF" : "#DCE6EF";
-      });
+      barcolors = dataValues.map((value) =>
+        value === highestValue ? "#335CFF" : "#DCE6EF"
+      );
+    } else {
+      // Display message if no result or empty item list
+      const canvas = barchartref.current;
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.font = "12px Arial";
+      ctx.fillStyle = "#000000";
+      ctx.textAlign = "center";
+      ctx.fillText(
+        "No revenue data available for this period.",
+        canvas.width / 2,
+        canvas.height / 2
+      );
+      return;
     }
+
     barchartintance.current = new Chart(myChartRef, {
       type: "bar",
       data: {
@@ -213,14 +255,12 @@ export default function AdminDashboard() {
             ctx.save();
             ctx.fillStyle = "#F5F5F5";
             ctx.clearRect(0, 0, chart.width, chart.height);
-
             ctx.fillRect(
               chartArea.left,
               chartArea.top,
               chartArea.right - chartArea.left,
               chartArea.bottom - chartArea.top
             );
-
             ctx.restore();
           },
         },
@@ -247,6 +287,9 @@ export default function AdminDashboard() {
     Legend
   );
   const FetchData = async () => {
+    var projectProgressResponse =
+      await AdminDashboardServices.getProjectProgressStatus();
+    setProjectProgress(projectProgressResponse);
     var ActivityLogsResponse = await AdminDashboardServices.FcnActivityLogs();
     setRecentActivities(ActivityLogsResponse);
     var response = await EmployeeService.TotalEmployees();
@@ -264,7 +307,6 @@ export default function AdminDashboard() {
       setTotalProjects(response.item.item4);
     }
   };
-
   const sortedRecentActivities = recentActivities
     .filter((notif) => {
       const notifDate = new Date(notif.timestamp);
@@ -308,7 +350,11 @@ export default function AdminDashboard() {
     labels: ["In Progress", "Completed", "Not Started"],
     datasets: [
       {
-        data: [InProgress, completed, NotStatedProgress],
+        data: [
+          projectProgress.inProgress,
+          projectProgress.completed,
+          projectProgress.notStarted,
+        ],
         backgroundColor: ["#007BFF", "#00CFFF", "#E0E0E0"],
         hoverBackgroundColor: ["#0056b3", "#0099cc", "#c6c6c6"],
         borderWidth: 0,

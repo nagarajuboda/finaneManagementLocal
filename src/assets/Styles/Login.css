@@ -7,7 +7,7 @@
   background-color: #b7e2e8;
 }
 .formdiv1 {
-  margin: 90px;
+  margin: 30px;
 }
 .formdiv {
   background-color: #fafffb;
@@ -16,17 +16,16 @@
 }
 .Loginimagelogo {
   height: 100vh !important;
-  width: 790px;
+  width: 103%;
 }
+
 .archentslogo {
-  left: 799px;
+  /* left: 799px; */
   width: 137px;
   height: 31px;
   background: transparent url("img/primary-logo.png") 0% 0% no-repeat
     padding-box;
   opacity: 1;
-  margin-top: 60px;
-  margin-left: 90px;
 }
 .logincontent {
   text-align: left;
@@ -112,7 +111,7 @@ label {
   display: flex;
   align-items: start;
   justify-content: start;
-  margin-right: 80px;
+  /* margin-right: 80px; */
 }
 .buttonlogin1 {
   background: #139bff 0% 0% no-repeat padding-box;
@@ -240,132 +239,154 @@ label {
   background: #0056b3;
 }
 
-/* Responsive Design */
-/* @media (max-width: 768px) {
-  .login-card {
-    max-width: 90%;
-    padding: 1.5rem;
-  }
-}
-
 @media (max-width: 480px) {
   .login-card {
     max-width: 95%;
     padding: 1rem;
   }
-} */
-
-/* @media (min-width: 769px) and (max-width: 802px) {
+}
+@media (min-width: 768px) and (max-width: 1024px) {
   .eyeIcon {
     right: 34px;
   }
-}
-@media (min-width: 802px) and (max-width: 839px) {
+  .archentslogo {
+    margin-left: 30px;
+  }
   .eyeIcon {
-    right: 36px;
+    right: 15px;
+  }
+  .forgotpasswordatag {
+    margin-right: 94px;
   }
 }
-@media (min-width: 839px) and (max-width: 881px) {
+@media (min-width: 790px) and (max-width: 840px) {
+  .forgotpasswordatag {
+    margin-right: 98px;
+  }
   .eyeIcon {
-    right: 40px;
+    right: 15px;
   }
 }
-@media (min-width: 881px) and (max-width: 976px) {
-  .eyeIcon {
-    right: 50px;
+@media (min-width: 840px) and (max-width: 878px) {
+  .forgotpasswordatag {
+    margin-right: 105px;
   }
 }
-@media (min-width: 976px) and (max-width: 1020x) {
-  .eyeIcon {
-    right: 55px;
+@media (min-width: 878px) and (max-width: 890px) {
+  .forgotpasswordatag {
+    margin-right: 110px;
   }
 }
-@media (min-width: 1021x) and (max-width: 1080) {
-  .eyeIcon {
-    right: 60px;
+@media (min-width: 890px) and (max-width: 950px) {
+  .forgotpasswordatag {
+    margin-right: 115px;
   }
 }
-@media (min-width: 1080) and (max-width: 1146) {
-  .eyeIcon {
-    right: 65px;
+@media (min-width: 950px) and (max-width: 1000px) {
+  .forgotpasswordatag {
+    margin-right: 125px;
   }
 }
-@media (min-width: 1146) and (max-width: 1181) {
-  .eyeIcon {
-    right: 70px;
+@media (min-width: 1000px) and (max-width: 1024px) {
+  .forgotpasswordatag {
+    margin-right: 130px;
   }
 }
-@media (min-width: 1181) and (max-width: 1230) {
-  .eyeIcon {
-    right: 75px;
+@media (min-width: 1024px) and (max-width: 1166px) {
+  .forgotpasswordatag {
+    margin-right: 70px;
+  }
+  .archentslogo {
+    margin-left: 30px;
   }
 }
-@media (min-width: 1230) and (max-width: 1300) {
-  .eyeIcon {
-    right: 80px;
+@media (min-width: 1166px) and (max-width: 1189px) {
+  .forgotpasswordatag {
+    margin-right: 70px;
+  }
+  .archentslogo {
+    margin-left: 30px;
   }
 }
-@media (min-width: 1300) and (max-width: 1400) {
-  .eyeIcon {
-    right: 85px;
+@media (min-width: 1189px) and (max-width: 1242px) {
+  .forgotpasswordatag {
+    margin-right: 75px;
+  }
+  .archentslogo {
+    margin-left: 30px;
   }
 }
-@media (min-width: 1400) and (max-width: 1459) {
-  .eyeIcon {
-    right: 90px;
+@media (min-width: 1242px) and (max-width: 1340px) {
+  .forgotpasswordatag {
+    margin-right: 80px;
   }
-} */
+  .archentslogo {
+    margin-left: 30px;
+    margin-top: 20px;
+  }
+}
 
-/* @media (min-width: 854px) and (max-width: 900px) {
-  .eyeIcon {
-    right: 85px;
+@media (min-width: 1340px) and (max-width: 1400px) {
+  .forgotpasswordatag {
+    margin-right: 85px;
+  }
+  .archentslogo {
+    margin-left: 30px;
+    margin-top: 80px;
+  }
+  .forcontect {
+    margin-top: 80px;
   }
 }
-@media (min-width: 900px) and (max-width: 953px) {
-  .eyeIcon {
-    right: 90px;
+@media (min-width: 1353px) and (max-width: 1355px) {
+  .archentslogo {
+    margin-left: 30px;
+    margin-top: 20px;
+  }
+  .forcontect {
+    margin-top: 20px;
   }
 }
-@media (min-width: 953px) and (max-width: 978px) {
-  .eyeIcon {
-    right: 95px;
+@media (min-width: 1366px) and (max-width: 1400px) {
+  .archentslogo {
+    margin-left: 30px;
+    margin-top: 10px;
+  }
+  .forcontect {
+    margin-top: 60px;
   }
 }
-@media (min-width: 978px) and (max-width: 1030px) {
-  .eyeIcon {
-    right: 100px;
+@media (min-width: 1400px) and (max-width: 1500px) {
+  .forgotpasswordatag {
+    margin-right: 93px;
   }
-} */
-/* @media (min-width: 1030px) and (max-width: 1070px) {
-  .eyeIcon {
-    right: 105px;
+  .archentslogo {
+    margin-left: 30px;
   }
-}
-@media (min-width: 1070px) and (max-width: 1113px) {
-  .eyeIcon {
-    right: 110px;
+  .forcontect {
+    margin-top: 70px;
   }
 }
-@media (min-width: 1113px) and (max-width: 1149px) {
-  .eyeIcon {
-    right: 115px;
+@media (min-width: 1500px) and (max-width: 1600px) {
+  .forgotpasswordatag {
+    margin-right: 98px;
+  }
+  .archentslogo {
+    margin-left: 30px;
+  }
+  .forcontect {
+    margin-top: 70px;
   }
 }
-@media (min-width: 1149px) and (max-width: 1189px) {
-  .eyeIcon {
-    right: 120px;
+@media (min-width: 1600px) and (max-width: 1700px) {
+  .forgotpasswordatag {
+    margin-right: 110px;
+  }
+  .forcontect {
+    margin-top: 80px;
   }
 }
-@media (min-width: 1189px) and (max-width: 1223px) {
-  .eyeIcon {
-    right: 125px;
-  }
-}
-@media (min-width: 1223px) and (max-width: 1264px) {
-  .eyeIcon {
-    right: 130px;
-  }
-} */
+
 .password-field {
   display: flex;
   align-items: center;
@@ -394,23 +415,23 @@ label {
   font-size: 18px;
   color: #555;
 }
-@media (max-width: 1024px) {
+/* @media (max-width: 1024px) {
   .row {
     flex-direction: column;
     height: auto;
   }
 
   .imagediv {
-    display: none; /* Hide image section on smaller screens */
+    display: none;
   }
 
   .formdiv {
     width: 100%;
     padding: 40px;
   }
-}
+} */
 
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .formdiv1 {
     max-width: 300px;
   }
@@ -432,4 +453,4 @@ label {
   .logincontent {
     font-size: 20px;
   }
-}
+} */

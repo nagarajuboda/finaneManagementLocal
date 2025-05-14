@@ -27,6 +27,7 @@ const Sidebar = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [openDropdowns, setOpenDropdowns] = useState([]);
   const [sessionData, setSessionData] = useState(null);
+  const userDetails = JSON.parse(localStorage.getItem("sessionData"));
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState(null);
   const togglePopup = (item) => {
@@ -85,6 +86,9 @@ const Sidebar = ({ children }) => {
       name: "Logout",
       icon: Logout,
       path: "/user/Login",
+      action: () => {
+        localStorage.removeItem("sessionData");
+      },
     },
   ];
 

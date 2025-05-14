@@ -319,38 +319,17 @@ export function ViewProject() {
             )}
           </div>
         </div>
-        <div className="row m-0  project-view-row">
-          <div className="col-4">
-            <p style={{ fontSize: "14px", textTransform: "uppercase" }}>
-              Porject outline
+        <div className="row m-0 project-view-row text-center text-md-start align-items-start">
+          <div className="col-12 col-md-4 mb-3">
+            <p
+              style={{
+                fontSize: "14px",
+                textTransform: "uppercase",
+                marginBottom: "4px",
+              }}
+            >
+              Project Outline
             </p>
-          </div>
-          <div className="col-2">
-            <p style={{ fontSize: "14px", textTransform: "uppercase" }}>
-              Start Date
-            </p>
-          </div>
-          <div className="col-2">
-            <p style={{ fontSize: "14px", textTransform: "uppercase" }}>
-              end Date
-            </p>
-          </div>
-          <div className="col-2">
-            <p style={{ fontSize: "14px", textTransform: "uppercase" }}>
-              Project Manager
-            </p>
-          </div>
-          <div className="col-2">
-            <p style={{ fontSize: "14px", textTransform: "uppercase" }}>
-              Project Lead
-            </p>
-          </div>
-        </div>
-        <div
-          className="row m-0 p-0"
-          style={{ display: "flex", alignItems: "center" }}
-        >
-          <div className="col-2 ">
             <div
               style={{ position: "relative", width: "100%", height: "36px" }}
             >
@@ -360,7 +339,6 @@ export function ViewProject() {
                   position: "absolute",
                   left: `${Math.round(progressPercentage)}%`,
                   top: "-6px",
-
                   transform: "translateX(-50%)",
                   color: progressPercentage === 100 ? "white" : "black",
                   fontWeight: "bold",
@@ -378,7 +356,6 @@ export function ViewProject() {
                   backgroundColor: "#00CC1B",
                 }}
                 type="range"
-                id="disabledRange"
                 value={progressPercentage}
                 readOnly
                 max="100"
@@ -386,85 +363,127 @@ export function ViewProject() {
               />
             </div>
           </div>
-          <div
-            className="col-2 projectPrpgress"
-            style={{ fontSize: "14px", margin: "0" }}
-          ></div>
-          <div
-            className="col-2 projectPrpgress"
-            style={{ fontSize: "14px", margin: "0" }}
-          >
-            {ProjectValues.startDate}
-          </div>
-          <div
-            className="col-2 projectPrpgress"
-            style={{ fontSize: "14px", margin: "0" }}
-          >
-            {ProjectValues.endDate}
-          </div>
-          <div
-            className="col-2 projectPrpgress"
-            style={{ fontSize: "14px", margin: "0" }}
-          >
-            {projectManagername}
-          </div>
-          <div
-            className="col-2 projectPrpgress"
-            style={{ fontSize: "14px", margin: "0" }}
-          >
-            {projectManagername}
-          </div>
-        </div>
-        <div
-          className="row m-0 project-view-row"
-          style={{ paddingTop: "45px" }}
-        >
-          <div className="col-2">
-            <p style={{ fontSize: "14px", textTransform: "uppercase" }}>
-              Client
+          <div className="col-6 col-md-2 mb-3">
+            <p
+              style={{
+                fontSize: "14px",
+                textTransform: "uppercase",
+                marginBottom: "4px",
+              }}
+            >
+              Start Date
+            </p>
+            <p style={{ fontSize: "14px", margin: 0, color: "black" }}>
+              {ProjectValues.startDate}
             </p>
           </div>
-          <div className="col-2">
-            <p style={{ fontSize: "14px", textTransform: "uppercase" }}>
-              client Email
+          <div className="col-6 col-md-2 mb-3">
+            <p
+              style={{
+                fontSize: "14px",
+                textTransform: "uppercase",
+                marginBottom: "4px",
+              }}
+            >
+              End Date
+            </p>
+            <p style={{ fontSize: "14px", margin: 0, color: "black" }}>
+              {ProjectValues.endDate}
             </p>
           </div>
-          <div className="col-2">
-            <p style={{ fontSize: "14px", textTransform: "uppercase" }}>
-              Project Name
+
+          <div className="col-6 col-md-2 mb-3">
+            <p
+              style={{
+                fontSize: "14px",
+                textTransform: "uppercase",
+                marginBottom: "4px",
+              }}
+            >
+              Project Manager
+            </p>
+            <p style={{ fontSize: "14px", margin: 0, color: "black" }}>
+              {projectManagername}
             </p>
           </div>
-        </div>
-        <div className="row m-0 pt-3">
-          <div
-            className="col-2 "
-            style={{ fontWeight: "500", fontSize: "14px" }}
-          >
-            {clientvalues.clientName}
-          </div>
-          <div
-            className="col-2 "
-            style={{ fontWeight: "500", fontSize: "14px" }}
-          >
-            {clientvalues.clientEmailId}
-          </div>
-          <div
-            className="col-2 "
-            style={{ fontWeight: "500", fontSize: "14px" }}
-          >
-            {ProjectValues.projectName}
+
+          <div className="col-6 col-md-2 mb-3">
+            <p
+              style={{
+                fontSize: "14px",
+                textTransform: "uppercase",
+                marginBottom: "4px",
+              }}
+            >
+              Project Lead
+            </p>
+            <p style={{ fontSize: "14px", margin: 0, color: "black" }}>
+              {projectManagername}
+            </p>
           </div>
         </div>
 
         <div
-          className="row project-view-row m-0 pt-4"
-          style={{ paddingTop: "15px" }}
+          className="row m-0 project-view-row"
+          style={{ paddingTop: "45px" }}
         >
-          <p style={{ fontSize: "14px", textTransform: "uppercase" }}>
-            Description
-          </p>
+          <div className="col-6 col-md-2 mb-2 mb-md-0">
+            <p style={{ fontSize: "14px", textTransform: "uppercase" }}>
+              Client
+            </p>
+            <p
+              style={{
+                fontWeight: "500",
+                fontSize: "14px",
+                margin: 0,
+                color: "black",
+              }}
+            >
+              {clientvalues.clientName}
+            </p>
+          </div>
+          <div className="col-6 col-md-2 mb-2 mb-md-0">
+            <p style={{ fontSize: "14px", textTransform: "uppercase" }}>
+              Client Email
+            </p>
+            <p
+              style={{
+                fontWeight: "500",
+                fontSize: "14px",
+                margin: 0,
+                color: "black",
+              }}
+            >
+              {clientvalues.clientEmailId}
+            </p>
+          </div>
+          <div className="col-6 col-md-2 mb-2 mb-md-0">
+            <p style={{ fontSize: "14px", textTransform: "uppercase" }}>
+              Project Name
+            </p>
+            <p
+              style={{
+                fontWeight: "500",
+                fontSize: "14px",
+                margin: 0,
+                color: "black",
+              }}
+            >
+              {ProjectValues.projectName}
+            </p>
+          </div>
         </div>
-        <div className="row m-0 ps-3 pe-3">
+        <div
+          className="row project-view-row m-0 "
+          style={{ paddingTop: "70px" }}
+        >
+          <div className="col-12">
+            <p style={{ fontSize: "14px", textTransform: "uppercase" }}>
+              Description
+            </p>
+          </div>
+        </div>
+        <div className="row m-0  pe-3" style={{ paddingTop: "45px" }}>
           <div
             className="col-12"
             style={{ fontWeight: "500", fontSize: "14px" }}
