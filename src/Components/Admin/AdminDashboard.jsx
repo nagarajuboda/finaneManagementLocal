@@ -109,7 +109,7 @@ export default function AdminDashboard() {
     November: "11",
     December: "12",
   };
-  console.log(monthlyRevenueData, "revenue values");
+
   const Graph = (result) => {
     if (barchartintance.current) {
       barchartintance.current.destroy();
@@ -137,7 +137,7 @@ export default function AdminDashboard() {
         ctx.font = "2px Arial";
         ctx.fillStyle = "#666";
         ctx.textAlign = "center";
-        ctx.textBaseline = "middle"; // vertically center the text
+        ctx.textBaseline = "middle";
 
         ctx.fillText(
           "No revenue data available for this period.",
@@ -274,133 +274,6 @@ export default function AdminDashboard() {
     };
   };
 
-  // const Graph = (result) => {
-  //   if (barchartintance.current) {
-  //     barchartintance.current.destroy();
-  //   }
-  //   const myChartRef = barchartref.current.getContext("2d");
-  //   let Projects;
-  //   let revenueValues;
-  //   let dataValues;
-  //   let highestValue;
-  //   let barcolors;
-  //   if (result.isSuccess) {
-  //     Projects = result.item.map((data) => data.projectName);
-  //     revenueValues = result.item.map((data) => data.totalRevenue);
-  //     dataValues = revenueValues;
-  //     highestValue = Math.max(...dataValues);
-  //     barcolors = dataValues.map((value) => {
-  //       return value === highestValue ? "#335CFF" : "#DCE6EF";
-  //     });
-  //   }
-  //   barchartintance.current = new Chart(myChartRef, {
-  //     type: "bar",
-  //     data: {
-  //       labels: Projects,
-  //       datasets: [
-  //         {
-  //           data: revenueValues,
-  //           backgroundColor: barcolors,
-  //           barThickness: 60,
-  //           maxBarThickness: 40,
-  //           categoryPercentage: 10,
-  //           barPercentage: 20,
-  //         },
-  //       ],
-  //     },
-  //     options: {
-  //       maintainAspectRatio: false,
-  //       scales: {
-  //         y: {
-  //           beginAtZero: true,
-  //           min: 0,
-  //           max: 700000,
-  //           grid: {
-  //             display: true,
-  //             drawBorder: true,
-  //             color: "#A5AEB4",
-  //             borderDash: [4, 4],
-  //             drawTicks: true,
-  //           },
-  //           border: {
-  //             display: true,
-  //           },
-  //           ticks: {
-  //             font: {
-  //               size: 14,
-  //               weight: "bold",
-  //             },
-  //             color: "#A5AEB4",
-  //             callback: function (value) {
-  //               return `$ ${value.toLocaleString()}`;
-  //             },
-  //           },
-  //         },
-  //         x: {
-  //           grid: {
-  //             display: true,
-  //             drawBorder: true,
-  //             color: "#A5AEB4",
-  //             borderDash: [4, 4],
-  //             drawTicks: true,
-  //           },
-  //           border: {
-  //             display: true,
-  //           },
-  //           ticks: {
-  //             font: {
-  //               size: 14,
-  //               weight: "bold",
-  //             },
-  //             color: "#A5AEB4",
-  //           },
-  //         },
-  //       },
-  //       plugins: {
-  //         chartArea: {
-  //           backgroundColor: "red",
-  //         },
-  //         legend: {
-  //           display: false,
-  //         },
-  //         tooltip: {
-  //           callbacks: {
-  //             label: function (tooltipItem) {
-  //               return `$${tooltipItem.raw.toLocaleString()}`;
-  //             },
-  //           },
-  //         },
-  //       },
-  //     },
-  //     plugins: [
-  //       {
-  //         id: "customBackgroundColor",
-  //         beforeDraw: (chart) => {
-  //           const { ctx, chartArea } = chart;
-  //           ctx.save();
-  //           ctx.fillStyle = "#F5F5F5";
-  //           ctx.clearRect(0, 0, chart.width, chart.height);
-
-  //           ctx.fillRect(
-  //             chartArea.left,
-  //             chartArea.top,
-  //             chartArea.right - chartArea.left,
-  //             chartArea.bottom - chartArea.top
-  //           );
-
-  //           ctx.restore();
-  //         },
-  //       },
-  //     ],
-  //   });
-
-  //   return () => {
-  //     if (barchartintance.current) {
-  //       barchartintance.current.destroy();
-  //     }
-  //   };
-  // };
-
   const ViewAll = () => {
     navigate("/dashboard/AllRecnetActivities");
   };
@@ -434,7 +307,6 @@ export default function AdminDashboard() {
       setTotalProjects(response.item.item4);
     }
   };
-  console.log(projectProgress, "==========>");
   const sortedRecentActivities = recentActivities
     .filter((notif) => {
       const notifDate = new Date(notif.timestamp);

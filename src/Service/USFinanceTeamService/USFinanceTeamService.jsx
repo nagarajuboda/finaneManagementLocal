@@ -30,6 +30,12 @@ const USFinanceTeamService = {
     );
     return response;
   },
+  async SubmittedNotSubmittedTimesheet(month, year) {
+    const response = await apiurl.get(
+      `/Projects/timesheet-submission-percentage?month=${month}&year=${year}`
+    );
+    return response.data;
+  },
   async FcnGetTimeSheetDetails(projectID, monthNumber, year) {
     const response = await apiurl.get(
       `/Timesheets/GetTimesheetsByMonthAndYear?projectId=${projectID}&month=${monthNumber}&year=${year}`

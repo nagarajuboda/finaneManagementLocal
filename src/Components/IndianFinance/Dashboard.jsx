@@ -144,24 +144,62 @@ export default function IndainFinanceDashboard() {
     if (barchartintance.current) {
       barchartintance.current.destroy();
     }
-    const myChartRef = barchartref.current.getContext("2d");
-    let Projects;
-    let revenueValues;
-    let dataValues;
-    let highestValue;
-    let barcolors;
-    if (result.isSuccess) {
+
+    const myChartRef = barchartref.current?.getContext("2d");
+    if (!myChartRef) return;
+
+    let Projects = [];
+    let revenueValues = [];
+    let dataValues = [];
+    let highestValue = 0;
+    let barcolors = [];
+
+    if (result.isSuccess && result.item.length > 0) {
       Projects = result.item.map((data) => data.projectName);
       revenueValues = result.item.map((data) => data.totalRevenue);
+
+      const hasData = revenueValues.some((val) => val > 0);
+
+      if (!hasData) {
+        const canvas = barchartref.current;
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.font = "2px Arial";
+        ctx.fillStyle = "#666";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        ctx.fillText(
+          "No revenue data available for this period.",
+          canvas.width / 2,
+          canvas.height / 2
+        );
+        return;
+      }
+
       dataValues = revenueValues;
       highestValue = Math.max(...dataValues);
-      barcolors = dataValues.map((value) => {
-        return value === highestValue ? "#335CFF" : "#DCE6EF";
-      });
+      barcolors = dataValues.map((value) =>
+        value === highestValue ? "#335CFF" : "#DCE6EF"
+      );
+    } else {
+      // Display message if no result or empty item list
+      const canvas = barchartref.current;
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.font = "12px Arial";
+      ctx.fillStyle = "#000000";
+      ctx.textAlign = "center";
+      ctx.fillText(
+        "No revenue data available for this period.",
+        canvas.width / 2,
+        canvas.height / 2
+      );
+      return;
     }
+
     barchartintance.current = new Chart(myChartRef, {
       type: "bar",
-
       data: {
         labels: Projects,
         datasets: [
@@ -172,7 +210,6 @@ export default function IndainFinanceDashboard() {
             maxBarThickness: 40,
             categoryPercentage: 10,
             barPercentage: 20,
-            borderRadius: 5,
           },
         ],
       },
@@ -183,19 +220,16 @@ export default function IndainFinanceDashboard() {
             beginAtZero: true,
             min: 0,
             max: 700000,
-
             grid: {
-              color: (context) =>
-                context.tick.value === 0 ? "transparent" : "#A5AEB4",
+              display: true,
+              drawBorder: true,
+              color: "#A5AEB4",
               borderDash: [4, 4],
-              drawBorder: false,
-              display: false,
-              drawTicks: false,
+              drawTicks: true,
             },
             border: {
-              display: false,
+              display: true,
             },
-
             ticks: {
               font: {
                 size: 14,
@@ -209,12 +243,14 @@ export default function IndainFinanceDashboard() {
           },
           x: {
             grid: {
-              display: false,
+              display: true,
+              drawBorder: true,
               color: "#A5AEB4",
-              strokeDasharray: [4, 4],
+              borderDash: [4, 4],
+              drawTicks: true,
             },
             border: {
-              display: false,
+              display: true,
             },
             ticks: {
               font: {
@@ -241,7 +277,6 @@ export default function IndainFinanceDashboard() {
           },
         },
       },
-
       plugins: [
         {
           id: "customBackgroundColor",
@@ -249,42 +284,13 @@ export default function IndainFinanceDashboard() {
             const { ctx, chartArea } = chart;
             ctx.save();
             ctx.fillStyle = "#F5F5F5";
-
             ctx.clearRect(0, 0, chart.width, chart.height);
-
-            const radius = 30;
-            ctx.beginPath();
-            ctx.moveTo(chartArea.left + radius, chartArea.top);
-            ctx.lineTo(chartArea.right - radius, chartArea.top);
-            ctx.quadraticCurveTo(
-              chartArea.right,
-              chartArea.top,
-              chartArea.right,
-              chartArea.top + radius
-            );
-            ctx.lineTo(chartArea.right, chartArea.bottom - radius);
-            ctx.quadraticCurveTo(
-              chartArea.right,
-              chartArea.bottom,
-              chartArea.right - radius,
-              chartArea.bottom
-            );
-            ctx.lineTo(chartArea.left + radius, chartArea.bottom);
-            ctx.quadraticCurveTo(
-              chartArea.left,
-              chartArea.bottom,
-              chartArea.left,
-              chartArea.bottom - radius
-            );
-            ctx.lineTo(chartArea.left, chartArea.top + radius);
-            ctx.quadraticCurveTo(
+            ctx.fillRect(
               chartArea.left,
               chartArea.top,
-              chartArea.left + radius,
-              chartArea.top
+              chartArea.right - chartArea.left,
+              chartArea.bottom - chartArea.top
             );
-            ctx.closePath();
-            ctx.fill();
             ctx.restore();
           },
         },
@@ -297,6 +303,7 @@ export default function IndainFinanceDashboard() {
       }
     };
   };
+
   const data = [
     { value: MonthWiseSpecificApportionment, color: "#855FC0" },
     { value: MonthWiseOverhead, color: "#FFD8D8" },
