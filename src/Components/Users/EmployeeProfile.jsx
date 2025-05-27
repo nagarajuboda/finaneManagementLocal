@@ -3,8 +3,14 @@ import React, { useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa";
 import EmployeeService from "../../Service/EmployeeService/EmployeeService";
 import { ChangePasswordValidation } from "../Admin/Pages/ChangePasswordvalidation";
+import ellips from "../../assets/Images/Ellipse.png";
+import checkimage from "../../assets/Images/check.png";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 const EmployeeProfile = () => {
+  const navigate = useNavigate();
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -13,6 +19,7 @@ const EmployeeProfile = () => {
   const [employee, setEmployee] = useState({});
   const [lastSeen, setLastSeen] = useState("");
   const [id, setid] = useState("");
+  const [open, setOpen] = useState(false);
   const [projectManager, setProjectManager] = useState({});
   const openChangePassword = () => setShowChangePassword(true);
   useEffect(() => {
@@ -103,33 +110,24 @@ const EmployeeProfile = () => {
     if (isValid) {
       const obj = {
         id: employee.employee.id,
-        password: values.password,
-        newPassword: values.newPassword,
-        confirmPassword: values.confirmPassword,
+        OldPassword: values.password,
+        NewPassword: values.newPassword,
+        ConfirmPassword: values.confirmPassword,
       };
-      console.log(obj, "obj");
-      // var response = await AdminDashboardServices.fcnAddClientAsync(obj);
-      // if (response.isSuccess === true) {
-      //   setValues({
-      //     ClientName: "",
-      //     ClientEmailId: "",
-      //     file: "",
-      //     ClientLocation: "",
-      //     ReferenceName: "",
-      //   });
 
-      //   fetchData();
-      //   setAddclientPopup(false);
-      // } else {
-      //   toast.error(response.error.message, {
-      //     position: "top-right",
-      //     autoClose: "4000",
-      //   });
-      // }
-      setErrors({
-        ...errors,
-        [name]: ChangePasswordValidation(name, value, values),
-      });
+      var response = await EmployeeService.ChangePassowrd(obj);
+      if (response.isSuccess === true) {
+        toast.success("Password changed successfully.", {
+          position: "top-right",
+          autoClose: 1000,
+          onClose: () => navigate("/"),
+        });
+      } else {
+        toast.error(response.error.message, {
+          position: "top-right",
+          autoClose: 4000,
+        });
+      }
     }
   }
   const closeChangePassword = () => {
@@ -158,16 +156,19 @@ const EmployeeProfile = () => {
       confirmPassword: "",
     });
   };
+  const closeDeletePopup = () => {
+    setOpen(false);
+  };
 
   return (
     <div className="profile-page">
       <div className="profile-left">
         <FaUser size={30} color="#444" style={{ marginBottom: "10px" }} />
-        <img
+        {/* <img
           src="https://via.placeholder.com/80"
           alt="Profile"
           className="profile-img"
-        />
+        /> */}
 
         <div className="profile-email">nagaraju.boda@archents.com</div>
         <div className="profile-meta">{lastSeen}</div>
@@ -416,6 +417,41 @@ const EmployeeProfile = () => {
               </div>
             </div>
           </form>
+          <ToastContainer position="top-end" autoClose={5000} />
+          {open && (
+            <div className="unique-popup-overlay">
+              <div className="unique-popup-container">
+                <div className="unique-popup-icon">
+                  <div className="ellipse-container">
+                    <img
+                      src={checkimage}
+                      alt="Check"
+                      className="check-image"
+                      height="40px"
+                      width="40px"
+                    />
+                    <img
+                      src={ellips}
+                      alt="Ellipse"
+                      className="ellipse-image"
+                      height="65px"
+                      width="65px"
+                    />
+                  </div>
+                </div>
+                <h2 className="unique-popup-title">Deleted Successfully</h2>
+                <p className="unique-popup-message">
+                  Click OK to see the results
+                </p>
+                <button
+                  className="unique-popup-button"
+                  onClick={closeDeletePopup}
+                >
+                  OK
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
