@@ -1,327 +1,425 @@
-import React, { useState } from "react";
+import "../../assets/Styles/UserProfile.css";
+import React, { useEffect, useState } from "react";
+import { FaUser } from "react-icons/fa";
+import EmployeeService from "../../Service/EmployeeService/EmployeeService";
+import { ChangePasswordValidation } from "../Admin/Pages/ChangePasswordvalidation";
 
-const roles = [
-  { id: "1", name: "Admin" },
-  { id: "2", name: "Project Manager" },
-  { id: "3", name: "Developer" },
-];
+const EmployeeProfile = () => {
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState(null);
+  const [employee, setEmployee] = useState({});
+  const [lastSeen, setLastSeen] = useState("");
+  const [id, setid] = useState("");
+  const [projectManager, setProjectManager] = useState({});
+  const openChangePassword = () => setShowChangePassword(true);
+  useEffect(() => {
+    FetchData();
+    const data = JSON.parse(localStorage.getItem("sessionData"));
+    setEmployee(data);
+  }, []);
 
-const projectManagers = [
-  { id: "101", name: "Alice Johnson" },
-  { id: "102", name: "Bob Smith" },
-];
-
-const EmployeeStateOptions = [
-  { value: "Active", label: "Active" },
-  { value: "Inactive", label: "Inactive" },
-];
-
-const styles = {
-  pageWrapper: {
-    minHeight: "100vh",
-    display: "block",
-    padding: "40px 80px",
-    background: "#f4f6f8",
-    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-  },
-  card: {
-    maxWidth: 650,
-    width: "100%",
-    backgroundColor: "#fff",
-    padding: 30,
-    borderRadius: 8,
-    boxShadow: "0 6px 18px rgba(0,0,0,0.1)",
-  },
-  heading: {
-    fontSize: 28,
-    marginBottom: 24,
-    fontWeight: "bold",
-    color: "#333",
-  },
-  formGroup: {
-    marginBottom: 18,
-  },
-  label: {
-    display: "block",
-    fontWeight: 600,
-    marginBottom: 6,
-    color: "#444",
-  },
-  input: {
-    width: "100%",
-    padding: "10px 12px",
-    border: "1px solid #ccc",
-    borderRadius: 5,
-    fontSize: 16,
-    boxSizing: "border-box",
-  },
-  select: {
-    width: "100%",
-    padding: "10px 12px",
-    border: "1px solid #ccc",
-    borderRadius: 5,
-    fontSize: 16,
-    boxSizing: "border-box",
-    backgroundColor: "#fff",
-  },
-  button: {
-    backgroundColor: "#007bff",
-    color: "#fff",
-    padding: "12px 22px",
-    fontSize: 16,
-    border: "none",
-    borderRadius: 5,
-    cursor: "pointer",
-    marginTop: 20,
-  },
-  errorText: {
-    color: "red",
-    fontSize: 14,
-    marginTop: 4,
-  },
-};
-
-function ProfilePage() {
-  const [formData, setFormData] = useState({
-    employeeId: "",
-    firstName: "",
-    lastName: "",
-    email: "",
-    mobileNo: "",
-    dateOfJoining: "",
-    dateOfReliving: "",
-    employeeStatus: "Active",
-    skillSets: "",
-    roleId: "",
-    projectManagerId: "",
-  });
-
-  const [errors, setErrors] = useState({});
-
-  // Simple form validation
-  const validate = () => {
-    const newErrors = {};
-    if (!formData.employeeId) newErrors.employeeId = "Employee ID is required";
-    if (!formData.firstName) newErrors.firstName = "First name is required";
-    if (!formData.email) newErrors.email = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(formData.email))
-      newErrors.email = "Email is invalid";
-    if (!formData.dateOfJoining)
-      newErrors.dateOfJoining = "Date of Joining required";
-    if (!formData.roleId) newErrors.roleId = "Role selection is required";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const FetchData = async () => {
+    const response = await EmployeeService.GetEmployees();
+    var result = response.item;
+    setid(employee.employee.projectManagerId);
+    const employeeObject = result.find(
+      (item) => (item.employeeDetails.id || "N/A") === id
+    );
+    setProjectManager(employeeObject);
   };
 
-  const handleChange = (e) => {
+  const handleChangePassword = () => {
+    // TODO: Add your API call here to actually change password
+    setMessage("Changing password...");
+    setTimeout(() => {
+      setMessage("Password changed successfully!");
+      // Optionally close modal after success
+      // closeChangePassword();
+    }, 1000);
+  };
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setEmployee((prev) => ({
+      ...prev,
+      employee: {
+        ...prev.employee,
+        [name]: value,
+      },
+    }));
   };
 
-  const handleSubmit = (e) => {
+  const getLastSignInTimeAgo = () => {
+    const lastSignIn = localStorage.getItem("lastSignInTime");
+    if (!lastSignIn) return "Unknown";
+
+    const lastDate = new Date(lastSignIn);
+    const now = new Date();
+
+    const diffMs = now - lastDate;
+    const diffMins = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffMs < 60000) return "Just now";
+    else if (diffMins < 60) return `Last sign-in ${diffMins} minute(s) ago`;
+    else if (diffHours < 24) return `Last sign-in ${diffHours} hour(s) ago`;
+    else return `Last sign-in ${diffDays} day(s) ago`;
+  };
+  useEffect(() => {
+    setLastSeen(getLastSignInTimeAgo());
+  }, []);
+  const [errors, setErrors] = useState({
+    password: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [values, setValues] = useState({
+    id: "",
+    password: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  async function ChangePassword(e) {
     e.preventDefault();
-    if (!validate()) return;
-    // Submit API logic here
-    alert("Profile saved successfully!");
+    const newErrors = {
+      password: ChangePasswordValidation("password", values.password, values),
+      newPassword: ChangePasswordValidation(
+        "newPassword",
+        values.newPassword,
+        values
+      ),
+
+      confirmPassword: ChangePasswordValidation(
+        "confirmPassword",
+        values.confirmPassword,
+        values
+      ),
+    };
+    setErrors(newErrors);
+    const isValid = Object.values(newErrors).every((error) => error === "");
+    if (isValid) {
+      const obj = {
+        id: employee.employee.id,
+        password: values.password,
+        newPassword: values.newPassword,
+        confirmPassword: values.confirmPassword,
+      };
+      console.log(obj, "obj");
+      // var response = await AdminDashboardServices.fcnAddClientAsync(obj);
+      // if (response.isSuccess === true) {
+      //   setValues({
+      //     ClientName: "",
+      //     ClientEmailId: "",
+      //     file: "",
+      //     ClientLocation: "",
+      //     ReferenceName: "",
+      //   });
+
+      //   fetchData();
+      //   setAddclientPopup(false);
+      // } else {
+      //   toast.error(response.error.message, {
+      //     position: "top-right",
+      //     autoClose: "4000",
+      //   });
+      // }
+      setErrors({
+        ...errors,
+        [name]: ChangePasswordValidation(name, value, values),
+      });
+    }
+  }
+  const closeChangePassword = () => {
+    setShowChangePassword(false);
+    setValues({
+      password: "",
+      newPassword: "",
+      confirmPassword: "",
+    });
+  };
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
+
+    setValues({
+      ...values,
+      [name]: value,
+    });
+
+    setErrors({
+      ...errors,
+      [name]: ChangePasswordValidation(name, value, values),
+    });
+    setErrors({
+      password: "",
+      newPassword: "",
+      confirmPassword: "",
+    });
   };
 
   return (
-    <div style={styles.pageWrapper}>
-      <div style={styles.card}>
-        <h1 style={styles.heading}>Employee Profile</h1>
-        <form onSubmit={handleSubmit} noValidate>
-          <div style={styles.formGroup}>
-            <label style={styles.label} htmlFor="employeeId">
-              Employee ID *
-            </label>
-            <input
-              style={styles.input}
-              type="text"
-              id="employeeId"
-              name="employeeId"
-              value={formData.employeeId}
-              onChange={handleChange}
-            />
-            {errors.employeeId && (
-              <div style={styles.errorText}>{errors.employeeId}</div>
-            )}
-          </div>
+    <div className="profile-page">
+      <div className="profile-left">
+        <FaUser size={30} color="#444" style={{ marginBottom: "10px" }} />
+        <img
+          src="https://via.placeholder.com/80"
+          alt="Profile"
+          className="profile-img"
+        />
 
-          <div style={styles.formGroup}>
-            <label style={styles.label} htmlFor="firstName">
-              First Name *
-            </label>
-            <input
-              style={styles.input}
-              type="text"
-              id="firstName"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-            />
-            {errors.firstName && (
-              <div style={styles.errorText}>{errors.firstName}</div>
-            )}
-          </div>
-
-          <div style={styles.formGroup}>
-            <label style={styles.label} htmlFor="lastName">
-              Last Name
-            </label>
-            <input
-              style={styles.input}
-              type="text"
-              id="lastName"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div style={styles.formGroup}>
-            <label style={styles.label} htmlFor="email">
-              Email *
-            </label>
-            <input
-              style={styles.input}
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-            />
-            {errors.email && <div style={styles.errorText}>{errors.email}</div>}
-          </div>
-
-          <div style={styles.formGroup}>
-            <label style={styles.label} htmlFor="mobileNo">
-              Mobile No
-            </label>
-            <input
-              style={styles.input}
-              type="tel"
-              id="mobileNo"
-              name="mobileNo"
-              value={formData.mobileNo}
-              onChange={handleChange}
-              placeholder="+91-XXXXXXXXXX"
-            />
-          </div>
-
-          <div style={styles.formGroup}>
-            <label style={styles.label} htmlFor="dateOfJoining">
-              Date of Joining *
-            </label>
-            <input
-              style={styles.input}
-              type="date"
-              id="dateOfJoining"
-              name="dateOfJoining"
-              value={formData.dateOfJoining}
-              onChange={handleChange}
-            />
-            {errors.dateOfJoining && (
-              <div style={styles.errorText}>{errors.dateOfJoining}</div>
-            )}
-          </div>
-
-          <div style={styles.formGroup}>
-            <label style={styles.label} htmlFor="dateOfReliving">
-              Date of Relieving
-            </label>
-            <input
-              style={styles.input}
-              type="date"
-              id="dateOfReliving"
-              name="dateOfReliving"
-              value={formData.dateOfReliving}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div style={styles.formGroup}>
-            <label style={styles.label} htmlFor="employeeStatus">
-              Employee Status *
-            </label>
-            <select
-              style={styles.select}
-              id="employeeStatus"
-              name="employeeStatus"
-              value={formData.employeeStatus}
-              onChange={handleChange}
-            >
-              {EmployeeStateOptions.map(({ value, label }) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div style={styles.formGroup}>
-            <label style={styles.label} htmlFor="skillSets">
-              Skill Sets
-            </label>
-            <textarea
-              style={{ ...styles.input, height: 80 }}
-              id="skillSets"
-              name="skillSets"
-              value={formData.skillSets}
-              onChange={handleChange}
-              placeholder="Comma separated skills"
-            />
-          </div>
-
-          <div style={styles.formGroup}>
-            <label style={styles.label} htmlFor="roleId">
-              Role *
-            </label>
-            <select
-              style={styles.select}
-              id="roleId"
-              name="roleId"
-              value={formData.roleId}
-              onChange={handleChange}
-            >
-              <option value="">-- Select Role --</option>
-              {roles.map((role) => (
-                <option key={role.id} value={role.id}>
-                  {role.name}
-                </option>
-              ))}
-            </select>
-            {errors.roleId && (
-              <div style={styles.errorText}>{errors.roleId}</div>
-            )}
-          </div>
-
-          <div style={styles.formGroup}>
-            <label style={styles.label} htmlFor="projectManagerId">
-              Project Manager
-            </label>
-            <select
-              style={styles.select}
-              id="projectManagerId"
-              name="projectManagerId"
-              value={formData.projectManagerId}
-              onChange={handleChange}
-            >
-              <option value="">-- Select Project Manager --</option>
-              {projectManagers.map((pm) => (
-                <option key={pm.id} value={pm.id}>
-                  {pm.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <button type="submit" style={styles.button}>
-            Save Profile
+        <div className="profile-email">nagaraju.boda@archents.com</div>
+        <div className="profile-meta">{lastSeen}</div>
+        <div className="user-id">
+          Employee ID: <span className="faded">IARC0282</span>
+        </div>
+        <div className="profile-actions">
+          <button className="action-btn" onClick={openChangePassword}>
+            Change Password
           </button>
-        </form>
+        </div>
       </div>
+
+      <div className="profile-right">
+        <div className="section">
+          <h3>Personal Information</h3>
+
+          <div className="row">
+            <div className="form-group col-6">
+              <label>First Name</label>
+              <input
+                type="text"
+                name="firstName"
+                value={employee.employee?.firstName || ""}
+                readOnly
+              />
+            </div>
+            <div className="form-group col-6">
+              <label>Last Name</label>
+              <input
+                type="text"
+                name="lastName"
+                value={employee.employee?.lastName}
+                readOnly
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label>Email Address</label>
+            <div className="input-verified">
+              <input
+                type="text"
+                name="email"
+                value={employee.employee?.email}
+                readOnly
+                className="w-75"
+              />
+              <span className="verified">Verified</span>
+            </div>
+          </div>
+
+          <div className="row ">
+            <div className="form-group col-6">
+              <label>Phone Number</label>
+              <input
+                type="text"
+                name="mobileNo"
+                value={employee.employee?.mobileNo}
+                onChange={handleInputChange}
+                className="w-100"
+                readOnly
+              />
+            </div>
+            <div className="form-group col-6">
+              <label>Employee ID</label>
+              <input
+                type="text"
+                name="employeeId"
+                value={employee.employee?.employeeId}
+                readOnly
+              />
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="form-group col-6">
+              <label>Date of Joining</label>
+              <input
+                type="text"
+                name="dateOfJoining"
+                value={new Date(
+                  employee.employee?.dateOfJoining
+                ).toLocaleDateString("en-GB")}
+                readOnly
+              />
+            </div>
+            <div className="form-group col-6">
+              <label>Project Manager</label>
+              <input
+                type="text"
+                name="projectManager"
+                value={
+                  employee.employee?.projectManagerId
+                    ? `${projectManager?.employeeDetails?.firstName || ""} ${
+                        projectManager?.employeeDetails?.lastName || ""
+                      }`
+                    : "N/A"
+                }
+                readOnly
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label>Employee Status</label>
+            <input
+              type="text"
+              name="employeeStatus"
+              value={
+                employee.employee?.employeeStatus === 0 ? "InActive" : "Active"
+              }
+              readOnly
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Skill Sets</label>
+            <textarea
+              type="text"
+              name="skillSets"
+              value={employee.employee?.skillSets}
+              onChange={handleInputChange}
+            />
+          </div>
+
+          <div className="row">
+            <div className="form-group col-6">
+              <label>Role</label>
+              <input
+                type="text"
+                name="role"
+                value={employee.employee?.role.name}
+                readOnly
+              />
+            </div>
+            <div className="form-group col-6">
+              <label>Created On</label>
+              <input
+                type="text"
+                name="createdOn"
+                value={new Date(
+                  employee.employee?.creationDate
+                ).toLocaleDateString("en-GB")}
+                readOnly
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label>Last Modified</label>
+            <input
+              type="text"
+              name="lastModified"
+              value={new Date(
+                employee.employee?.modifiedDate
+              ).toLocaleDateString("en-GB")}
+              readOnly
+            />
+          </div>
+        </div>
+      </div>
+
+      {showChangePassword && (
+        <div className="change-password-overlay" onClick={closeChangePassword}>
+          <form onSubmit={ChangePassword}>
+            <div
+              className="change-password-content"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3>Change Password</h3>
+              <div className="change-password-group">
+                <label>
+                  Old Password{" "}
+                  <span style={{ color: "red", fontSize: "px" }}>*</span>
+                </label>
+                <input
+                  type="password"
+                  name="password"
+                  onChange={handleChange}
+                  placeholder="Enter old password"
+                />
+                {errors.password && (
+                  <span
+                    className="error ms-1"
+                    style={{ color: "red", fontSize: "13px" }}
+                  >
+                    {errors.password}
+                  </span>
+                )}
+              </div>
+              <div className="change-password-group">
+                <label>
+                  New Password{" "}
+                  <span style={{ color: "red", fontSize: "px" }}>*</span>
+                </label>
+                <input
+                  type="password"
+                  name="newPassword"
+                  onChange={handleChange}
+                  placeholder="Enter new password"
+                />
+                {errors.newPassword && (
+                  <span
+                    className="error ms-1"
+                    style={{ color: "red", fontSize: "13px" }}
+                  >
+                    {errors.newPassword}
+                  </span>
+                )}
+              </div>
+              <div className="change-password-group">
+                <label>
+                  Confirm New Password{" "}
+                  <span style={{ color: "red", fontSize: "px" }}>*</span>
+                </label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  onChange={handleChange}
+                  placeholder="Confirm new password"
+                />
+                {errors.confirmPassword && (
+                  <span
+                    className="error ms-1"
+                    style={{ color: "red", fontSize: "13px" }}
+                  >
+                    {errors.confirmPassword}
+                  </span>
+                )}
+              </div>
+
+              <div className="change-password-actions">
+                <button
+                  className="change-password-btn"
+                  onClick={handleChangePassword}
+                >
+                  Submit
+                </button>
+                <button
+                  className="change-password-btn red"
+                  onClick={closeChangePassword}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
-}
+};
 
-export default ProfilePage;
+export default EmployeeProfile;
