@@ -149,6 +149,8 @@ export default function Header({ isOpen }) {
 
   const Logoutfunction = () => {
     localStorage.removeItem("sessionData");
+    localStorage.removeItem("lastSignInTime");
+    sessionStorage.clear();
     navigate("/user/Login");
   };
 

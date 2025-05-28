@@ -90,13 +90,17 @@ export default function VerifyOtp() {
         style={{ backgroundColor: "#FAFFFB", width: "50%" }}
       >
         <div className="formdiv2">
-          <div className="" style={{ margin: "80px" }}>
-            <img src={archetslogo} alt="" />
+          <div className="">
+            <img
+              src={archetslogo}
+              alt=""
+              className="forgotpassword_Archents_Logo"
+            />
           </div>
-          <div style={{ marginLeft: "80px " }}>
+          <div style={{ margin: "30px" }}>
             <div
               className="forgotpasswordcontent"
-              style={{ marginTop: " 60px " }}
+              style={{ marginTop: " 100px " }}
             >
               Verify your OTP?
             </div>
@@ -105,22 +109,22 @@ export default function VerifyOtp() {
             </div>
             <form onSubmit={onVerifyOtpClick}>
               <div className="forgotform">
-                <div className="mb-1">
+                <div className="mb-1 mt-2">
                   <label className="inputlable">Enter OTP</label>
                 </div>
                 <input
                   type="text"
                   placeholder="enter OTP"
-                  className="emailinput form-control"
+                  className="emailinput form-control w-100"
                   onChange={handleOtpChange}
                   name="Otp"
                   value={otpValues.Otp}
                 />
-                <div className="backtologin mt-2">
+                <div className="backtologin mt-2 ">
                   <div>
                     {otpErrors.Otp && (
                       <span
-                        className="validationError"
+                        className="validationError ms-1"
                         style={{ color: "red" }}
                       >
                         {otpErrors.Otp}
@@ -131,14 +135,14 @@ export default function VerifyOtp() {
                   <a
                     style={{ color: "#0071FF", cursor: "pointer" }}
                     onClick={backtoLogin}
-                    className="me-4"
+                    className=""
                   >
                     Back to login
                   </a>
                 </div>
 
                 <div className="loginbutton">
-                  <button className="buttonlogin">Submit</button>
+                  <button className="buttonlogin w-100">Submit</button>
                 </div>
                 <div className="forcontect1">
                   if you are a new user, please contact archents support team.

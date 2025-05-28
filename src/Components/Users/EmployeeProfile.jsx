@@ -23,6 +23,9 @@ const EmployeeProfile = () => {
   const [projectManager, setProjectManager] = useState({});
   const [employeeSkillSet, setEmployeeSkillSet] = useState([]);
   const openChangePassword = () => setShowChangePassword(true);
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("sessionData"));
     setEmployee(data);
@@ -123,9 +126,11 @@ const EmployeeProfile = () => {
 
       var response = await EmployeeService.ChangePassowrd(obj);
       if (response.isSuccess === true) {
+        localStorage.removeItem("sessionData");
         toast.success("Password changed successfully.", {
           position: "top-right",
           autoClose: 1000,
+
           onClose: () => navigate("/"),
         });
       } else {
@@ -156,9 +161,6 @@ const EmployeeProfile = () => {
       ...errors,
       [name]: ChangePasswordValidation(name, value, values),
     });
-  };
-  const closeDeletePopup = () => {
-    setOpen(false);
   };
   return (
     <div className="profile-page">

@@ -5,6 +5,23 @@
   background-color: #f9fafb;
   font-family: "Segoe UI", sans-serif;
 }
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-wrapper input {
+  width: 100%;
+  padding-right: 35px;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+  color: #666;
+}
 
 .profile-left {
   width: 280px;

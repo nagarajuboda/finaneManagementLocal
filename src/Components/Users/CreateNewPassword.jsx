@@ -132,141 +132,16 @@ export default function CreateNewPassword() {
           <div className="pleaseLoginContent">
             Enter and confirm your new password to complete the reset process.
           </div>
-          {/* <div className="pleaseLoginContent">
-            Please login using email id and password
-          </div> */}
-          <div className="inputdiv">
-            <div>
+          <form onSubmit={onSetNewPasswordClick}>
+            <div className="inputdiv">
               <div>
-                <label className="inputlable">New Password</label>
-              </div>
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="New Password"
-                className="emailinput1 form-control"
-                name="NewPassword"
-                value={passwordValues.NewPassword}
-                onChange={handlePasswordChange}
-              />
-              <div
-                className="eyeIcon"
-                onClick={() => setShowPassword(!showPassword)}
-                style={{
-                  cursor: "pointer",
-                  right: "197px",
-                  top: "315px",
-                }}
-              >
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
-              </div>
-              {passwordErrors.NewPassword && (
-                <p
-                  className="validationError m-1"
-                  style={{ color: "red", fontSize: "12px" }}
-                >
-                  {passwordErrors.NewPassword}
-                </p>
-              )}
-            </div>
-            <div className="mt-2">
-              <div className="password-container">
-                <label className="inputlable">Confirm Password</label>
-                <div className="password-field1">
-                  <input
-                    type={showPassword11 ? "text" : "password"}
-                    placeholder="Confirm Password"
-                    className="emailinput1 form-control"
-                    name="ConfirmPassword"
-                    value={passwordValues.ConfirmPassword}
-                    onChange={handlePasswordChange}
-                  />
-                  <div
-                    className="eyeIcon1"
-                    onClick={() => setShowPassword11(!showPassword11)}
-                    style={{ cursor: "pointer", marginRight: "15px" }}
-                  >
-                    {showPassword11 ? <FaEyeSlash /> : <FaEye />}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div>
-              <div className="backtologin1 mt-2">
                 <div>
-                  {passwordErrors.ConfirmPassword && (
-                    <p
-                      className="validationError m-1"
-                      style={{ color: "red", fontSize: "12px" }}
-                    >
-                      {passwordErrors.ConfirmPassword}
-                    </p>
-                  )}
-                </div>
-
-                <a
-                  style={{
-                    color: "#0071FF",
-                    cursor: "pointer",
-                  }}
-                  onClick={backtoLogin}
-                  className=""
-                >
-                  Back to login?
-                </a>
-              </div>
-            </div>
-          </div>
-          {/* <div
-            className="forgotpasswordtag mt-1"
-            style={{ display: "flex", justifyContent: "end" }}
-          >
-            <div className="mt-1">
-              <a
-                className="forgotpasswordatag"
-                onClick={backtoLogin}
-                style={{ color: "#0071FF", cursor: "pointer" }}
-              >
-                Back to Login?
-              </a>
-            </div>
-          </div> */}
-          <div className="loginbutton">
-            <button className="buttonlogin1" onClick={onSetNewPasswordClick}>
-              Set New Password
-            </button>
-          </div>
-          <div className="forcontect">
-            if you are a new user, please contact archents support team.
-          </div>
-        </div>
-      </div>
-      {/* <div
-        className="formdiv3 col-6"
-        style={{ backgroundColor: "#FAFFFB", width: "50%" }}
-      >
-        <div className="formdiv2">
-          <div className="" style={{ margin: "50px" }}>
-            <img src={archetslogo} alt="" />
-          </div>
-          <div style={{ marginLeft: "50px " }}>
-            <div
-              className="forgotpasswordcontent"
-              style={{ marginTop: " 40px " }}
-            >
-              Set New Password
-            </div>
-            <div className="enetremailid">
-              Enter and confirm your new password to complete the reset process.
-            </div>
-            <form onSubmit={onSetNewPasswordClick}>
-              <div className="forgotform">
-                <div className="mb-1">
                   <label className="inputlable">New Password</label>
                 </div>
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder="New Password"
-                  className="emailinput form-control"
+                  className="emailinput1 form-control w-100"
                   name="NewPassword"
                   value={passwordValues.NewPassword}
                   onChange={handlePasswordChange}
@@ -276,45 +151,49 @@ export default function CreateNewPassword() {
                   onClick={() => setShowPassword(!showPassword)}
                   style={{
                     cursor: "pointer",
-                    right: "145px",
-                    top: "275px",
+                    right: "56px",
+                    top: "198px",
                   }}
                 >
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </div>
                 {passwordErrors.NewPassword && (
                   <p
-                    className="validationError"
+                    className="validationError m-1"
                     style={{ color: "red", fontSize: "12px" }}
                   >
                     {passwordErrors.NewPassword}
                   </p>
                 )}
-                <div className="mb-1">
+              </div>
+              <div className="mt-1">
+                <div className="password-container">
                   <label className="inputlable">Confirm Password</label>
-                </div>
-                <div className="password-field">
-                  <input
-                    type={showPassword11 ? "text" : "password"}
-                    placeholder="Confirm Password"
-                    className="emailinput form-control"
-                    name="ConfirmPassword"
-                    value={passwordValues.ConfirmPassword}
-                    onChange={handlePasswordChange}
-                  />
-                  <div
-                    className="eyeIcon"
-                    onClick={() => setShowPassword11(!showPassword11)}
-                    style={{ cursor: "pointer", marginRight: "15px" }}
-                  >
-                    {showPassword11 ? <FaEyeSlash /> : <FaEye />}
+                  <div className="password-field1">
+                    <input
+                      type={showPassword11 ? "text" : "password"}
+                      placeholder="Confirm Password"
+                      className="emailinput1 form-control w-100"
+                      name="ConfirmPassword"
+                      value={passwordValues.ConfirmPassword}
+                      onChange={handlePasswordChange}
+                    />
+                    <div
+                      className="eyeIcon1"
+                      onClick={() => setShowPassword11(!showPassword11)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {showPassword11 ? <FaEyeSlash /> : <FaEye />}
+                    </div>
                   </div>
                 </div>
-                <div className="backtologin mt-2">
+              </div>
+              <div>
+                <div className="backtologin1 mt-1">
                   <div>
                     {passwordErrors.ConfirmPassword && (
                       <p
-                        className="validationError"
+                        className="validationError m-1"
                         style={{ color: "red", fontSize: "12px" }}
                       >
                         {passwordErrors.ConfirmPassword}
@@ -323,25 +202,29 @@ export default function CreateNewPassword() {
                   </div>
 
                   <a
-                    style={{ color: "#0071FF", cursor: "pointer" }}
+                    style={{
+                      color: "#0071FF",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                    }}
                     onClick={backtoLogin}
-                    className="me-4"
+                    className=""
                   >
-                    Back to login
+                    Back to login?
                   </a>
                 </div>
-
-                <div className="loginbutton">
-                  <button className="buttonlogin"> Set New Password</button>
-                </div>
-                <div className="forcontect1">
-                  if you are a new user, please contact archents support team.
-                </div>
               </div>
-            </form>
+            </div>
+            <div className="loginbutton">
+              <button className="buttonlogin1">Set New Password</button>
+            </div>
+          </form>
+
+          <div className="createPassword_contact" style={{ margin: "50px" }}>
+            if you are a new user, please contact archents support team.
           </div>
         </div>
-      </div> */}
+      </div>
       <ToastContainer />
     </div>
   );

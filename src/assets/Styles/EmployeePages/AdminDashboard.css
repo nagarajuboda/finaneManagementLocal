@@ -645,21 +645,3 @@ input[type="txt"] {
   text-align: center;
   margin-top: 8px;
 }
-
-@media (max-width: 992px) {
-  .Quick_Actions_div {
-    justify-content: center;
-  }
-
-  .addEmployee_quick_action {
-    flex: 1 1 45%;
-    max-width: 45%;
-  }
-}
-
-@media (max-width: 600px) {
-  .addEmployee_quick_action {
-    flex: 1 1 100%;
-    max-width: 100%;
-  }
-}
