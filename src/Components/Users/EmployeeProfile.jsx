@@ -21,31 +21,37 @@ const EmployeeProfile = () => {
   const [id, setid] = useState("");
   const [open, setOpen] = useState(false);
   const [projectManager, setProjectManager] = useState({});
+  const [employeeSkillSet, setEmployeeSkillSet] = useState([]);
   const openChangePassword = () => setShowChangePassword(true);
   useEffect(() => {
-    FetchData();
     const data = JSON.parse(localStorage.getItem("sessionData"));
     setEmployee(data);
   }, []);
 
+  useEffect(() => {
+    if (employee?.employee?.projectManagerId) {
+      FetchData();
+    }
+  }, [employee]);
+
   const FetchData = async () => {
     const response = await EmployeeService.GetEmployees();
     var result = response.item;
-    setid(employee.employee.projectManagerId);
-    const employeeObject = result.find(
-      (item) => (item.employeeDetails.id || "N/A") === id
+    const EmployeeDetails = await EmployeeService.EmployeeDetailss(
+      employee.employee?.id
     );
-    setProjectManager(employeeObject);
-  };
+    setEmployeeSkillSet(EmployeeDetails.item.getSkillsets);
+    if (!employee.employee?.projectManagerId) {
+      setProjectManager(null);
+    } else {
+      const employeeObject = result.find(
+        (item) =>
+          item.employeeDetails?.id === employee.employee.projectManagerId
+      );
+      setProjectManager(employeeObject || null);
+    }
 
-  const handleChangePassword = () => {
-    // TODO: Add your API call here to actually change password
-    setMessage("Changing password...");
-    setTimeout(() => {
-      setMessage("Password changed successfully!");
-      // Optionally close modal after success
-      // closeChangePassword();
-    }, 1000);
+    setid(employee?.employee?.projectManagerId);
   };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -150,26 +156,14 @@ const EmployeeProfile = () => {
       ...errors,
       [name]: ChangePasswordValidation(name, value, values),
     });
-    setErrors({
-      password: "",
-      newPassword: "",
-      confirmPassword: "",
-    });
   };
   const closeDeletePopup = () => {
     setOpen(false);
   };
-
   return (
     <div className="profile-page">
       <div className="profile-left">
         <FaUser size={30} color="#444" style={{ marginBottom: "10px" }} />
-        {/* <img
-          src="https://via.placeholder.com/80"
-          alt="Profile"
-          className="profile-img"
-        /> */}
-
         <div className="profile-email">nagaraju.boda@archents.com</div>
         <div className="profile-meta">{lastSeen}</div>
         <div className="user-id">
@@ -290,8 +284,10 @@ const EmployeeProfile = () => {
             <textarea
               type="text"
               name="skillSets"
-              value={employee.employee?.skillSets}
-              onChange={handleInputChange}
+              className="p-2"
+              disabled
+              value={employeeSkillSet.map((name) => name.skill).join(", ")}
+              readOnly
             />
           </div>
 
@@ -402,12 +398,7 @@ const EmployeeProfile = () => {
               </div>
 
               <div className="change-password-actions">
-                <button
-                  className="change-password-btn"
-                  onClick={handleChangePassword}
-                >
-                  Submit
-                </button>
+                <button className="change-password-btn">Submit</button>
                 <button
                   className="change-password-btn red"
                   onClick={closeChangePassword}
@@ -418,40 +409,6 @@ const EmployeeProfile = () => {
             </div>
           </form>
           <ToastContainer position="top-end" autoClose={5000} />
-          {open && (
-            <div className="unique-popup-overlay">
-              <div className="unique-popup-container">
-                <div className="unique-popup-icon">
-                  <div className="ellipse-container">
-                    <img
-                      src={checkimage}
-                      alt="Check"
-                      className="check-image"
-                      height="40px"
-                      width="40px"
-                    />
-                    <img
-                      src={ellips}
-                      alt="Ellipse"
-                      className="ellipse-image"
-                      height="65px"
-                      width="65px"
-                    />
-                  </div>
-                </div>
-                <h2 className="unique-popup-title">Deleted Successfully</h2>
-                <p className="unique-popup-message">
-                  Click OK to see the results
-                </p>
-                <button
-                  className="unique-popup-button"
-                  onClick={closeDeletePopup}
-                >
-                  OK
-                </button>
-              </div>
-            </div>
-          )}
         </div>
       )}
     </div>
