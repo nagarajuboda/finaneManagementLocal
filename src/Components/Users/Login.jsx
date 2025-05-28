@@ -79,7 +79,9 @@ const Home = () => {
           localStorage.setItem("Email", valuess.email);
           navigate("/user/CreateNewPassword");
         } else {
+          const currentTime = new Date().toISOString();
           localStorage.setItem("sessionData", JSON.stringify(result.item));
+          localStorage.setItem("lastSignInTime", currentTime);
           if (result.item.employee.role.name === "US-finance") {
             navigate("/Dashboard/FinanceDashboard");
           } else if (result.item.employee.role.name === "Admin") {

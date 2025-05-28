@@ -200,7 +200,9 @@ export default function Header({ isOpen }) {
       return notifDate >= notifDate <= today;
     })
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
+  const ViewProfile = () => {
+    navigate("/dashboard/Profile");
+  };
   return (
     <div
       className="Headermaindiv"
@@ -296,7 +298,10 @@ export default function Header({ isOpen }) {
               }}
             >
               <ul style={{ listStyle: "none", margin: 0, paddingLeft: "10px" }}>
-                <li style={{ padding: "10px 0", cursor: "pointer" }}>
+                <li
+                  style={{ padding: "10px 0", cursor: "pointer" }}
+                  onClick={ViewProfile}
+                >
                   <img src={myprofile} alt="" width="24px" height="24px" />
                   <span style={{ fontSize: "14px" }} className="ms-3">
                     My Profile

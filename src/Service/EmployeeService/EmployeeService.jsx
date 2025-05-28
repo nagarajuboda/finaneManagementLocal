@@ -60,6 +60,10 @@ const EmployeeService = {
     const response = await apiurl.post("/Employees/Add", obj);
     return response.data;
   },
+  async ChangePassowrd(obj) {
+    const response = await apiurl.post("/Employees/ChangePassword", obj);
+    return response.data;
+  },
   async TotalEmployees() {
     const response = await apiurl.get("/Employees/GetEmployeesAndProjectCount");
     return response.data;
