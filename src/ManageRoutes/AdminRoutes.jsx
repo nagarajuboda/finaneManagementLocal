@@ -26,6 +26,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import AllRecnetActivities from "../Components/Admin/Pages/AllRecnetActivities";
 import ProfitLossSummary from "../Components/IndianFinance/ProfitLossSummary";
 import EmployeeProfile from "../Components/Users/EmployeeProfile";
+import Support from "../Components/Users/Support";
 export default function AdminRoutes() {
   return (
     <ProtectedRoute>
@@ -56,6 +57,7 @@ function RoleBasedRoutes() {
       { path: "/EditEmployee", element: <EditEmployeePopup /> },
       { path: "/AllRecnetActivities", element: <AllRecnetActivities /> },
       { path: "/Profile", element: <EmployeeProfile /> },
+      { path: "/support", element: <Support /> },
     ],
     project_manager: [
       { path: "/Employeeslist", element: <Employeess /> },
@@ -65,6 +67,7 @@ function RoleBasedRoutes() {
       { path: "/TimeSheet", element: <TimeSheetModule /> },
       { path: "/Notifications", element: <Notifications /> },
       { path: "/Profile", element: <EmployeeProfile /> },
+      { path: "/support", element: <Support /> },
     ],
     usfinance_team: [
       { path: "/FinanceDashboard", element: <UsFinanceTeamDashboard /> },
@@ -74,6 +77,7 @@ function RoleBasedRoutes() {
       },
       { path: "/USFinance/AddRevenue", element: <AddRevenue /> },
       { path: "/Profile", element: <EmployeeProfile /> },
+      { path: "/support", element: <Support /> },
     ],
     indianfinance_team: [
       { path: "/Dashboard", element: <IndianFinanceTeamDashboard /> },
@@ -85,6 +89,7 @@ function RoleBasedRoutes() {
       { path: "/Notifications", element: <Notifications /> },
       { path: "/ProfitSummary", element: <ProfitLossSummary /> },
       { path: "/Profile", element: <EmployeeProfile /> },
+      { path: "/support", element: <Support /> },
     ],
   };
   const accessibleRoutes = roleBasedRoutes[userRole] || [];

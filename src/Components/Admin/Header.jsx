@@ -205,6 +205,9 @@ export default function Header({ isOpen }) {
   const ViewProfile = () => {
     navigate("/dashboard/Profile");
   };
+  const Support = () => {
+    navigate("/dashboard/support");
+  };
   return (
     <div
       className="Headermaindiv"
@@ -315,7 +318,10 @@ export default function Header({ isOpen }) {
                     width: "100%",
                   }}
                 ></div>
-                <li style={{ padding: "10px 0", cursor: "pointer" }}>
+                <li
+                  style={{ padding: "10px 0", cursor: "pointer" }}
+                  onClick={Support}
+                >
                   <img src={support} alt="" width="24px" height="24px" />
                   <span style={{ fontSize: "12px" }} className="ms-3">
                     Support
@@ -327,12 +333,6 @@ export default function Header({ isOpen }) {
                     width: "100%",
                   }}
                 ></div>
-                <li style={{ padding: "10px 0", cursor: "pointer" }}>
-                  <img src={settings} alt="" width="24px" height="24px" />
-                  <span style={{ fontSize: "14px" }} className="ms-3">
-                    Settings
-                  </span>
-                </li>
                 <div
                   style={{
                     border: "1px solid #64646430",
