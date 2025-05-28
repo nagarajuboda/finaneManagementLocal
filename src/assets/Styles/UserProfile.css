@@ -1,4 +1,3 @@
-/* EmployeeProfile.css */
 .profile-page {
   display: flex;
   gap: 1rem;
@@ -132,7 +131,6 @@
   font-size: 0.75rem;
   font-weight: 600;
 }
-/* Responsive styles for tablets and laptops */
 @media (max-width: 1024px) {
   .profile-page {
     flex-direction: column;
@@ -151,7 +149,6 @@
   }
 }
 
-/* Responsive for mobile devices (small tablets and phones) */
 @media (max-width: 768px) {
   .profile-page {
     padding: 1rem 0.5rem;
@@ -169,7 +166,7 @@
     max-width: 280px;
   }
 }
-/* Modal overlay covers whole screen */
+
 .change-password-overlay {
   position: fixed;
   top: 0;
