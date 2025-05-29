@@ -166,7 +166,7 @@ const EmployeeProfile = () => {
     <div className="profile-page">
       <div className="profile-left">
         <FaUser size={30} color="#444" style={{ marginBottom: "10px" }} />
-        <div className="profile-email">nagaraju.boda@archents.com</div>
+        <div className="profile-email">{employee.employee.email}</div>
         <div className="profile-meta">{lastSeen}</div>
         <div className="user-id">
           Employee ID: <span className="faded">IARC0282</span>
