@@ -84,13 +84,17 @@ export default function ForgotPassword() {
         style={{ backgroundColor: "#FAFFFB", width: "50%" }}
       >
         <div className="formdiv2">
-          <div className="" style={{ margin: "80px" }}>
-            <img src={archetslogo} alt="" />
+          <div className="">
+            <img
+              src={archetslogo}
+              alt=""
+              className="forgotpassword_Archents_Logo"
+            />
           </div>
-          <div style={{ marginLeft: "80px " }}>
+          <div style={{ margin: "30px " }}>
             <div
               className="forgotpasswordcontent"
-              style={{ marginTop: " 60px " }}
+              style={{ marginTop: " 100px " }}
             >
               Forgot your password?
             </div>
@@ -98,14 +102,14 @@ export default function ForgotPassword() {
               Enter your email id, we will reset your passward.
             </div>
             <form onSubmit={getotpfunction}>
-              <div className="forgotform">
+              <div className="forgotform mt-3">
                 <div className="mb-1">
                   <label className="inputlable">Email ID</label>
                 </div>
                 <input
                   type="text"
                   placeholder="enter your email "
-                  className="emailinput form-control"
+                  className="emailinput form-control w-100"
                   onChange={handleChange22}
                   name="email"
                   value={emailvalues.email}
@@ -120,9 +124,13 @@ export default function ForgotPassword() {
                   </div>
 
                   <a
-                    style={{ color: "#0071FF", cursor: "pointer" }}
+                    style={{
+                      color: "#0071FF",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                    }}
                     onClick={backtoLogin}
-                    className="me-4"
+                    className=""
                   >
                     Back to login
                   </a>
@@ -130,12 +138,12 @@ export default function ForgotPassword() {
 
                 <div className="loginbutton">
                   {loading === false ? (
-                    <button className="buttonlogin">Submit</button>
+                    <button className="buttonlogin w-100">Submit</button>
                   ) : (
                     loading && (
-                      <button class="buttonlogin" type="button" disabled>
+                      <button class="buttonlogin w-100" type="button" disabled>
                         <span
-                          class="spinner-border spinner-border-sm"
+                          class="spinner-border spinner-border-sm "
                           role="status"
                           aria-hidden="true"
                         ></span>

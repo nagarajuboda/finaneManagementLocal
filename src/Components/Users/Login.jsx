@@ -33,13 +33,9 @@ const Home = () => {
   const [disibleloginbuttons, setDisibleloginbuttons] = useState(false);
   const [tempToken, setTempToken] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
-  const [emailvalues, setEmialValuess] = useState({
-    email: "",
-  });
-  const [emailerror, setEmialerror] = useState({
-    email: "",
-  });
+
   const [valuess, setValuess] = useState({
     email: "",
     password: "",
@@ -51,7 +47,18 @@ const Home = () => {
   const navigatetoforgotpasswordpage = async () => {
     navigate("/user/forgotpassword");
   };
-  useEffect(() => {}, [tempToken]);
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("rememberedEmail");
+    const savedPassword = localStorage.getItem("rememberedPassword");
+
+    if (savedEmail && savedPassword) {
+      setValuess({
+        email: savedEmail,
+        password: savedPassword,
+      });
+      setRememberMe(true);
+    }
+  }, [tempToken]);
   const onLoginButtonClick = async (e) => {
     e.preventDefault();
     const newErrors = {
@@ -75,6 +82,12 @@ const Home = () => {
         setLoggedIn(true);
         setSessionData(result.item.token);
         setTempToken(result.item.token);
+        if (rememberMe) {
+          localStorage.setItem("rememberedEmail", valuess.email);
+        } else {
+          localStorage.removeItem("rememberedEmail");
+        }
+
         if (result.item.employee.isFirstTimeLogin === true) {
           localStorage.setItem("Email", valuess.email);
           navigate("/user/CreateNewPassword");
@@ -167,86 +180,98 @@ const Home = () => {
           <div className="pleaseLoginContent">
             Please login using email id and password
           </div>
-          <div className="inputdiv">
-            <div>
+          <form onSubmit={onLoginButtonClick}>
+            <div className="inputdiv">
               <div>
-                <label>
-                  Email ID <span style={{ color: "red" }}>*</span>
-                </label>
-              </div>
-              <input
-                type="text"
-                placeholder="enter your username"
-                className="emailandpassword"
-                name="email"
-                value={valuess.email}
-                onChange={handleChange}
-              />
-              {error.email && (
-                <span
-                  className="error ms-1 emailrequirederrormessage "
-                  style={{ color: "red", textAlign: "start", display: "flex" }}
-                >
-                  {error.email}
-                </span>
-              )}
-            </div>
-            <div className="mt-2">
-              <div className="password-container">
-                <label>
-                  Password <span style={{ color: "red" }}>*</span>
-                </label>
-                <div className="password-field">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    className="emailandpassword"
-                    placeholder="Enter your password"
-                    name="password"
-                    value={values.password}
-                    onChange={handleChange}
-                  />
-                  <div
-                    className="eyeIcon LogineyeIcon"
-                    onClick={() => setShowPassword(!showPassword)}
-                    style={{ cursor: "pointer", marginLeft: "-35px" }}
+                <div>
+                  <label>
+                    Email ID <span style={{ color: "red" }}>*</span>
+                  </label>
+                </div>
+                <input
+                  type="text"
+                  placeholder="enter your username"
+                  className="emailandpassword"
+                  name="email"
+                  value={valuess.email}
+                  onChange={handleChange}
+                />
+                {error.email && (
+                  <span
+                    className="error ms-1 emailrequirederrormessage "
+                    style={{
+                      color: "red",
+                      textAlign: "start",
+                      display: "flex",
+                    }}
                   >
-                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                    {error.email}
+                  </span>
+                )}
+              </div>
+              <div className="mt-2">
+                <div className="password-container">
+                  <label>
+                    Password <span style={{ color: "red" }}>*</span>
+                  </label>
+                  <div className="password-field">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      className="emailandpassword"
+                      placeholder="Enter your password"
+                      name="password"
+                      value={valuess.password}
+                      onChange={handleChange}
+                    />
+                    <div
+                      className="eyeIcon LogineyeIcon"
+                      onClick={() => setShowPassword(!showPassword)}
+                      style={{ cursor: "pointer", marginLeft: "-35px" }}
+                    >
+                      {showPassword ? <FaEyeSlash /> : <FaEye />}
+                    </div>
                   </div>
                 </div>
               </div>
+              {error.password && (
+                <span
+                  className="ms-1 emailrequirederrormessage"
+                  style={{ color: "red", textAlign: "start", display: "flex" }}
+                >
+                  {error.password}
+                </span>
+              )}
             </div>
-            {error.password && (
-              <span
-                className="ms-1 emailrequirederrormessage"
-                style={{ color: "red", textAlign: "start", display: "flex" }}
-              >
-                {error.password}
-              </span>
-            )}
-          </div>
-          <div
-            className="forgotpasswordtag mt-1"
-            style={{ display: "flex", justifyContent: "space-between" }}
-          >
-            <div style={{ display: "flex" }} className="ms-1">
-              <input type="checkbox" name="" id="" style={{ width: "18px" }} />
-              <p className="remembermecontent m-2">Remember me</p>
+            <div
+              className="forgotpasswordtag mt-1"
+              style={{ display: "flex", justifyContent: "space-between" }}
+            >
+              <div style={{ display: "flex" }} className="ms-1">
+                <input
+                  type="checkbox"
+                  id="rememberMe"
+                  style={{ width: "18px" }}
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                />
+                <p className="remembermecontent m-2">Remember me</p>
+              </div>
+              <div className="mt-1">
+                <a
+                  className="forgotpasswordatag"
+                  onClick={navigatetoforgotpasswordpage}
+                  style={{ color: "#0071FF", cursor: "pointer" }}
+                >
+                  Forgot Password?
+                </a>
+              </div>
             </div>
-            <div className="mt-1">
-              <a
-                className="forgotpasswordatag"
-                onClick={navigatetoforgotpasswordpage}
-                style={{ color: "#0071FF", cursor: "pointer" }}
-              >
-                Forgot Password?
-              </a>
+            <div className="loginbutton">
+              <button className="buttonlogin1" onClick={onLoginButtonClick}>
+                Login
+              </button>
             </div>
-          </div>
-          <div className="loginbutton">
-            <button className="buttonlogin1" onClick={onLoginButtonClick}>
-              Login
-            </button>
-          </div>
+          </form>
           <div className="forcontect">
             if you are a new user, please contact archents support team.
           </div>

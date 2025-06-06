@@ -149,6 +149,8 @@ export default function Header({ isOpen }) {
 
   const Logoutfunction = () => {
     localStorage.removeItem("sessionData");
+    localStorage.removeItem("lastSignInTime");
+    sessionStorage.clear();
     navigate("/user/Login");
   };
 
@@ -203,6 +205,7 @@ export default function Header({ isOpen }) {
   const ViewProfile = () => {
     navigate("/dashboard/Profile");
   };
+
   return (
     <div
       className="Headermaindiv"
@@ -313,24 +316,13 @@ export default function Header({ isOpen }) {
                     width: "100%",
                   }}
                 ></div>
-                <li style={{ padding: "10px 0", cursor: "pointer" }}>
-                  <img src={support} alt="" width="24px" height="24px" />
-                  <span style={{ fontSize: "12px" }} className="ms-3">
-                    Support
-                  </span>
-                </li>
+
                 <div
                   style={{
                     border: "1px solid #64646430",
                     width: "100%",
                   }}
                 ></div>
-                <li style={{ padding: "10px 0", cursor: "pointer" }}>
-                  <img src={settings} alt="" width="24px" height="24px" />
-                  <span style={{ fontSize: "14px" }} className="ms-3">
-                    Settings
-                  </span>
-                </li>
                 <div
                   style={{
                     border: "1px solid #64646430",
