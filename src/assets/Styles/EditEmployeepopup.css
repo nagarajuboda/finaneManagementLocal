@@ -10,6 +10,29 @@
 }
 
 .modal-content {
+  position: absolute;
+  top: 10vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 95vw;
+  max-width: 925px;
+  height: auto;
+  max-height: 90vh;
+  overflow-y: hidden;
+  overflow-x: auto;
+  background: #ffffff;
+  border: 1px solid #cecece;
+  border-radius: 3px;
+  box-sizing: border-box;
+  padding-bottom: 10px;
+}
+
+/* Optional: Make sure inner scroll doesn't break layout */
+.dialog-box {
+  box-sizing: border-box;
+}
+/* 
+.modal-content {
   top: 92px;
   left: 281px;
   width: 925px;
@@ -19,7 +42,7 @@
   border: 1px solid #cecece;
   border-radius: 3px;
   opacity: 1;
-}
+} */
 
 .file-upload-container {
   margin: 20px 0;
@@ -82,13 +105,12 @@
   background-color: #c82333;
 }
 .modalheader {
-  width: 925px;
-  height: 39px;
+  height: 41px;
   background: #139bff 0% 0% no-repeat padding-box;
   opacity: 1;
 }
 .cancelicon1 {
-  font-size: 16px;
+  font-size: 18px;
 }
 .employeeDetailsContent {
   height: 17px;

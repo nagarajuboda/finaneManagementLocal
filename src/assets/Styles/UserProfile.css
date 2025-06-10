@@ -10,64 +10,53 @@
   display: flex;
   align-items: center;
 }
-
 .password-input-wrapper input {
   width: 100%;
   padding-right: 35px;
 }
-
 .eye-icon {
   position: absolute;
   right: 10px;
   cursor: pointer;
   color: #666;
 }
-
 .profile-left {
-  width: 280px;
   background: #fff;
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   text-align: center;
 }
-
 .profile-img {
   width: 80px;
   height: 80px;
   border-radius: 50%;
   margin-bottom: 1rem;
 }
-
 .profile-email {
   font-weight: 600;
   font-size: 1rem;
   margin-bottom: 0.5rem;
 }
-
 .profile-meta {
   font-size: 0.9rem;
   color: #6b7280;
   margin-bottom: 0.5rem;
 }
-
 .user-id {
   font-size: 0.8rem;
   color: #9ca3af;
   margin-bottom: 1rem;
 }
-
 .faded {
   font-family: monospace;
   color: #9ca3af;
 }
-
 .profile-actions {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
-
 .action-btn {
   background: #f3f4f6;
   border: none;
@@ -77,16 +66,13 @@
   cursor: pointer;
   transition: background 0.3s;
 }
-
 .action-btn:hover {
   background: #e5e7eb;
 }
-
 .action-btn.red {
   color: #b91c1c;
   background: #fee2e2;
 }
-
 .profile-right {
   flex: 1;
   background: #fff;
@@ -94,11 +80,9 @@
   padding: 2rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
-
 .section {
   margin-bottom: 2rem;
 }
-
 .section h3 {
   font-size: 1.2rem;
   margin-bottom: 1rem;
@@ -106,24 +90,20 @@
   padding-bottom: 0.5rem;
   color: #111827;
 }
-
 .input-row {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
 }
-
 .form-group {
   display: flex;
   flex-direction: column;
 }
-
 .form-group label {
   font-size: 0.9rem;
   color: #6b7280;
   margin-bottom: 0.4rem;
 }
-
 .form-group input {
   padding: 0.5rem;
   border: 1px solid #d1d5db;
@@ -132,11 +112,9 @@
   font-size: 0.95rem;
   color: #111827;
 }
-
 .input-verified {
   position: relative;
 }
-
 .input-verified .verified {
   position: absolute;
   right: 10px;
@@ -165,7 +143,6 @@
     padding: 1.5rem;
   }
 }
-
 @media (max-width: 768px) {
   .profile-page {
     padding: 1rem 0.5rem;
@@ -178,12 +155,7 @@
   .form-group {
     flex: 1 1 100%;
   }
-
-  .profile-left {
-    max-width: 280px;
-  }
 }
-
 .change-password-overlay {
   position: fixed;
   top: 0;
@@ -198,7 +170,6 @@
   padding: 20px;
   box-sizing: border-box;
 }
-
 .change-password-content {
   background: #fff;
   border-radius: 8px;
@@ -209,18 +180,15 @@
   box-sizing: border-box;
   position: relative;
 }
-
 .change-password-group {
   margin-bottom: 15px;
 }
-
 .change-password-group label {
   display: block;
   margin-bottom: 5px;
   font-weight: 600;
   color: #333;
 }
-
 .change-password-group input[type="password"] {
   width: 100%;
   padding: 8px 12px;
@@ -229,19 +197,16 @@
   font-size: 14px;
   box-sizing: border-box;
 }
-
 .change-password-message {
   margin: 10px 0;
   color: #d93025;
   font-weight: 600;
 }
-
 .change-password-actions {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
 }
-
 .change-password-btn {
   padding: 8px 18px;
   border: none;
@@ -253,7 +218,6 @@
   font-size: 14px;
   transition: background-color 0.3s ease;
 }
-
 .change-password-btn:hover {
   background-color: #0056b3;
 }
@@ -261,11 +225,9 @@
 .change-password-btn.red {
   background-color: #dc3545;
 }
-
 .change-password-btn.red:hover {
   background-color: #a71d2a;
 }
-
 @media (min-width: 768px) {
   .change-password-content {
     width: 400px;

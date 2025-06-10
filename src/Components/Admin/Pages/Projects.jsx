@@ -138,128 +138,6 @@ export default function Projectss() {
         Projects
       </p>
       <div className="AllProject-maindiv">
-        {/* <div
-          className="row"
-          style={{
-            paddingTop: "20px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <div className="col-2">
-            <p className="Project-list-content" style={{ fontSize: "14px" }}>
-              Project list
-            </p>
-          </div>
-          <div className="col-1"></div>
-          <div
-            className="col-3"
-            style={{
-              position: "relative",
-            }}
-          >
-            <input
-              type="text"
-              onChange={handleSearchChange}
-              value={searchQuery}
-              className="searchinput "
-              placeholder="Search Projects"
-              style={{ width: "280px", padding: "5px", fontSize: "14px" }}
-            />
-            <i
-              className="bi bi-search"
-              style={{
-                fontSize: "18px",
-                position: "absolute",
-                left: "270px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                color: "#888",
-                pointerEvents: "none",
-              }}
-            ></i>
-          </div>
-          <div className="col-6 row">
-            <div className="col-1"></div>
-            <div className="col-4 ">
-              <select
-                className="numberpagenation"
-                style={{ cursor: "pointer", height: "36px" }}
-                onChange={handleItemsPerPageChange}
-                value={itemsPerPage}
-              >
-                <option value="10" style={{ fontSize: "14px" }}>
-                  Show 10 Entities
-                </option>
-                <option value="25" style={{ fontSize: "14px" }}>
-                  Show 25 Entities
-                </option>
-                <option value="50" style={{ fontSize: "14px" }}>
-                  Show 50 Entities
-                </option>
-                <option value="-1" style={{ fontSize: "14px" }}>
-                  Show All
-                </option>
-              </select>
-            </div>
-
-            <div
-              className="col-3 "
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "end",
-              }}
-            >
-              <button
-                className="btn btn-danger projectdeletedbutton"
-                disabled={disiblebuttons}
-                onClick={DeleteSelectedRecords}
-                style={{ fontSize: "14px", height: "36px" }}
-              >
-                Delete Selected
-              </button>
-            </div>
-            <div
-              className="col-4"
-              style={{ display: "flex", justifyContent: "start" }}
-            >
-              <button
-                style={{
-                  display: "flex",
-                  width: "auto",
-                  justifyContent: "center",
-                  alignContent: "center",
-                  padding: "5px",
-                  height: "36px",
-                }}
-                className="add-new-project-button"
-                onClick={AddNewProject}
-              >
-                <span>
-                  <img
-                    src={userimage}
-                    alt=""
-                    height="18px"
-                    width="18px"
-                    className="mb-2"
-                  />
-                </span>
-                <span
-                  className=" ms-1"
-                  style={{
-                    fontSize: "14px",
-                    color: "#000000",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Add New Project
-                </span>
-              </button>
-            </div>
-          </div>
-        </div> */}
         <div className="container-fluid pt-3">
           <div className="row g-2 row-cols-1 row-cols-md-auto align-items-center justify-content-md-between">
             <div className="col">
@@ -271,7 +149,7 @@ export default function Projectss() {
               </p>
             </div>
 
-            <div className="col position-relative">
+            <div className="col position-relative col-6 col-md-6 col-lg-5">
               <input
                 type="text"
                 onChange={handleSearchChange}

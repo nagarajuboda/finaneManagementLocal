@@ -130,7 +130,6 @@ const EmployeeProfile = () => {
         toast.success("Password changed successfully.", {
           position: "top-right",
           autoClose: 1000,
-
           onClose: () => navigate("/"),
         });
       } else {
@@ -166,7 +165,7 @@ const EmployeeProfile = () => {
     <div className="profile-page">
       <div className="profile-left">
         <FaUser size={30} color="#444" style={{ marginBottom: "10px" }} />
-        <div className="profile-email">{employee.employee.email}</div>
+        <div className="profile-email">{employee.employee?.email}</div>
         <div className="profile-meta">{lastSeen}</div>
         <div className="user-id">
           Employee ID: <span className="faded">IARC0282</span>
@@ -177,11 +176,9 @@ const EmployeeProfile = () => {
           </button>
         </div>
       </div>
-
       <div className="profile-right">
         <div className="section">
           <h3>Personal Information</h3>
-
           <div className="row">
             <div className="form-group col-6">
               <label>First Name</label>
@@ -202,7 +199,6 @@ const EmployeeProfile = () => {
               />
             </div>
           </div>
-
           <div className="form-group">
             <label>Email Address</label>
             <div className="input-verified">
@@ -239,7 +235,6 @@ const EmployeeProfile = () => {
               />
             </div>
           </div>
-
           <div className="row">
             <div className="form-group col-6">
               <label>Date of Joining</label>
@@ -268,7 +263,6 @@ const EmployeeProfile = () => {
               />
             </div>
           </div>
-
           <div className="form-group">
             <label>Employee Status</label>
             <input
@@ -280,7 +274,6 @@ const EmployeeProfile = () => {
               readOnly
             />
           </div>
-
           <div className="form-group">
             <label>Skill Sets</label>
             <textarea
@@ -292,7 +285,6 @@ const EmployeeProfile = () => {
               readOnly
             />
           </div>
-
           <div className="row">
             <div className="form-group col-6">
               <label>Role</label>
@@ -315,7 +307,6 @@ const EmployeeProfile = () => {
               />
             </div>
           </div>
-
           <div className="form-group">
             <label>Last Modified</label>
             <input
@@ -329,7 +320,6 @@ const EmployeeProfile = () => {
           </div>
         </div>
       </div>
-
       {showChangePassword && (
         <div className="change-password-overlay" onClick={closeChangePassword}>
           <form onSubmit={ChangePassword}>
@@ -416,5 +406,4 @@ const EmployeeProfile = () => {
     </div>
   );
 };
-
 export default EmployeeProfile;
