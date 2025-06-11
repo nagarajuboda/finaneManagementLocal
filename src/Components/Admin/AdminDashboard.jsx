@@ -123,7 +123,6 @@ export default function AdminDashboard() {
     let dataValues = [];
     let highestValue = 0;
     let barcolors = [];
-
     if (result.isSuccess && result.item.length > 0) {
       Projects = result.item.map((data) => data.projectName);
       revenueValues = result.item.map((data) => data.totalRevenue);
@@ -132,13 +131,8 @@ export default function AdminDashboard() {
       if (!hasData) {
         const canvas = barchartref.current;
         const ctx = canvas.getContext("2d");
-
-        // Just clear the canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        // Set hasGraphData to false to show HTML fallback
-        setHasData(false);
-
+        setHasData(hasData);
         return;
       }
 
@@ -148,44 +142,8 @@ export default function AdminDashboard() {
         value === highestValue ? "#335CFF" : "#DCE6EF"
       );
       setHasData(true);
-
-      //   if (!hasData) {
-      //     const canvas = barchartref.current;
-      //     const ctx = canvas.getContext("2d");
-      //     ctx.clearRect(0, 0, canvas.width, canvas.height);
-      //     ctx.font = "2px Arial";
-      //     ctx.fillStyle = "#666";
-      //     ctx.textAlign = "center";
-      //     ctx.textBaseline = "middle";
-
-      //     ctx.fillText(
-      //       "No revenue data available for this period.",
-      //       canvas.width / 2,
-      //       canvas.height / 2
-      //     );
-      //     return;
-      //   }
-      //   dataValues = revenueValues;
-      //   highestValue = Math.max(...dataValues);
-      //   barcolors = dataValues.map((value) =>
-      //     value === highestValue ? "#335CFF" : "#DCE6EF"
-      //   );
-      // } else {
-      //   const canvas = barchartref.current;
-      //   const ctx = canvas.getContext("2d");
-      //   ctx.clearRect(0, 0, canvas.width, canvas.height);
-      //   ctx.font = "10px 'Segoe UI', sans-serif";
-      //   ctx.fillStyle = "blac";
-      //   ctx.textAlign = "center";
-      //   ctx;
-      //   ctx.textBaseline = "middle";
-      //   ctx.fillText(
-      //     "No revenue data available for this period.",
-      //     canvas.width / 2,
-      //     canvas.height / 2
-      //   );
-      //   return;
     }
+    setHasData(false);
 
     barchartintance.current = new Chart(myChartRef, {
       type: "bar",
@@ -515,7 +473,7 @@ export default function AdminDashboard() {
     <div className="DashboardMaindiv">
       <p className="employeeoveriew_content ">Employee Overview</p>
 
-      <div className="row m-0 gap-3 gy-2">
+      <div className="row m-0  gy-2 gap-2">
         <div
           className="col-12 col-lg-4 Employeeoverview  "
           style={{ flex: "1" }}
@@ -617,7 +575,7 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
-        <div className="col-12 col-lg-4 Employeeoverview" style={{ flex: "1" }}>
+        <div className="col-12 col-lg-4 Employeeoverview">
           <div className="mt-2">
             <span className="ActiveEmployeeContent">Employees on Bench</span>
 
@@ -750,7 +708,7 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
-        <div className="col-12 col-lg-4 Employeeoverview" style={{ flex: "1" }}>
+        <div className="col-12 col-lg-4 Employeeoverview">
           <div className="mt-2">
             <p className="ActiveEmployeeContent"> Total Employees</p>
           </div>
@@ -980,7 +938,7 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
-      <div className="Profit_And_Loss_Summary">
+      <div className="Profit_And_Loss_Summary ">
         <div
           className="row g-3"
           style={{ display: "flex", alignItems: "stretch" }}
@@ -990,16 +948,19 @@ export default function AdminDashboard() {
               Profit And loss Summary
             </span>
 
-            <div className="Profit_and_loss_flowchat mt-3 flex-grow-1">
+            <div
+              className="Profit_and_loss_flowchat   flex-grow-1"
+              style={{ padding: "20px" }}
+            >
               <div
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  padding: "10px 20px",
+                  padding: "10px 0px",
                 }}
               >
-                <span className="adminName" style={{ fontSize: "14px" }}>
+                <span className="adminName" style={{ fontSize: "20px" }}>
                   Profit And loss Summary-{Selectedyear}
                 </span>
                 <div>
@@ -1014,13 +975,14 @@ export default function AdminDashboard() {
                 </div>
               </div>
               <div
-                className="m-5"
+                className=""
                 style={{
-                  width: "85%",
+                  // width: "90%",
+                  height: "auto",
                   border: "1px solid",
                 }}
               >
-                <ChartJSBar data={data3} options={options3} />
+                <ChartJSBar data={data3} options={options3} className="" />
               </div>
             </div>
           </div>

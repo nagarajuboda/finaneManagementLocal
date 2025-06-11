@@ -5,6 +5,10 @@
   opacity: 1;
   height: 140px;
 }
+.convasChart {
+  height: 350 !important;
+  width: auto !important;
+}
 
 .indian-finance-revneue-overview1 {
   height: 400px !important;

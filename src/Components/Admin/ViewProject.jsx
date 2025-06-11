@@ -228,7 +228,6 @@ export function ViewProject() {
         id: ProjectValues.id,
       },
     ];
-    console.log(requestBody, "request body");
     var response = await ProjectService.fcnAssignEmployee(requestBody);
     if (response.isSuccess) {
       setassignedNewEmployeePopup(true);
@@ -542,12 +541,6 @@ export function ViewProject() {
               ></i>
             </div>
           </div>
-          {/* {userDetails.employee.role.name === "Admin" ||
-          userDetails.employee.role.name === "Project Manager" ? (
-            <div className="col-3 col-md-3 col-lg-1"></div>
-          ) : (
-            <div className="col-5 col-md-4 col-lg-2"></div>
-          )} */}
           {userDetails.employee.role.name !== "Admin" &&
             userDetails.employee.role.name !== "Project Manager" && (
               <div className="col-5 col-md-4 col-lg-1"></div>
@@ -569,7 +562,7 @@ export function ViewProject() {
             </div>
           )}
           <div
-            className="col-2 col-md-2 col-lg-1"
+            className="col-2 col-md-3 col-lg-1"
             style={{
               display: "flex",
               justifyContent: "space-between",
@@ -606,7 +599,7 @@ export function ViewProject() {
           {(userDetails.employee.role.name === "Admin" ||
             userDetails.employee.role.name === "Project Manager") && (
             <div
-              className="col-2 col-md-3 col-lg-3"
+              className="col-2 col-md-4 col-lg-3 "
               style={{
                 display: "flex",
                 justifyContent: "end",
@@ -634,7 +627,7 @@ export function ViewProject() {
                   />
                 </span>
                 <span
-                  className=" ms-1"
+                  className="ms-1"
                   style={{
                     fontSize: "14px",
                     color: "#000000",
@@ -647,95 +640,6 @@ export function ViewProject() {
             </div>
           )}
         </div>
-        {/* <div className="row m-0 py-2 gx-2 gy-2 flex-wrap align-items-center">
-          <div className="col-12 col-md-3 col-lg-2">
-            <p className="projectPrpgress mb-0">Project Team Members</p>
-          </div>
-
-          <div className="col-12 col-md-6 col-lg-3">
-            <div className="position-relative d-flex align-items-center">
-              <input
-                type="text"
-                className="searchinput form-control"
-                placeholder="Search employee"
-                onChange={handleSearchChange}
-                value={searchQuery}
-                style={{
-                  padding: "5px 30px 5px 10px",
-                  fontSize: "14px",
-                }}
-              />
-              <i
-                className="bi bi-search position-absolute"
-                style={{
-                  right: "10px",
-                  fontSize: "18px",
-                  color: "#888",
-                  pointerEvents: "none",
-                }}
-              ></i>
-            </div>
-          </div>
-
-          {(userDetails.employee.role.name === "Admin" ||
-            userDetails.employee.role.name === "Project Manager") && (
-            <div className="col-6 col-md-4 col-lg-1 d-flex justify-content-md-end">
-              <button
-                className="btn btn-primary w-100"
-                style={{ fontSize: "14px", height: "36px" }}
-                onClick={() => setIsImportPopupOpen(true)}
-              >
-                Import
-              </button>
-            </div>
-          )}
-
-          <div className="col-6 col-md-4 col-lg-2 d-flex justify-content-md-start">
-            <Dropdown className="w-100">
-              <Dropdown.Toggle
-                id="dropdown-basic"
-                className="btn btn-primary"
-                style={{ fontSize: "14px", height: "36px" }}
-              >
-                Export To
-              </Dropdown.Toggle>
-
-              <Dropdown.Menu>
-                <Dropdown.Item
-                  onClick={() => DownloadExcel("employees", "excel", ProjectID)}
-                >
-                  MS Excel
-                </Dropdown.Item>
-                <Dropdown.Item
-                  onClick={() => DownloadExcel("employees", "pdf", ProjectID)}
-                >
-                  Adobe PDF
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-          </div>
-
-          {(userDetails.employee.role.name === "Admin" ||
-            userDetails.employee.role.name === "Project Manager") && (
-            <div className="col-12 col-md-4 col-lg-2 d-flex justify-content-md-center">
-              <button
-                className="add-new-project-button btn btn-light w-100 d-flex align-items-center justify-content-center"
-                style={{ height: "36px", fontSize: "14px", fontWeight: "bold" }}
-                onClick={Addemployeefunction}
-              >
-                <img
-                  src={userimage}
-                  alt=""
-                  height="18px"
-                  width="18px"
-                  className="me-2"
-                />
-                Add Employee
-              </button>
-            </div>
-          )}
-        </div> */}
-
         <div style={{ padding: "10px", paddingBottom: "35px" }}>
           <table
             id="example"
