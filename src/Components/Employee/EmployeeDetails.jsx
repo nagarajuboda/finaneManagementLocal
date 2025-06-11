@@ -322,7 +322,6 @@ export default function EmployeeDetails() {
             </div>
           </div>
         </div>
-
         <div className="working-details col-8">
           <div className="project-list mt-3">Project list</div>
           <div

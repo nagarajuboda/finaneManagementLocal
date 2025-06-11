@@ -188,6 +188,7 @@ export function ViewProject() {
   };
 
   const handleClosePopup = () => {
+    setSelectedRowIds([]);
     setopen(false);
   };
 
