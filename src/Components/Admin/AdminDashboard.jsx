@@ -988,7 +988,7 @@ export default function AdminDashboard() {
           </div>
           <div className="col-md-12 col-lg-4 d-flex flex-column">
             <span className="projectOverview_content ">Recent Activities</span>
-            <div className="recentActivities mt-3 flex-grow-1">
+            <div className="recentActivities  flex-grow-1">
               <div
                 style={{
                   display: "flex",
