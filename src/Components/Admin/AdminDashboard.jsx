@@ -350,8 +350,9 @@ export default function AdminDashboard() {
 
   const ProfitOrLossSummaryOnchange = async (date) => {
     setSelectedDate(date);
-    const month = selectedDate.toLocaleString("default", { month: "long" });
-    const year = selectedDate.getFullYear();
+    const month = date.toLocaleString("default", { month: "long" });
+    const year = date.getFullYear();
+
     var Response = await IndianFinanceService.fcnGetProfitOrLossSummanry(year);
     if (Response.isSuccess) {
       setProfitOrLossSummary(Response.item);

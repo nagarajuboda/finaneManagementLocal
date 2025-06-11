@@ -465,12 +465,12 @@ export function ViewProject() {
           <div className="col-6 col-md-2 mb-2 mb-md-0 ">
             <p
               style={{ fontSize: "14px", textTransform: "uppercase" }}
-              className="ms-5"
+              className="ms-2"
             >
               Project Name
             </p>
             <p
-              className="ms-5"
+              className="ms-2"
               style={{
                 fontWeight: "500",
                 fontSize: "14px",
