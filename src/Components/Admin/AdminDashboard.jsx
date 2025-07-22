@@ -109,7 +109,7 @@ export default function AdminDashboard() {
     November: "11",
     December: "12",
   };
-
+  const [hasGraphData, setHasData] = useState(false);
   const Graph = (result) => {
     if (barchartintance.current) {
       barchartintance.current.destroy();
@@ -123,27 +123,16 @@ export default function AdminDashboard() {
     let dataValues = [];
     let highestValue = 0;
     let barcolors = [];
-
     if (result.isSuccess && result.item.length > 0) {
       Projects = result.item.map((data) => data.projectName);
       revenueValues = result.item.map((data) => data.totalRevenue);
-
       const hasData = revenueValues.some((val) => val > 0);
-
+      setHasData(hasData);
       if (!hasData) {
         const canvas = barchartref.current;
         const ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.font = "2px Arial";
-        ctx.fillStyle = "#666";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-
-        ctx.fillText(
-          "No revenue data available for this period.",
-          canvas.width / 2,
-          canvas.height / 2
-        );
+        setHasData(hasData);
         return;
       }
 
@@ -152,21 +141,9 @@ export default function AdminDashboard() {
       barcolors = dataValues.map((value) =>
         value === highestValue ? "#335CFF" : "#DCE6EF"
       );
-    } else {
-      // Display message if no result or empty item list
-      const canvas = barchartref.current;
-      const ctx = canvas.getContext("2d");
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.font = "12px Arial";
-      ctx.fillStyle = "#000000";
-      ctx.textAlign = "center";
-      ctx.fillText(
-        "No revenue data available for this period.",
-        canvas.width / 2,
-        canvas.height / 2
-      );
-      return;
+      setHasData(true);
     }
+    setHasData(false);
 
     barchartintance.current = new Chart(myChartRef, {
       type: "bar",
@@ -373,8 +350,9 @@ export default function AdminDashboard() {
 
   const ProfitOrLossSummaryOnchange = async (date) => {
     setSelectedDate(date);
-    const month = selectedDate.toLocaleString("default", { month: "long" });
-    const year = selectedDate.getFullYear();
+    const month = date.toLocaleString("default", { month: "long" });
+    const year = date.getFullYear();
+
     var Response = await IndianFinanceService.fcnGetProfitOrLossSummanry(year);
     if (Response.isSuccess) {
       setProfitOrLossSummary(Response.item);
@@ -494,10 +472,13 @@ export default function AdminDashboard() {
 
   return (
     <div className="DashboardMaindiv">
-      <p className="employeeoveriew_content">Employee Overview</p>
+      <p className="employeeoveriew_content ">Employee Overview</p>
 
-      <div className="row m-0">
-        <div className="col-4 Employeeoverview " style={{ width: "32%" }}>
+      <div className="row m-0  gy-2 gap-2">
+        <div
+          className="col-12 col-lg-4 Employeeoverview  "
+          style={{ flex: "1" }}
+        >
           <p className="ActiveEmployeeContent mt-2">Active Employees</p>
           <div style={{ position: "relative", width: "200px" }}>
             <svg width="100" height="50">
@@ -595,10 +576,7 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
-        <div
-          className="col-4 Employeeoverview "
-          style={{ width: "32%", marginLeft: "16px" }}
-        >
+        <div className="col-12 col-lg-4 Employeeoverview">
           <div className="mt-2">
             <span className="ActiveEmployeeContent">Employees on Bench</span>
 
@@ -672,7 +650,7 @@ export default function AdminDashboard() {
                   textAlign: "center",
                 }}
               >
-                Bench
+                Employees
               </span>
               <span
                 className="total_employees_content"
@@ -684,7 +662,7 @@ export default function AdminDashboard() {
                   textAlign: "center",
                 }}
               >
-                Employees
+                on Bench
               </span>
             </div>
           </div>
@@ -731,10 +709,7 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
-        <div
-          className="col-4 Employeeoverview "
-          style={{ width: "32%", marginLeft: "16px" }}
-        >
+        <div className="col-12 col-lg-4 Employeeoverview">
           <div className="mt-2">
             <p className="ActiveEmployeeContent"> Total Employees</p>
           </div>
@@ -776,11 +751,14 @@ export default function AdminDashboard() {
       </div>
 
       <div className="Project_OverView ">
-        <div className="row">
-          <div className="col-4">
+        <div
+          className="row g-3"
+          style={{ display: "flex", alignItems: "stretch" }}
+        >
+          <div className=" col-md-12 col-lg-4  d-flex flex-column">
             <p className="projectOverview_content">Project Overview</p>
 
-            <div className=" Project_progress11 ps-1 pe-1">
+            <div className=" Project_progress11 ps-1 pe-1 flex-grow-1">
               <div className="">
                 <div
                   style={{
@@ -796,8 +774,6 @@ export default function AdminDashboard() {
 
                 <div
                   style={{
-                    width: "250px",
-                    height: "250px",
                     display: "flex",
                     textAlign: "center",
                     margin: "0",
@@ -805,14 +781,18 @@ export default function AdminDashboard() {
                     marginLeft: "50px",
                     marginTop: "25px",
                     justifyContent: "center",
+                    width: "75%",
+                    height: "250px",
                   }}
                 >
                   <p
                     style={{
                       position: "absolute",
-                      top: "45%",
-                      fontSize: "14px",
-                      left: "30%",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      fontSize: "16px",
+                      textAlign: "center",
                     }}
                     className="activeEmployees"
                   >
@@ -887,9 +867,9 @@ export default function AdminDashboard() {
               </div>
             </div>
           </div>
-          <div className="col-8">
+          <div className="col-md-12 col-lg-8 d-flex flex-column">
             <p className="projectOverview_content">Revenue Overview</p>
-            <div className="Project_progress">
+            <div className="Project_progress flex-grow-1">
               <div
                 className="pt-2 pe-4"
                 style={{
@@ -947,66 +927,69 @@ export default function AdminDashboard() {
 
               <div
                 style={{
-                  width: "100%",
+                  width: "96%",
                 }}
               >
                 <canvas
                   ref={barchartref}
-                  className="indian-finance-revneue-overview ms-2"
+                  className="indian-finance-revneue-overview1"
                 />
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div className="Profit_And_Loss_Summary">
-        <div className="row ">
-          <div className="col-8">
+      <div className="Profit_And_Loss_Summary ">
+        <div
+          className="row g-3"
+          style={{ display: "flex", alignItems: "stretch" }}
+        >
+          <div className="col-md-12 col-lg-8 d-flex flex-column">
             <span className="projectOverview_content">
               Profit And loss Summary
             </span>
 
-            <div className="Profit_and_loss_flowchat mt-3">
+            <div
+              className="Profit_and_loss_flowchat   flex-grow-1"
+              style={{ padding: "20px" }}
+            >
               <div
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  padding: "10px 20px",
+                  padding: "10px 0px",
                 }}
               >
-                <span className="adminName" style={{ fontSize: "14px" }}>
+                <span className="adminName" style={{ fontSize: "20px" }}>
                   Profit And loss Summary-{Selectedyear}
                 </span>
+                <div>
+                  <DatePicker
+                    selected={selectedDate}
+                    onChange={(date) => ProfitOrLossSummaryOnchange(date)}
+                    showYearPicker
+                    dateFormat="yyyy"
+                    placeholderText="Select a year"
+                    className="form-control"
+                  />
+                </div>
               </div>
               <div
-                className="mt-4"
+                className=""
                 style={{
-                  width: "80%",
-                  padding: "10px",
+                  // width: "90%",
+                  height: "auto",
                   border: "1px solid",
-                  marginLeft: "100px",
                 }}
               >
-                <div>
-                  <div>
-                    <DatePicker
-                      selected={selectedDate}
-                      onChange={(date) => ProfitOrLossSummaryOnchange(date)}
-                      showYearPicker
-                      dateFormat="yyyy"
-                      placeholderText="Select a year"
-                      className="form-control"
-                    />
-                  </div>
-                </div>
-                <ChartJSBar data={data3} options={options3} className="mt-2" />
+                <ChartJSBar data={data3} options={options3} className="" />
               </div>
             </div>
           </div>
-          <div className="col-4">
+          <div className="col-md-12 col-lg-4 d-flex flex-column">
             <span className="projectOverview_content ">Recent Activities</span>
-            <div className="recentActivities mt-3">
+            <div className="recentActivities  flex-grow-1">
               <div
                 style={{
                   display: "flex",
@@ -1045,7 +1028,7 @@ export default function AdminDashboard() {
                       imageSrc = RecentEmployeeImage;
                     } else if (activity.entityName === "Role") {
                       title = "Role Modified";
-                      actionText = actionType + " " + "role";
+                      actionText = actionType + " ";
                     } else if (activity.entityName === "ProjectEmployee") {
                       if (actionType == "Added") {
                         actionText = "Team member added";
@@ -1184,21 +1167,20 @@ export default function AdminDashboard() {
         </div>
       </div>
       <div style={{ paddingTop: "30px" }}>
-        <div style={{ paddingBottom: "20px" }}>
-          <span className="projectOverview_content">Quick Actions</span>
+        <div style={{ paddingBottom: "20px" }} className="">
+          <span className="projectOverview_content ">Quick Actions</span>
         </div>
         <div
-          className="Quick_Actions_div"
+          className="Quick_Actions_div  row"
           style={{
             paddingTop: "20px",
             display: "flex",
             justifyContent: "space-between",
-            padding: "20px",
             alignContent: "center",
           }}
         >
           <div
-            className="addEmployee_quick_action"
+            className="addEmployee_quick_action col-md-12 col-lg-4"
             onClick={NavigateToAddEmployee}
           >
             <div className="Quick_Actions_image">
@@ -1228,7 +1210,7 @@ export default function AdminDashboard() {
             </div>
           </div>
           <div
-            className="addEmployee_quick_action"
+            className="addEmployee_quick_action col-md-12 col-lg-4"
             onClick={NavigateToAddProject}
           >
             <div className="Quick_Actions_image">
@@ -1258,7 +1240,7 @@ export default function AdminDashboard() {
             </div>
           </div>
           <div
-            className="addEmployee_quick_action"
+            className="addEmployee_quick_action col-md-12 col-lg-4"
             onClick={NavigateToAddManageRoles}
           >
             <div className="Quick_Actions_image">

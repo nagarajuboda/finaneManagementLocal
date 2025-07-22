@@ -31,7 +31,6 @@ const priorityMap = {
   4: "Low",
   5: "Low",
 };
-
 export default function Roles() {
   const navigate = useNavigate();
   const [isSuccessPopupOpen, setIsSuccessPopupOpen] = useState(false);
@@ -123,7 +122,6 @@ export default function Roles() {
       const AllRolesIDs = roles
         .filter((role) => role.status === "Active")
         .map((role) => role.id);
-
       setSelectedRolesIds(AllRolesIDs);
       setDisiblebuttons(false);
     } else {
@@ -141,7 +139,6 @@ export default function Roles() {
       selectedRolesIds
     );
     const result = response.data;
-
     if (result.isSuccess) {
       setSelectedRolesPopup(true);
       setDisiblebuttons(true);
@@ -155,16 +152,12 @@ export default function Roles() {
       role.priority.toString().includes(searchQuery.toLowerCase())
     );
   });
-
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredRoles.slice(indexOfFirstItem, indexOfLastItem);
-
   const totalPages = Math.ceil(filteredRoles.length / itemsPerPage);
-
   const handleCheckboxChange = (roleId, isChecked) => {
     setSelectedRolesIds((prevSelected) => {
       let updatedSelected;
@@ -330,23 +323,21 @@ export default function Roles() {
                 Delete Selected
               </button>
             </div>
-            <div>
-              <button
-                className="add-new-role-button me-2 "
-                onClick={AddNewRolePopup}
-              >
-                <span>
-                  <img
-                    src={images}
-                    alt=""
-                    height="18px"
-                    width="18px"
-                    className=""
-                  />
-                </span>
-                <span className="add-new-role-span ms-1">Add New Role</span>
-              </button>
-            </div>
+            <button
+              className="add-new-role-button me-2"
+              onClick={AddNewRolePopup}
+            >
+              <span>
+                <img
+                  src={images}
+                  alt=""
+                  height="18px"
+                  width="18px"
+                  className=""
+                />
+              </span>
+              <span className="add-new-role-span">Add New Role</span>
+            </button>
           </div>
         </div>
         <div>

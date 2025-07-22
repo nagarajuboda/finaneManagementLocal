@@ -1,6 +1,6 @@
 import "../../assets/Styles/EmployeePages/EmployeeDetails.css";
 import userProfile from "../../assets/Images/adminprofile.png";
-import { useEffect, useState, React } from "react";
+import { useEffect, useState, useRef, React } from "react";
 import axios from "axios";
 import ellips from "../../assets/Images/Ellipse.png";
 import checkimage from "../../assets/Images/check.png";
@@ -20,6 +20,7 @@ export default function EmployeeDetails() {
   const [isTooltipVisible, setTooltipVisible] = useState(false);
   const [empStatus, setEmpStatus] = useState("");
   const [open, setOpen] = useState(false);
+  const tooltipRef = useRef(null);
 
   useEffect(() => {
     fetchData();
@@ -36,6 +37,24 @@ export default function EmployeeDetails() {
     );
     setemployeeTracking(GetProjectsResponse.item);
   };
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (tooltipRef.current && !tooltipRef.current.contains(event.target)) {
+        setTooltipVisible(false);
+      }
+    }
+
+    if (isTooltipVisible) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isTooltipVisible]);
 
   const moreskills = () => {
     setisVisible(true);
@@ -216,13 +235,17 @@ export default function EmployeeDetails() {
               Skills
             </div>
             <div
-              className="col-8"
-              style={{ fontSize: "14px", fontWeight: "600", color: "#000000" }}
+              className="col-8 "
+              style={{
+                fontSize: "14px",
+                fontWeight: "600",
+                color: "#000000",
+              }}
             >
               {Skills.length > 0 ? (
                 <div>
                   <div style={{ display: "flex", alignItems: "center" }}>
-                    {Skills.slice(0, 3).map((empskill, index) => (
+                    {Skills.slice(0, 2).map((empskill, index) => (
                       <p
                         key={index}
                         style={{
@@ -253,7 +276,11 @@ export default function EmployeeDetails() {
                   </div>
 
                   {isTooltipVisible && (
-                    <div className="tooltip-box" style={{ marginLeft: "35px" }}>
+                    <div
+                      className="tooltip-box"
+                      ref={tooltipRef}
+                      style={{ marginLeft: "35px" }}
+                    >
                       <div className="tooltip-header">
                         <span style={{ fontSize: "14px", padding: "0px 7px" }}>
                           Skill Sets
@@ -295,7 +322,6 @@ export default function EmployeeDetails() {
             </div>
           </div>
         </div>
-
         <div className="working-details col-8">
           <div className="project-list mt-3">Project list</div>
           <div

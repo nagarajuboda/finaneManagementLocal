@@ -82,14 +82,14 @@ const Sidebar = ({ children }) => {
         { path: "/Dashboard/All/Projects", name: "Projects" },
       ],
     },
-    {
-      name: "Logout",
-      icon: Logout,
-      path: "/user/Login",
-      action: () => {
-        localStorage.removeItem("sessionData");
-      },
-    },
+    // {
+    //   name: "Logout",
+    //   icon: Logout,
+    //   path: "/user/Login",
+    //   action: () => {
+    //     localStorage.removeItem("sessionData");
+    //   },
+    // },
   ];
 
   const ProjectManagerMenuItems = [

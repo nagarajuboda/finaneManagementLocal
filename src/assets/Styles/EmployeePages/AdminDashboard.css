@@ -5,6 +5,16 @@
   opacity: 1;
   height: 140px;
 }
+.convasChart {
+  height: 350 !important;
+  width: auto !important;
+}
+
+.indian-finance-revneue-overview1 {
+  height: 400px !important;
+  width: 800px;
+  font-style: normal;
+}
 
 .employeeoveriew_content {
   text-align: left;
@@ -130,6 +140,7 @@
   align-items: center;
   justify-content: center;
   margin-top: 10px;
+  margin-bottom: 16px;
 }
 .EmployeeDashboard {
   font-family: Arial, sans-serif;
@@ -434,6 +445,16 @@ input[type="txt"] {
 .Project_OverView {
   padding-top: 30px;
 }
+.recentActivities,
+.Profit_and_loss_flowchat {
+  background: #ffffff 0% 0% no-repeat padding-box;
+  box-shadow: 0px 7px 18px #64646430;
+  border-radius: 10px;
+  opacity: 1;
+  display: flex;
+  flex-direction: column;
+}
+
 .Project_progress {
   max-height: auto;
   background: #ffffff 0% 0% no-repeat padding-box;
@@ -447,11 +468,11 @@ input[type="txt"] {
   border-radius: 10px;
   opacity: 1;
 }
-@media screen and (min-width: 1080px) and (max-width: 1920px) {
+/* @media screen and (min-width: 1080px) and (max-width: 1920px) {
   .Project_progress11 {
     height: 436px;
   }
-}
+} */
 .Active_project_conetnt {
   text-align: left;
   font: normal normal bold 14px/24px Segoe UI;
@@ -477,16 +498,16 @@ input[type="txt"] {
 .Profit_And_Loss_Summary {
   padding-top: 30px;
 }
-.Profit_and_loss_flowchat {
+/* .Profit_and_loss_flowchat {
   min-height: 420px;
   max-height: auto;
   background: #ffffff 0% 0% no-repeat padding-box;
   box-shadow: 0px 7px 18px #64646430;
   border-radius: 10px;
   opacity: 1;
-}
+} */
 
-@media screen and (min-width: 1080px) and (max-width: 1920px) {
+/* @media screen and (min-width: 1080px) and (max-width: 1920px) {
   .Profit_and_loss_flowchat {
     height: 533px;
   }
@@ -520,16 +541,16 @@ input[type="txt"] {
   .Profit_and_loss_flowchat {
     height: 520px;
   }
-}
-.recentActivities {
+} */
+/* .recentActivities {
   min-height: 420px;
   max-height: auto;
   background: #ffffff 0% 0% no-repeat padding-box;
   box-shadow: 0px 7px 18px #64646430;
   border-radius: 10px;
   opacity: 1;
-}
-@media screen and (min-width: 1114px) and (max-width: 1366px) {
+} */
+/* @media screen and (min-width: 1114px) and (max-width: 1366px) {
   .recentActivities {
     height: 605px;
   }
@@ -558,9 +579,8 @@ input[type="txt"] {
   .recentActivities {
     height: 520px;
   }
-}
+} */
 .Quick_Actions_div {
-  height: 190px;
   background: #ffffff 0% 0% no-repeat padding-box;
   box-shadow: 0px 7px 18px #64646430;
   border-radius: 10px;

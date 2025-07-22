@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { CircularProgressbar } from "react-circular-progressbar";
+
 import "react-circular-progressbar/dist/styles.css";
 import "../../assets/Styles/ViewProject.css";
 import $, { data } from "jquery";
@@ -187,6 +188,7 @@ export function ViewProject() {
   };
 
   const handleClosePopup = () => {
+    setSelectedRowIds([]);
     setopen(false);
   };
 
@@ -217,6 +219,10 @@ export function ViewProject() {
   };
 
   const addNewemployee = async () => {
+    if (!Employeeids || Employeeids.length === 0) {
+      alert("Please select at least one employee.");
+      return;
+    }
     const requestBody = [
       {
         employeeids: Employeeids,
@@ -224,12 +230,11 @@ export function ViewProject() {
       },
     ];
     var response = await ProjectService.fcnAssignEmployee(requestBody);
-
     if (response.isSuccess) {
       setassignedNewEmployeePopup(true);
       FetchData();
-
       setopen(false);
+      setIds([]);
     }
   };
   const filteredEmployees1 = GetAllemployees.filter(
@@ -457,11 +462,15 @@ export function ViewProject() {
               {clientvalues.clientEmailId}
             </p>
           </div>
-          <div className="col-6 col-md-2 mb-2 mb-md-0">
-            <p style={{ fontSize: "14px", textTransform: "uppercase" }}>
+          <div className="col-6 col-md-2 mb-2 mb-md-0 ">
+            <p
+              style={{ fontSize: "14px", textTransform: "uppercase" }}
+              className="ms-2"
+            >
               Project Name
             </p>
             <p
+              className="ms-2"
               style={{
                 fontWeight: "500",
                 fontSize: "14px",
@@ -493,11 +502,14 @@ export function ViewProject() {
         </div>
         <div className="row underline-button-row"></div>
         <div className="row m-0" style={{ paddingTop: "15px" }}>
-          <div className="col-2">
+          <div className="col-2 col-md-6 col-lg-3">
             <p className="projectPrpgress"> Project Team Members</p>
           </div>
 
-          <div className="col-3" style={{ position: "relative" }}>
+          <div
+            className="col-3 col-md-6 col-lg-4"
+            style={{ position: "relative" }}
+          >
             <div
               style={{
                 position: "relative",
@@ -530,22 +542,20 @@ export function ViewProject() {
               ></i>
             </div>
           </div>
-          {userDetails.employee.role.name === "Admin" ||
-          userDetails.employee.role.name === "Project Manager" ? (
-            <div className="col-3"></div>
-          ) : (
-            <div className="col-5 ms-5"></div>
-          )}
+          {userDetails.employee.role.name !== "Admin" &&
+            userDetails.employee.role.name !== "Project Manager" && (
+              <div className="col-5 col-md-4 col-lg-1"></div>
+            )}
 
           {(userDetails.employee.role.name === "Admin" ||
             userDetails.employee.role.name === "Project Manager") && (
             <div
-              className="col-1"
+              className="col-1 col-md-2 col-lg-1"
               style={{ display: "flex", justifyContent: "end" }}
             >
               <button
                 style={{ fontSize: "14px", height: "36px" }}
-                className="btn btn-primary"
+                className="btn btn-primary btn-import"
                 onClick={() => setIsImportPopupOpen(true)}
               >
                 Import
@@ -553,10 +563,9 @@ export function ViewProject() {
             </div>
           )}
           <div
-            className="col-1"
+            className="col-2 col-md-3 col-lg-1"
             style={{
               display: "flex",
-
               justifyContent: "space-between",
             }}
           >
@@ -568,7 +577,6 @@ export function ViewProject() {
               >
                 Export To
               </Dropdown.Toggle>
-
               <Dropdown.Menu style={{ paddingTop: "10px" }}>
                 <Dropdown.Item
                   onClick={() => DownloadExcel("employees", "excel", ProjectID)}
@@ -592,10 +600,10 @@ export function ViewProject() {
           {(userDetails.employee.role.name === "Admin" ||
             userDetails.employee.role.name === "Project Manager") && (
             <div
-              className="col-2"
+              className="col-2 col-md-4 col-lg-3 "
               style={{
                 display: "flex",
-                justifyContent: "center",
+                justifyContent: "end",
               }}
             >
               <button
@@ -603,7 +611,8 @@ export function ViewProject() {
                   display: "flex",
                   width: "auto",
                   alignContent: "center",
-                  padding: "4px",
+                  justifyContent: "center",
+                  padding: "2px",
                   height: "36px",
                 }}
                 className="add-new-project-button"
@@ -619,7 +628,7 @@ export function ViewProject() {
                   />
                 </span>
                 <span
-                  className=" ms-1"
+                  className="ms-1"
                   style={{
                     fontSize: "14px",
                     color: "#000000",
