@@ -19,7 +19,7 @@ const createAxiosInstance = (baseURL) => {
 
       return config;
     },
-    (error) => Promise.reject(error)
+    (error) => Promise.reject(error),
   );
 
   api.interceptors.response.use(
@@ -38,12 +38,12 @@ const createAxiosInstance = (baseURL) => {
       }
 
       return Promise.reject(error);
-    }
+    },
   );
 
   return api;
 };
 
-const apiurl = createAxiosInstance("https://localhost:44305/api");
+const apiurl = createAxiosInstance("http://localhost:5000/api");
 
 export { apiurl };
