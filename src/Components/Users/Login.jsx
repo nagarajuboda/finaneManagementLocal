@@ -175,7 +175,7 @@ const Home = () => {
           <img src={archetslogo} alt="" className="archentslogo" />
         </div>
         <div className="formdiv1">
-          <div className="logincontent">Login Nagaraju CI/CD </div>
+          <div className="logincontent">Login Nagaraju </div>
           <div className="financecontent">Welcome to Finance Management !</div>
           <div className="pleaseLoginContent">
             Please login using email id and password
