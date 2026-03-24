@@ -179,7 +179,7 @@ const Home = () => {
             Login Nagaraju this is the CI/CD pipeline
           </div>
           <div className="financecontent">
-            Welcome to Finance Management for !
+            Welcome to Finance Management for Archents!
           </div>
           <div className="pleaseLoginContent">
             Please login using email id and password
