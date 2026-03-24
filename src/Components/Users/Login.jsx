@@ -114,7 +114,7 @@ const Home = () => {
         } else if (result.error.code === "AUTH002") {
           toast.error(
             "Incorrect password. Please check your password and try again.",
-            { position: "top-right", autoClose: 4000 }
+            { position: "top-right", autoClose: 4000 },
           );
         } else if (result.error.code === "AUTH003") {
           toast.error("Employee has no access to login.", {
@@ -175,7 +175,7 @@ const Home = () => {
           <img src={archetslogo} alt="" className="archentslogo" />
         </div>
         <div className="formdiv1">
-          <div className="logincontent">Login</div>
+          <div className="logincontent">Login Nagaraju</div>
           <div className="financecontent">Welcome to Finance Management !</div>
           <div className="pleaseLoginContent">
             Please login using email id and password
