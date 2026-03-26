@@ -176,9 +176,7 @@ const Home = () => {
         </div>
         <div className="formdiv1">
           <div className="logincontent"> CI/CD Automation pipeline Tesing</div>
-          <div className="financecontent">
-            Welcome to Finance Management! Nagaraju
-          </div>
+          <div className="financecontent">Welcome to Jenkin Automation!</div>
           <div className="pleaseLoginContent">
             Please login using email id and password
           </div>
