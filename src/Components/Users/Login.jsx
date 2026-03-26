@@ -175,7 +175,7 @@ const Home = () => {
           <img src={archetslogo} alt="" className="archentslogo" />
         </div>
         <div className="formdiv1">
-          <div className="logincontent"> CI/CD Integration</div>
+          <div className="logincontent"> CI/CD Pipeline</div>
           <div className="financecontent">
             Welcome to Finance Management! Nagaraju
           </div>
